@@ -12,22 +12,22 @@ using SGEP.Models;
 namespace SGEP.Controllers
 {
     [AllowAnonymous]
-    public class ProjetoController : Controller
+    public class MaterialController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ProjetoController(ApplicationDbContext context)
+        public MaterialController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Projeto
+        // GET: Material
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projeto.ToListAsync());
+            return View(await _context.Material.ToListAsync());
         }
 
-        // GET: Projeto/Details/5
+        // GET: Material/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,39 +35,39 @@ namespace SGEP.Controllers
                 return NotFound();
             }
 
-            var projeto = await _context.Projeto
+            var material = await _context.Material
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
+            if (material == null)
             {
                 return NotFound();
             }
 
-            return View(projeto);
+            return View(material);
         }
 
-        // GET: Projeto/Create
+        // GET: Material/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Projeto/Create
+        // POST: Material/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
+        public async Task<IActionResult> Create([Bind("Id,Descricao,Preco")] Material material)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(projeto);
+                _context.Add(material);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(projeto);
+            return View(material);
         }
 
-        // GET: Projeto/Edit/5
+        // GET: Material/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -75,22 +75,22 @@ namespace SGEP.Controllers
                 return NotFound();
             }
 
-            var projeto = await _context.Projeto.FindAsync(id);
-            if (projeto == null)
+            var material = await _context.Material.FindAsync(id);
+            if (material == null)
             {
                 return NotFound();
             }
-            return View(projeto);
+            return View(material);
         }
 
-        // POST: Projeto/Edit/5
+        // POST: Material/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,Preco")] Material material)
         {
-            if (id != projeto.Id)
+            if (id != material.Id)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace SGEP.Controllers
             {
                 try
                 {
-                    _context.Update(projeto);
+                    _context.Update(material);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjetoExists(projeto.Id))
+                    if (!MaterialExists(material.Id))
                     {
                         return NotFound();
                     }
@@ -115,10 +115,10 @@ namespace SGEP.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(projeto);
+            return View(material);
         }
 
-        // GET: Projeto/Delete/5
+        // GET: Material/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -126,30 +126,30 @@ namespace SGEP.Controllers
                 return NotFound();
             }
 
-            var projeto = await _context.Projeto
+            var material = await _context.Material
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
+            if (material == null)
             {
                 return NotFound();
             }
 
-            return View(projeto);
+            return View(material);
         }
 
-        // POST: Projeto/Delete/5
+        // POST: Material/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var projeto = await _context.Projeto.FindAsync(id);
-            _context.Projeto.Remove(projeto);
+            var material = await _context.Material.FindAsync(id);
+            _context.Material.Remove(material);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProjetoExists(int id)
+        private bool MaterialExists(int id)
         {
-            return _context.Projeto.Any(e => e.Id == id);
+            return _context.Material.Any(e => e.Id == id);
         }
     }
 }
