@@ -38,7 +38,7 @@ namespace SGEP
 
             services.AddDbContext<ApplicationDbContext> (options =>
             {
-                options.UseMySql (Configuration.GetConnectionString ("mysql"));
+                //options.UseMySql (Configuration.GetConnectionString ("mysql"));
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
             services.AddDefaultIdentity<IdentityUser> ()
@@ -68,9 +68,16 @@ namespace SGEP
             }
 
             app.UseHttpsRedirection ();
-            app.UseStaticFiles ();
-            app.UseCookiePolicy ();
+            app.UseStaticFiles (new StaticFileOptions
+            {
+                OnPrepareResponse = ctx => 
+                {
+                    ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-storage";
+                    ctx.Context.Response.Headers["Expires"] = "-1";
+                }
+            });
 
+            app.UseCookiePolicy ();
             app.UseAuthentication ();
 
             app.UseMvc (routes =>
