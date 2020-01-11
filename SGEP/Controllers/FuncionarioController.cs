@@ -14,6 +14,8 @@ namespace SGEP.Controllers
     [AllowAnonymous]
     public class FuncionarioController : Controller
     {
+        public static int next = 1;
+        public static List<Funcionario> Funcionarios { get; set; } = new List<Funcionario>();
         private readonly ApplicationDbContext _context;
 
         public FuncionarioController(ApplicationDbContext context)
@@ -21,10 +23,26 @@ namespace SGEP.Controllers
             _context = context;
         }
 
+        public JsonResult List()
+        {
+            return Json(Funcionarios);
+        }
+        [HttpPost]
+        public IActionResult Add()
+        {
+            Funcionarios.Add(new Funcionario
+            {
+                Id = next,
+                Nome = "Fulano " + next,
+                Cargo = "Pedreiro " + next++ 
+            });
+            return Ok();
+        }
+
         // GET: Funcionario
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Funcionario.ToListAsync());
+            return View(/*await _context.Funcionario.ToListAsync()*/);
         }
 
         // GET: Funcionario/Details/5
@@ -125,7 +143,7 @@ namespace SGEP.Controllers
             {
                 return NotFound();
             }
-
+            
             var funcionario = await _context.Funcionario
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (funcionario == null)
@@ -138,13 +156,18 @@ namespace SGEP.Controllers
 
         // POST: Funcionario/Delete/5
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var funcionario = await _context.Funcionario.FindAsync(id);
-            _context.Funcionario.Remove(funcionario);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var funcionario = Funcionarios.First(f => f.Id == id);
+            if (funcionario == null)
+                return NotFound();
+            Funcionarios.Remove(funcionario);
+            //var funcionario = Funcionarios.First(e => e.Key == id && e.Value != null ).Value;//await _context.Funcionario.FindAsync(id);
+            
+            //_context.Funcionario.Remove(funcionario);
+            //await _context.SaveChangesAsync();
+            return Ok();//RedirectToAction(nameof(Index));
         }
 
         private bool FuncionarioExists(int id)

@@ -4,11 +4,21 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<br />
+<h2>Funcionários</h2>
+<br />
+    <!--a asp-action="Create"><input type="button" value="Adicionar funcionário" class="btn btn-success squareborder"></a-->
+    <a href="#" onclick="add()"><input type="button" value="Adicionar" class="btn btn-success squareborder"></a>
+    <div class="float-right d-inline">
+        <button class="btn btn-outline-secondary squareborder" onclick="loadData()"><i class="fas fa-sync"></i></button>
+        <div class="btn-group-toggle d-inline" data-toggle="buttons">
+            <label class="btn btn-danger squareborder active">
+                <input id="checkDel" type="checkbox" checked autocomplete="off" onchange="toggleDelete()"> <i class="fas fa-trash"></i>
+            </label>
+        </div>
+    </div>
+<br/>
+<br/>
 <table class="table">
     <thead>
         <tr>
@@ -21,21 +31,58 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cargo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="lista">
     </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+        const lista = document.getElementById('lista');
+        const checkDel = document.getElementById('checkDel');
+        loadData();
+        function loadData()
+        {
+            fetch('/Funcionario/List')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                lista.innerHTML = '';
+                for(const f of json)
+                {
+                    lista.innerHTML += '<tr>' +
+                                            '<td>' +
+                                                f.nome + 
+                                            '</td>' +
+                                            '<td>' + 
+                                                f.cargo +
+                                            '</td>' +
+                                            '<td>' + 
+                                                //'<a href="Edit/'+ f.id + '">Edit</a> |' + 
+                                                //'<a href="Details/'+ f.id + '">Details</a> |' +
+                                                '<a class="delete txt-danger float-right" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle text-danger" style="font-size: 18px"></i></a>' +
+                                            '</td>' +
+                                        '</tr>';
+                }
+            });
+        }
+
+        function add()
+        {
+            fetch('/Funcionario/Add', { method: 'POST' }).then((res) => loadData());
+        }
+
+        function remove(id)
+        {
+            fetch('Funcionario/Delete/' + id, { method: 'POST' }).then((res) => loadData());
+        }
+
+        function toggleDelete()
+        {
+            const btnDels = document.getElementsByClassName('delete');
+            const checkDel = document.getElementById('checkDel');
+            for(const btn of btnDels)
+                btn.hidden = checkDel.checked;
+        }
+    </script>
+}
