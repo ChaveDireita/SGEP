@@ -72,8 +72,8 @@ namespace SGEP
             {
                 OnPrepareResponse = ctx => 
                 {
-                    ctx.Context.Response.Headers["Cache-Control"] = "no-cache, no-storage";
-                    ctx.Context.Response.Headers["Expires"] = "-1";
+                    ctx.Context.Response.Headers.Add("Cache-Control", "no-cache, no-storage");
+                    ctx.Context.Response.Headers.Add("Expires", "-1");
                 }
             });
 
