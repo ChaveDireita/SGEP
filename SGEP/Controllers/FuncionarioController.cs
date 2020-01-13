@@ -14,6 +14,8 @@ namespace SGEP.Controllers
     [AllowAnonymous]
     public class FuncionarioController : Controller
     {
+        public static string[] nomes = {"Fulano", "Sincrano", "Beltrano", "José Ninguém", "Funcionario"};
+        public static string[] cargos = {"Pederiro", "Carpinteiro", "Faxineiro", "Bombeiro", "Professor", "Motorista", "Espadachim"};
         public static int next = 1;
         public static List<Funcionario> Funcionarios { get; set; } = new List<Funcionario>();
         private readonly ApplicationDbContext _context;
@@ -23,20 +25,41 @@ namespace SGEP.Controllers
             _context = context;
         }
 
-        public JsonResult List()
+        public JsonResult List([FromQuery] string id = "", [FromQuery] string nome = "", [FromQuery] string cargo = "")
         {
-            Task.Delay(1500).Wait();
-            return Json(Funcionarios);
+            //Task.Delay(1500).Wait();
+
+            IEnumerable<Funcionario> result = Funcionarios;
+            if (id != null && id.Trim() != "")
+                result = result.Where(f => f.Id.ToString().Contains(id));
+            if (nome != null && nome?.Trim() != "")
+                result = result.Where(f => f.Nome.Contains(nome));
+            if (cargo != null && cargo?.Trim() != "")
+                result = result.Where(f => f.Cargo.Contains(cargo));
+
+            return Json(result);
         }
         [HttpPost]
         public IActionResult Add()
         {
-            Funcionarios.Add(new Funcionario
+            if (new Random().Next()%10 == 0)
             {
-                Id = next,
-                Nome = "Fulano " + next,
-                Cargo = "Pedreiro " + next++ 
-            });
+                Funcionarios.Add(new Funcionario
+                {
+                    Id = next++,
+                    Nome = "Golero",
+                    Cargo = "Bruno" 
+                });
+            }
+            else
+            {
+                Funcionarios.Add(new Funcionario
+                {
+                    Id = next,
+                    Nome = nomes[new Random().Next()%nomes.Length] + next,
+                    Cargo = cargos[new Random().Next()%cargos.Length] + next++ 
+                });
+            }
             return Ok();
         }
 
