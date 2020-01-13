@@ -7,18 +7,18 @@
 <br />
 <h2>Funcionários</h2>
 <br />
-    <!--a asp-action="Create"><input type="button" value="Adicionar funcionário" class="btn btn-success squareborder"></a-->
-    <a href="#" onclick="add()"><input type="button" value="Adicionar" class="btn btn-success squareborder"></a>
-    <div class="float-right d-inline">
-        <button class="btn btn-outline-secondary squareborder" onclick="loadData()"><i class="fas fa-sync"></i></button>
-        <div class="btn-group-toggle d-inline" data-toggle="buttons">
-            <label class="btn btn-danger squareborder active">
-                <input id="checkDel" type="checkbox" checked autocomplete="off" onchange="toggleDelete()"> <i class="fas fa-trash"></i>
-            </label>
-        </div>
+<!--a asp-action="Create"><input type="button" value="Adicionar funcionário" class="btn btn-success squareborder"></a-->
+<a href="#" onclick="add()"><input type="button" value="Adicionar" class="btn btn-success squareborder"></a>
+<div class="float-right d-inline">
+    <button class="btn btn-outline-secondary squareborder" onclick="loadData()"><i class="fas fa-sync"></i></button>
+    <div class="btn-group-toggle d-inline" data-toggle="buttons">
+        <label class="btn btn-danger squareborder active">
+            <input id="checkDel" type="checkbox" checked autocomplete="off" onchange="toggleDelete()"> <i class="fas fa-trash"></i>
+        </label>
     </div>
-<br/>
-<br/>
+</div>
+<br />
+<br />
 <table class="table">
     <thead>
         <tr>
@@ -31,58 +31,99 @@
             <th></th>
         </tr>
     </thead>
-    <tbody id="lista">
-    </tbody>
+    <tbody id="lista"></tbody>
 </table>
 
+<div class="modal fade" id="detailsmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modaltitle">Funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbody">
+                <table class="table table-bordered shadow-regular">
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Id)</td>
+                        <td id="idfield">FUN-</td>
+                    </tr>
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Nome)</td>
+                        <td id="namefield">placeholder</td>
+                    </tr>
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Cargo)</td>
+                        <td id="cargofield">placeholder</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary">Salvar mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts
-{
+    {
     <script>
         const lista = document.getElementById('lista');
         const checkDel = document.getElementById('checkDel');
         loadData();
-        function loadData()
-        {
+        function loadData() {
             fetch('/Funcionario/List')
-            .then((res) => res.json())
-            .then((json) => 
-            {
-                lista.innerHTML = '';
-                for(const f of json)
-                {
-                    lista.innerHTML += '<tr>' +
-                                            '<td>' +
-                                                f.nome + 
-                                            '</td>' +
-                                            '<td>' + 
-                                                f.cargo +
-                                            '</td>' +
-                                            '<td>' + 
-                                                //'<a href="Edit/'+ f.id + '">Edit</a> |' + 
-                                                //'<a href="Details/'+ f.id + '">Details</a> |' +
-                                                '<a class="delete txt-danger float-right" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle text-danger" style="font-size: 18px"></i></a>' +
-                                            '</td>' +
-                                        '</tr>';
-                }
-            });
+                .then((res) => res.json())
+                .then((json) => {
+                    lista.innerHTML = '';
+                    for (const f of json) {
+                        vamo = document.createElement("tr");
+                        vamo.innerHTML =
+                            //lista.innerHTML += '<tr>' +
+                            '<td>' +
+                            f.nome +
+                            '</td>' +
+                            '<td>' +
+                            f.cargo +
+                            '</td>' +
+                            '<td>' +
+                            //'<a href="Edit/'+ f.id + '">Edit</a> |' +
+                            //'<a href="Details/'+ f.id + '">Details</a> |' +
+                            '<a class="delete txt-danger float-right" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle text-danger" style="font-size: 18px"></i></a>' +
+                            '</td>';
+                        //'</tr>';
+                        vamo.onclick = function () { detailsmodal(f) };
+                        lista.appendChild(vamo);
+                    }
+                });
         }
 
-        function add()
-        {
+        function add() {
             fetch('/Funcionario/Add', { method: 'POST' }).then((res) => loadData());
         }
 
-        function remove(id)
-        {
+        function remove(id) {
             fetch('Funcionario/Delete/' + id, { method: 'POST' }).then((res) => loadData());
         }
 
-        function toggleDelete()
-        {
+        function toggleDelete() {
             const btnDels = document.getElementsByClassName('delete');
             const checkDel = document.getElementById('checkDel');
-            for(const btn of btnDels)
+            for (const btn of btnDels)
                 btn.hidden = checkDel.checked;
+        }
+        function detailsmodal(func) {
+            //var modalcontent = document.getElementById('modalbody');
+            var idfield = document.getElementById('idfield');
+            idfield.innerText = "FUN - " + func.id;
+            var namefield = document.getElementById('namefield');
+            namefield.textContent = func.nome;
+            var cargofield = document.getElementById('cargofield');
+            cargofield.textContent = func.cargo;
+            //'<h1>Nome: ' + func.nome + '</h1><h1>Cargo: ' + func.cargo + '</h1>';
+            $('#detailsmodal').modal('toggle');
         }
     </script>
 }

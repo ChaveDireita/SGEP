@@ -27,6 +27,11 @@ namespace SGEP.Controllers
         {
             return Json(Funcionarios);
         }
+        public JsonResult Projetos(int? id)
+        {
+            List<Projeto> projassociados = (List<Projeto>)_context.Funcionario.Where(i => i.Id == id).Select(i => i.ProjetosAssociados);
+            return Json(projassociados);
+        }
         [HttpPost]
         public IActionResult Add()
         {
