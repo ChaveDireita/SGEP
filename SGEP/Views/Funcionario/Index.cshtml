@@ -82,7 +82,7 @@
             const btnDels = document.getElementsByClassName('delete');
             const checkDel = document.getElementById('checkDel');
             for(const btn of btnDels)
-                btn.hidden = checkDel.checked;
+                btn.hidden = !btn.hidden;
         }
     </script>
 }
