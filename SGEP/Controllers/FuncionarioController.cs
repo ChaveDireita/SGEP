@@ -25,6 +25,7 @@ namespace SGEP.Controllers
 
         public JsonResult List()
         {
+            Task.Delay(1500).Wait();
             return Json(Funcionarios);
         }
         [HttpPost]

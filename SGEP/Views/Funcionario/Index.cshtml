@@ -2,26 +2,52 @@
 
 @{
     ViewData["Title"] = "Index";
+    string controller = "Funcionario";
 }
 
 <br />
 <h2>Funcionários</h2>
 <br />
-    <!--a asp-action="Create"><input type="button" value="Adicionar funcionário" class="btn btn-success squareborder"></a-->
-    <a href="#" onclick="add()"><input type="button" value="Adicionar" class="btn btn-success squareborder"></a>
-    <div class="float-right d-inline">
-        <button class="btn btn-outline-secondary squareborder" onclick="loadData()"><i class="fas fa-sync"></i></button>
-        <div class="btn-group-toggle d-inline" data-toggle="buttons">
-            <label class="btn btn-danger squareborder active">
-                <input id="checkDel" type="checkbox" checked autocomplete="off" onchange="toggleDelete()"> <i class="fas fa-trash"></i>
-            </label>
+<button onclick="add()" class="btn btn-success squareborder"><i class="fas fa-plus"></i> Adicionar</button>
+<button id="edit" class="btn btn-outline-secondary squareborder" disabled title="Selecione um item da lista abaixo"><i class="fas fa-edit"></i> Editar</button>
+<button id="details" class="btn btn-outline-secondary squareborder" disabled title="Selecione um item da lista abaixo"><i class="fas fa-info"></i> Detalhes</button>
+<div class="float-right d-inline">
+    <button class="btn btn-primary squareborder" type="button" data-toggle="collapse" data-target="#pesquisa" aria-expanded="false" aria-controls="pesquisa"><i class="fas fa-search"></i> Pesquisar</button>
+    <button class="btn btn-outline-secondary squareborder" onclick="list()"><i class="fas fa-sync"></i></button>
+    <button id="btn-del" class="btn btn-outline-danger squareborder" onclick="toggleDelete()"><i class="fas fa-trash"></i></button>
+</div>
+<br/>
+<div class="container row justify-content-center">
+    <div class="collapse col-md-12" id="pesquisa">
+    <br/>
+        <div class="card card-body">
+            <form class="form">
+                <div class="row justify-content-center">
+                    <div class="col">
+                        <input class="form-control squareborder" type="number" placeholder="Código" aria-label="Search" id="search-codigo" onkeyup="SearchSystem(document.getElementById('searchbar'))">
+                    </div>
+                    <div class="col">
+                        <input class="form-control squareborder" type="text" placeholder="Nome" aria-label="Search" id="searc-nome" onkeyup="SearchSystem(document.getElementById('searchbar'))">
+                    </div>
+                    <div class="col">
+                        <input class="form-control squareborder" type="text" placeholder="Cargo" aria-label="Search" id="search-cargo" onkeyup="SearchSystem(document.getElementById('searchbar'))">
+                    </div>
+                </div>
+            </form>
+            <br />
+            <div class="float-right">
+                <a class="float-right" href="#collapse" data-toggle="collapse" data-target="#pesquisa" aria-expanded="false" aria-controls="pesquisa">Pesquisar</a>
+            </div>
         </div>
     </div>
-<br/>
+</div>
 <br/>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nome)
             </th>
@@ -40,17 +66,22 @@
     <script>
         const lista = document.getElementById('lista');
         const checkDel = document.getElementById('checkDel');
-        loadData();
-        function loadData()
+        const controller = 'Funcionario';
+        list();
+        function list()
         {
-            fetch('/Funcionario/List')
+            lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
+            fetch('/' + controller + '/List')
             .then((res) => res.json())
             .then((json) => 
             {
                 lista.innerHTML = '';
                 for(const f of json)
                 {
-                    lista.innerHTML += '<tr>' +
+                    lista.innerHTML += '<tr id="' + f.id + '" class="selectable loading" onclick="selectRow(' + f.id + ')">' +
+                                            '<td>' +
+                                                f.id + 
+                                            '</td>' +
                                             '<td>' +
                                                 f.nome + 
                                             '</td>' +
@@ -69,12 +100,12 @@
 
         function add()
         {
-            fetch('/Funcionario/Add', { method: 'POST' }).then((res) => loadData());
+            fetch('/' + controller + '/Add', { method: 'POST' }).then((res) => list());
         }
 
         function remove(id)
         {
-            fetch('Funcionario/Delete/' + id, { method: 'POST' }).then((res) => loadData());
+            fetch(controller + '/Delete/' + id, { method: 'POST' }).then((res) => list());
         }
 
         function toggleDelete()
@@ -83,6 +114,25 @@
             const checkDel = document.getElementById('checkDel');
             for(const btn of btnDels)
                 btn.hidden = !btn.hidden;
+        }
+
+        function selectRow (id)
+        {
+            const selected = $('.selected');
+            if (selected.length > 0) 
+                selected[0].setAttribute('class', 'selectable');
+            $('#' + id).attr('class', 'selected');
+            $('#edit').attr('disabled', false);
+            $('#edit').on('click', () => 
+            {
+                //Código do modal
+            });
+            $('#details').attr('disabled', false);
+            $('#details').on('click', () => 
+            {
+                //Código do modal
+            });
+
         }
     </script>
 }
