@@ -17,5 +17,6 @@ namespace SGEP.Data
         public DbSet<SGEP.Models.Material> Material { get; set; }
         public DbSet<SGEP.Models.Projeto> Projeto { get; set; }
         public DbSet<SGEP.Models.Movimentacao> Movimentacao { get; set; }
+        public DbSet<ProjetosxFuncionarios> ProjetosxFuncionarios { get; set; }
     }
 }

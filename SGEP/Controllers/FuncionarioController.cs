@@ -90,6 +90,14 @@ namespace SGEP.Controllers
             return View(funcionario);
         }
 
+        public JsonResult ProjetosAssociados(int? id)
+        {
+            List<Projeto> projAss = (List<Projeto>) _context.ProjetosxFuncionarios
+                .Where(f => f.FuncionarioAssociado.Id == id)
+                .Select(p => p.ProjetoAssociado);
+            return Json(projAss);
+        }
+
         // GET: Funcionario/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

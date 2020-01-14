@@ -100,8 +100,47 @@
                 });
         }
 
+<<<<<<< Updated upstream
         function add() {
             fetch('/Funcionario/Add', { method: 'POST' }).then((res) => loadData());
+=======
+        function getAll(id, nome, cargo)
+        {
+            console.log(id, nome, cargo);
+            lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
+            fetch('/' + controller + '/List/?id=' + id + '&nome=' + nome + '&cargo=' + cargo)
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                lista.innerHTML = '';
+                for(const f of json)
+                {
+                    //lista.innerHTML +=
+                        //'<tr id="' + f.id + '" class="selectable loading" onclick="selectRow(' + f.id + ')">' +
+                    var tr = document.createElement("tr");
+                    tr.id = f.id
+                    tr.className = "selectable loading";
+                    tr.onclick = function () { selectRow(f) };
+                    tr.innerHTML = '';
+                    tr.innerHTML = '<td>' +
+                        f.id +
+                        '</td>' +
+                        '<td>' +
+                        f.nome +
+                        '</td>' +
+                        '<td>' +
+                        f.cargo +
+                        '</td>' +
+                        '<td>' +
+                        //'<a href="Edit/'+ f.id + '">Edit</a> |' + 
+                        //'<a href="Details/'+ f.id + '">Details</a> |' +
+                        '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>' +
+                        '</td>';
+                       // '</tr>';
+                    lista.appendChild(tr);
+                }
+            });
+>>>>>>> Stashed changes
         }
 
         function remove(id) {
@@ -114,6 +153,7 @@
             for (const btn of btnDels)
                 btn.hidden = checkDel.checked;
         }
+<<<<<<< Updated upstream
         function detailsmodal(func) {
             //var modalcontent = document.getElementById('modalbody');
             var idfield = document.getElementById('idfield');
@@ -124,6 +164,144 @@
             cargofield.textContent = func.cargo;
             //'<h1>Nome: ' + func.nome + '</h1><h1>Cargo: ' + func.cargo + '</h1>';
             $('#detailsmodal').modal('toggle');
+=======
+
+        function selectRow (func)
+        {
+            const selected = $('.selected');
+            if (selected.length > 0) 
+                selected[0].setAttribute('class', 'selectable');
+            $('#' + func.id).attr('class', 'selected');
+            $('#edit').attr('disabled', false);
+            $('#edit').on('click', () => 
+            {
+                //Código do modal
+            });
+            $('#details').attr('disabled', false);
+            $('#details').on('click', () => 
+            {
+                var idfield = document.getElementById('idfield');
+                idfield.innerText = "FUN - " + func.id;
+                var namefield = document.getElementById('namefield');
+                namefield.textContent = func.nome;
+                var cargofield = document.getElementById('cargofield');
+                cargofield.textContent = func.cargo;
+                //gerarlista(func.id);
+                $('#detailsmodal').modal('toggle');
+            });
+
+>>>>>>> Stashed changes
+        }
+        function catchprojass(id)
+        {
+            return fetch('/' + controller + '/ProjetosAssociados/' + id,
+                { method: 'GET' }).then((res) => res.json())
+                .then((json));
+        }
+        function gerarlista(id)
+        {
+            var json = catchprojass(id);
+            var projlista = document.getElementById('projlista');
+            projlista.innerHTML = '';
+            for (var p of json)
+            {
+                projlista.innerHTML += '<tr>'+
+                    '<td>' +
+                    p.id +
+                    '</td>' +
+                    '<td>' +
+                    p.nome +
+                    '</td>' +
+                    '<td>' +
+                    p.inicio +
+                    '</td>' +
+                    '<td>' +
+                    p.fim +
+                    '</td>' +
+                    '<td>' +
+                    //'<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>' +
+                    '</td>';
+                    '</tr>';
+            }
         }
     </script>
 }
+<<<<<<< Updated upstream
+=======
+<!--Código do Modal de detalhes-->
+<div class="modal fade" id="detailsmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes do Funcionário</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbody">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular">
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Id)</td>
+                        <td id="idfield">FUN-</td>
+                    </tr>
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Nome)</td>
+                        <td id="namefield">placeholder</td>
+                    </tr>
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Cargo)</td>
+                        <td id="cargofield">placeholder</td>
+                    </tr>
+                </table>
+                <h4>Projetos Associados:</h4>
+                <table class="table">
+                    <thead class="thead-dark" id="theadproj">
+                        <tr>
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Nome
+                            </th>
+                            <th>
+                                Início
+                            </th>
+                            <th>
+                                Fim
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="projlista">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary">Salvar mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="detailsmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalbody">
+            <table class="table table-bordered shadow-regular">
+                <tr>
+                    <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Id)</td>
+                    <td id="idfield">FUN-</td>
+                </tr>
+                <tr>
+                    <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Nome)</td>
+                    <td id="namefield">placeholder</td>
+                </tr>
+                <tr>
+                    <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Cargo)</td>
+                    <td id="cargofield">placeholder</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>-->
+>>>>>>> Stashed changes
