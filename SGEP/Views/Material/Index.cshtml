@@ -5,11 +5,56 @@
 }
 
 <h2>Index</h2>
+<button onclick="add()" class="btn btn-success squareborder"><i class="fas fa-plus"></i> Adicionar</button>
+<button id="edit" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled 
+        title="Selecione um item da lista abaixo"><i class="fas fa-edit"></i> Editar</button>
+        
+<button id="details" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled 
+        title="Selecione um item da lista abaixo"><i class="fas fa-info"></i> Detalhes</button>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<div class="float-right d-inline">
+    <button class="btn btn-outline-primary squareborder" 
+            data-toggle="collapse" 
+            data-target="#pesquisa" 
+            aria-expanded="false" 
+            aria-controls="pesquisa" 
+            title="Pesquisar"><i class="fas fa-search"></i></button>
+
+    <button class="btn btn-outline-secondary squareborder" 
+            onclick="list()"
+            title="Atualizar"><i class="fas fa-sync"></i></button>
+</div>
+<br/>
+<div class="container row justify-content-center">
+    <div class="collapse col-md-12" id="pesquisa">
+    <br/>
+        <div class="card card-body">
+            <form class="form">
+                <div class="row justify-content-center">
+                    <div class="col">
+                        <input class="form-control squareborder" type="number" placeholder="Código" aria-label="Search" id="search-codigo">
+                    </div>
+                    <div class="col">
+                        <input class="form-control squareborder" type="text" placeholder="Descrição" aria-label="Search" id="search-nome">
+                    </div>
+                    <div class="col">
+                        <input class="form-control squareborder" type="text" placeholder="Preço" aria-label="Search" id="search-cargo">
+                    </div>
+                </div>
+            </form>
+            <br />
+            <div class="float-right">
+                <a id="search-search" href="#" class="float-right">Pesquisar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<br/>
+<table class="table" id="lista">
     <thead>
         <tr>
             <th>
@@ -39,3 +84,10 @@
 }
     </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+
+    </script>
+}

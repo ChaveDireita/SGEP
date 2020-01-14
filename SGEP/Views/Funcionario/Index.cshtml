@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Index";
-    string controller = "Funcionario";
 }
 
 <br />
@@ -28,13 +27,18 @@
             title="Pesquisar"><i class="fas fa-search"></i></button>
 
     <button class="btn btn-outline-secondary squareborder" 
-            onclick="list()"
+            onclick="list({})"
             title="Atualizar"><i class="fas fa-sync"></i></button>
 
     <button id="btn-del" 
             class="btn btn-outline-danger squareborder" 
             onclick="toggleDelete()"
             title="Remover"><i class="fas fa-trash"></i></button>
+</div>
+<div class="float-right d-inline">
+    <div>
+
+    </div>
 </div>
 <br/>
 <div class="container row justify-content-center">
@@ -43,14 +47,30 @@
         <div class="card card-body">
             <form class="form">
                 <div class="row justify-content-center">
-                    <div class="col">
+                    <div class="col-4">
                         <input class="form-control squareborder" type="number" placeholder="Código" aria-label="Search" id="search-codigo">
                     </div>
-                    <div class="col">
+                    <div class="col-4">
                         <input class="form-control squareborder" type="text" placeholder="Nome" aria-label="Search" id="search-nome">
                     </div>
-                    <div class="col">
+                    <div class="col-4">
                         <input class="form-control squareborder" type="text" placeholder="Cargo" aria-label="Search" id="search-cargo">
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div class="col-4">
+                        <select class="form-control custon-select squareborder" id="search-item-pagina">
+                            <option disabled selected>Itens por página</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                    </div>
+                    <div class="col-4">
                     </div>
                 </div>
             </form>
@@ -86,58 +106,36 @@
     <script>
         const lista = document.getElementById('lista');
         const checkDel = document.getElementById('checkDel');
-        const controller = 'Funcionario';
-        $('#search-search').on("click", () => 
-        {
-            getAll(document.getElementById('search-codigo').value, 
-                   document.getElementById('search-nome').value,
-                   document.getElementById('search-cargo').value);
-        });
-        list();
-        function list()
-        {
-            getAll('','', '');
-        }
+        const controller = 'FuncionarioApi';
 
-        function getAll(id, nome, cargo)
+        var pagination = 
         {
-            console.log(id, nome, cargo);
-            lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
-            fetch('/' + controller + '/List/?id=' + id + '&nome=' + nome + '&cargo=' + cargo)
-            .then((res) => res.json())
-            .then((json) => 
+            size: 0,
+            page: 1,
+            itensPerPage: 10,
+            next: () => this.page = Math.min (Math.ceil (this.size/this.itensPerPage), this.page + 1),
+            prev: () => this.page = Math.max (1, this.page - 1),
+        };
+
+        list({});
+
+        function list(searchParams)
+        {
+            refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], (funcionarios) => 
             {
-                lista.innerHTML = '';
-                for(const f of json)
-                {
-                    lista.innerHTML += '<tr id="' + f.id + '" class="selectable loading" onclick="selectRow(' + f.id + ')">' +
-                                            '<td>' +
-                                                f.id + 
-                                            '</td>' +
-                                            '<td>' +
-                                                f.nome + 
-                                            '</td>' +
-                                            '<td>' + 
-                                                f.cargo +
-                                            '</td>' +
-                                            '<td>' + 
-                                                //'<a href="Edit/'+ f.id + '">Edit</a> |' + 
-                                                //'<a href="Details/'+ f.id + '">Details</a> |' +
-                                                '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>' +
-                                            '</td>' +
-                                        '</tr>';
-                }
+                pagination.size = funcionarios.length;
+                funcionarios.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
             });
         }
 
         function add()
         {
-            fetch('/' + controller + '/Add', { method: 'POST' }).then((res) => list());
+            http.POST('/' + controller + '/Add', () => list({}));
         }
 
         function remove(id)
         {
-            fetch('/' + controller + '/Delete/' + id, { method: 'POST' }).then((res) => list());
+            http.POST('/' + controller + '/Delete/' + id, () => list({}))
         }
 
         function toggleDelete()
@@ -166,5 +164,19 @@
             });
 
         }
+
+        $('#search-search').on("click", () => 
+        {
+            pagination.itensPerPage = document.getElementById('search-item-pagina').value;
+            list({
+                id: document.getElementById('search-codigo').value,
+                nome: document.getElementById('search-nome').value,
+                cargo: document.getElementById('search-cargo').value,
+                itensPorPagina: pagination.itensPerPage,
+                pagina: pagination.page
+            });
+        });
+
+
     </script>
 }
