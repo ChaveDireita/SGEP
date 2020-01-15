@@ -88,3 +88,7 @@ body
 {
     overflow: overlay;
 }
+html
+{
+    scroll-behavior: smooth;
+}

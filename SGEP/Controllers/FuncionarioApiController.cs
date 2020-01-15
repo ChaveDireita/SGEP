@@ -21,7 +21,6 @@ namespace SGEP.Controllers
         public FuncionarioApiController(ApplicationDbContext context) => _context = context;
         public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
         {
-            //Task.Delay(1500).Wait();
             IEnumerable<Funcionario> result = Funcionarios;
             if (id != null && id.Trim() != "")
                 result = result.Where(f => f.Id.ToString().Contains(id));
@@ -33,28 +32,31 @@ namespace SGEP.Controllers
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(result);
+            return Json(new {size = Funcionarios.Count(), entities = result});
         }
         [HttpPost]
         public IActionResult Add()
         {
-            if (new Random().Next()%10 == 0)
+            for (int i = 0; i < 50; i++)
             {
-                Funcionarios.Add(new Funcionario
+                if (new Random().Next()%10 == 0)
                 {
-                    Id = next++,
-                    Nome = "Golero",
-                    Cargo = "Bruno" 
-                });
-            }
-            else
-            {
-                Funcionarios.Add(new Funcionario
+                    Funcionarios.Add(new Funcionario
+                    {
+                        Id = next++,
+                        Nome = "Golero",
+                        Cargo = "Bruno" 
+                    });
+                }
+                else
                 {
-                    Id = next,
-                    Nome = nomes[new Random().Next()%nomes.Length] + next,
-                    Cargo = cargos[new Random().Next()%cargos.Length] + next++ 
-                });
+                    Funcionarios.Add(new Funcionario
+                    {
+                        Id = next,
+                        Nome = nomes[new Random().Next()%nomes.Length] + next,
+                        Cargo = cargos[new Random().Next()%cargos.Length] + next++ 
+                    });
+                }
             }
             return Ok();
         }

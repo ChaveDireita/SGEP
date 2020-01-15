@@ -19,6 +19,12 @@
         title="Selecione um item da lista abaixo"><i class="fas fa-info"></i> Detalhes</button>
 
 <div class="float-right d-inline">
+    <div class="btn-group" role="group">
+            <button class="btn btn-outline-primary squareborder" type="button" id="page-first"><<</button>
+            <button class="btn btn-outline-primary squareborder" type="button" id="page-prev"><</button>
+            <button class="btn btn-outline-primary squareborder" type="button" id="page-next">></button>
+            <button class="btn btn-outline-primary squareborder" type="button" id="page-last">>></button>
+    </div>
     <button class="btn btn-outline-primary squareborder" 
             data-toggle="collapse" 
             data-target="#pesquisa" 
@@ -34,11 +40,6 @@
             class="btn btn-outline-danger squareborder" 
             onclick="toggleDelete()"
             title="Remover"><i class="fas fa-trash"></i></button>
-</div>
-<div class="float-right d-inline">
-    <div>
-
-    </div>
 </div>
 <br/>
 <div class="container row justify-content-center">
@@ -113,18 +114,20 @@
             size: 0,
             page: 1,
             itensPerPage: 10,
-            next: () => this.page = Math.min (Math.ceil (this.size/this.itensPerPage), this.page + 1),
-            prev: () => this.page = Math.max (1, this.page - 1),
+            next: () => pagination.page = Math.min (Math.ceil (pagination.size/pagination.itensPerPage), pagination.page + 1),
+            prev: () => pagination.page = Math.max (1, pagination.page - 1)
         };
 
         list({});
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], (funcionarios) => 
+            if (searchParams.itensPorPagina == undefined)
+                searchParams.itensPorPagina = 10;
+            refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
             {
-                pagination.size = funcionarios.length;
-                funcionarios.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
+                pagination.size = size;
+                entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
             });
         }
 
@@ -135,7 +138,18 @@
 
         function remove(id)
         {
-            http.POST('/' + controller + '/Delete/' + id, () => list({}))
+            http.POST('/' + controller + '/Delete/' + id, () => 
+            {
+                $('#edit').attr('disabled', true);
+                $('#edit').on('click', () => 
+                {
+                });
+                $('#details').attr('disabled', true);
+                $('#details').on('click', () => 
+                {
+                });
+                list({})
+            })
         }
 
         function toggleDelete()
@@ -165,7 +179,7 @@
 
         }
 
-        $('#search-search').on("click", () => 
+        $('#search-search').on('click', () => 
         {
             pagination.itensPerPage = document.getElementById('search-item-pagina').value;
             list({
@@ -175,6 +189,28 @@
                 itensPorPagina: pagination.itensPerPage,
                 pagina: pagination.page
             });
+        });
+
+        $('#page-first').on('click', () => 
+        {
+            pagination.page = 1;
+            list({pagina: pagination.page});
+        });
+        
+        $('#page-prev').on('click', () => 
+        {
+            pagination.prev();
+            list({pagina: pagination.page});
+        });
+        $('#page-next').on('click', () => 
+        {
+            pagination.next();
+            list({pagina: pagination.page});
+        });
+        $('#page-last').on('click', () => 
+        {
+            pagination.page = Math.ceil (pagination.size/pagination.itensPerPage);
+            list({pagina: pagination.page});
         });
 
 

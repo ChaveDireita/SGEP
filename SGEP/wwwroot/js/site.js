@@ -15,7 +15,7 @@ const http =
     POST: (resource, callback) => 
     {
         fetch(resource, { method: 'POST' })
-        .then((res) => callback());
+        .then((res) => callback(res));
     }
 }
 
@@ -31,11 +31,11 @@ function getList(controller, searchParams, before, callback)
 
 function refreshTable(controller, searchParams, columnList, callback)
 {
-    getList(controller, searchParams, () => lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>',
+    getList(controller, searchParams, () => lista.innerHTML = '<tr><td colspan=4 rowspan=' + searchParams.itensPorPagina + ' class="reloading"><i class="fas fa-sync reloading"></i></td></tr>',
     (json) => {
         callback(json);
         lista.innerHTML = '';
-        for(const e of json)
+        for(const e of json.entities)
         {
             let line = '<tr id="' + e.id + '" class="selectable loading" onclick="selectRow(' + e.id + ')">';
             for (const col of columnList) {
