@@ -31,7 +31,10 @@ function getList(controller, searchParams, before, callback)
 
 function refreshTable(controller, searchParams, columnList, callback)
 {
-    getList(controller, searchParams, () => lista.innerHTML = '<tr><td colspan=4 rowspan=' + searchParams.itensPorPagina + ' class="reloading"><i class="fas fa-sync reloading"></i></td></tr>',
+    getList(controller, searchParams, () => 
+    {
+        lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
+    },
     (json) => {
         callback(json);
         lista.innerHTML = '';

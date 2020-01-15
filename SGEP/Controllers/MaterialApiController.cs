@@ -11,29 +11,27 @@ using SGEP.Models;
 namespace SGEP.Controllers
 {
     [AllowAnonymous]
-    public class FuncionarioApiController : Controller
+    public class MaterialApiController : Controller
     {
-        public static string[] nomes = {"Fulano", "Sincrano", "Beltrano", "José Ninguém", "Funcionario"};
-        public static string[] cargos = {"Pederiro", "Carpinteiro", "Faxineiro", "Bombeiro", "Professor", "Motorista", "Espadachim"};
         public static int next = 1;
-        public static List<Funcionario> Funcionarios { get; set; } = new List<Funcionario>();
+        public static List<Material> Materiais { get; set; } = new List<Material>();
         private readonly ApplicationDbContext _context;
-        public FuncionarioApiController(ApplicationDbContext context) => _context = context;
-        public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
+        public MaterialApiController(ApplicationDbContext context) => _context = context;
+        public JsonResult List(string id, string descricao, string preco, , int? itensPorPagina, int? pagina)
         {
             Task.Delay(1500).Wait();
-            IEnumerable<Funcionario> result = Funcionarios;
+            IEnumerable<Material> result = Materiais;
             if (id != null && id.Trim() != "")
-                result = result.Where(f => f.Id.ToString().Contains(id));
-            if (nome != null && nome?.Trim() != "")
-                result = result.Where(f => f.Nome.Contains(nome));
-            if (cargo != null && cargo?.Trim() != "")
-                result = result.Where(f => f.Cargo.Contains(cargo));
+                result = result.Where(m => m.Id.ToString().Contains(id));
+            if (descricao != null && descricao?.Trim() != "")
+                result = result.Where(m => m.Descricao.Contains(descricao));
+            if (preco != null && preco?.Trim() != "")
+                result = result.Where(m => m.Preco.ToString().Contains(preco));
             int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(new {size = Funcionarios.Count(), entities = result});
+            return Json(new {size = Materiais.Count(), entities = result});
         }
         [HttpPost]
         public IActionResult Add()
@@ -42,7 +40,7 @@ namespace SGEP.Controllers
             {
                 if (new Random().Next()%10 == 0)
                 {
-                    Funcionarios.Add(new Funcionario
+                    Materiais.Add(new Funcionario
                     {
                         Id = next++,
                         Nome = "Golero",
@@ -51,7 +49,7 @@ namespace SGEP.Controllers
                 }
                 else
                 {
-                    Funcionarios.Add(new Funcionario
+                    Materiais.Add(new Funcionario
                     {
                         Id = next,
                         Nome = nomes[new Random().Next()%nomes.Length] + next,
@@ -65,10 +63,10 @@ namespace SGEP.Controllers
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var funcionario = Funcionarios.First(f => f.Id == id);
+            var funcionario = Materiais.First(f => f.Id == id);
             if (funcionario == null)
                 return NotFound();
-            Funcionarios.Remove(funcionario);
+            Materiais.Remove(funcionario);
             //var funcionario = Funcionarios.First(e => e.Key == id && e.Value != null ).Value;//await _context.Funcionario.FindAsync(id);
             
             //_context.Funcionario.Remove(funcionario);
