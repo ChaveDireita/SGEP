@@ -24,7 +24,7 @@ namespace SGEP.Controllers
         // GET: Material
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Material.ToListAsync());
+            return View();
         }
 
         // GET: Material/Details/5

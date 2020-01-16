@@ -33,14 +33,14 @@ function refreshTable(controller, searchParams, columnList, callback)
 {
     getList(controller, searchParams, () => 
     {
-        lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
+        lista.innerHTML = '<tr><td colspan=' + columnList.length + ' class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
     },
     (json) => {
         callback(json);
         lista.innerHTML = '';
         for(const e of json.entities)
         {
-            let line = '<tr id="' + e.id + '" class="selectable loading" onclick="selectRow(' + e.id + ')">';
+            let line = '<tr id="' + e.id + '" class="selectable loading" onclick="onClickSelectRow(' + e.id + ')">';
             for (const col of columnList) {
                 line += '<td>' + e[col] + '</td>';
             }
@@ -48,4 +48,28 @@ function refreshTable(controller, searchParams, columnList, callback)
             lista.innerHTML += line;
         }
     });
+}
+
+function selectRow (id, editCallback, detailsCallback)
+{
+    const selected = $('.selected');
+    if (selected.length > 0) 
+        selected[0].setAttribute('class', 'selectable');
+    $('#' + id).attr('class', 'selected');
+    $('#edit').attr('disabled', false);
+    $('#edit').on('click', editCallback);
+    $('#details').attr('disabled', false);
+    $('#details').on('click', detailsCallback);
+}
+
+function search()
+{
+    const fields = $('.search-field');
+    pagination.itensPerPage = document.getElementById('search-item-pagina').value;
+    pagination.page = 1;
+    const searchParams = {pagina: pagination.page};
+    for (const f of fields) {
+        searchParams[f.name] = f.value;
+    }
+    list(searchParams);
 }

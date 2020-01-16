@@ -21,7 +21,6 @@ namespace SGEP.Controllers
         public FuncionarioApiController(ApplicationDbContext context) => _context = context;
         public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
         {
-            Task.Delay(1500).Wait();
             IEnumerable<Funcionario> result = Funcionarios;
             if (id != null && id.Trim() != "")
                 result = result.Where(f => f.Id.ToString().Contains(id));

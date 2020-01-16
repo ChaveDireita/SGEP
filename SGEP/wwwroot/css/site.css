@@ -92,3 +92,8 @@ html
 {
     scroll-behavior: smooth;
 }
+
+table
+{
+    text-align: justify;
+}

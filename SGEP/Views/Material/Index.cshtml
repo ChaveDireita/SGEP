@@ -16,40 +16,77 @@
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
 <br/>
-<table class="table" id="lista">
-    <thead>
+<table class="table">
+    <thead class="thead-dark">
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Descricao)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Preco)
             </th>
-            <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Preco)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="lista">
     </tbody>
 </table>
 
 @section Scripts
 {
     <script>
+        
+        const lista = document.getElementById('lista');
+        const controller = 'MaterialApi';
 
+        var pagination = 
+        {
+            size: 0,
+            page: 1,
+            itensPerPage: 10,
+            next: () => pagination.page = Math.min (Math.ceil (pagination.size/pagination.itensPerPage), pagination.page + 1),
+            prev: () => pagination.page = Math.max (1, pagination.page - 1)
+        };
+
+        list({});
+
+        
+
+        function add()
+        {
+            http.POST('/' + controller + '/Add', () => list({}));
+        }
+
+        function list(searchParams)
+        {
+            refreshTable(controller, searchParams, ['id', 'descricao', 'preco'], ({size}) => pagination.size = size);
+        }
+
+        $('#search-search').on('click', () => 
+        {
+            pagination.itensPerPage = document.getElementById('search-item-pagina').value;
+            pagination.page = 1;
+            list({
+                id: document.getElementById('search-codigo').value,
+                nome: document.getElementById('search-nome').value,
+                preco: document.getElementById('search-preco').value,
+                itensPorPagina: pagination.itensPerPage,
+                pagina: pagination.page
+            });
+        });
+
+        function onClickSelectRow (id)
+        {
+            selectRow(id, () => 
+            {
+                //Código do modal
+            },
+            () => 
+            {
+                //Código do modal
+            });
+        }
     </script>
 }

@@ -14,12 +14,17 @@ namespace SGEP.Controllers
     public class MaterialApiController : Controller
     {
         public static int next = 1;
+        string[] descricoes = 
+        {
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis molestie cursus augue, nec lobortis mi suscipit quis. Suspendisse egestas ex sed suscipit dictum. Nullam dictum vehicula tortor, nec rhoncus quam condimentum sed. Mauris laoreet metus ac nisi euismod, vitae sagittis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam egestas eget augue eu posuere. Nullam placerat, leo ac pharetra ultrices, nibh quam faucibus massa, et euismod elit metus sed leo. Curabitur elementum elit augue. Duis ac risus a velit facilisis."
+        };
         public static List<Material> Materiais { get; set; } = new List<Material>();
         private readonly ApplicationDbContext _context;
         public MaterialApiController(ApplicationDbContext context) => _context = context;
-        public JsonResult List(string id, string descricao, string preco, , int? itensPorPagina, int? pagina)
+        public JsonResult List(string id, string descricao, string preco, string categoria, int? itensPorPagina, int? pagina)
         {
-            Task.Delay(1500).Wait();
+            //Task.Delay(1500).Wait();
             IEnumerable<Material> result = Materiais;
             if (id != null && id.Trim() != "")
                 result = result.Where(m => m.Id.ToString().Contains(id));
@@ -38,45 +43,14 @@ namespace SGEP.Controllers
         {
             for (int i = 0; i < 50; i++)
             {
-                if (new Random().Next()%10 == 0)
+                Materiais.Add(new Material
                 {
-                    Materiais.Add(new Funcionario
-                    {
-                        Id = next++,
-                        Nome = "Golero",
-                        Cargo = "Bruno" 
-                    });
-                }
-                else
-                {
-                    Materiais.Add(new Funcionario
-                    {
-                        Id = next,
-                        Nome = nomes[new Random().Next()%nomes.Length] + next,
-                        Cargo = cargos[new Random().Next()%cargos.Length] + next++ 
-                    });
-                }
+                    Id = next++,
+                    Preco = (decimal) (new Random().NextDouble()*1000000000.0),
+                    Descricao = descricoes[new Random().Next()%descricoes.Count()]
+                });
             }
             return Ok();
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var funcionario = Materiais.First(f => f.Id == id);
-            if (funcionario == null)
-                return NotFound();
-            Materiais.Remove(funcionario);
-            //var funcionario = Funcionarios.First(e => e.Key == id && e.Value != null ).Value;//await _context.Funcionario.FindAsync(id);
-            
-            //_context.Funcionario.Remove(funcionario);
-            //await _context.SaveChangesAsync();
-            return Ok();//RedirectToAction(nameof(Index));
-        }
-
-        private bool FuncionarioExists(int id)
-        {
-            return _context.Funcionario.Any(e => e.Id == id);
         }
     }
 }

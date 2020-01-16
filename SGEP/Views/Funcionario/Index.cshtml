@@ -97,25 +97,6 @@
                 btn.hidden = !btn.hidden;
         }
 
-        function selectRow (id)
-        {
-            const selected = $('.selected');
-            if (selected.length > 0) 
-                selected[0].setAttribute('class', 'selectable');
-            $('#' + id).attr('class', 'selected');
-            $('#edit').attr('disabled', false);
-            $('#edit').on('click', () => 
-            {
-                //Código do modal
-            });
-            $('#details').attr('disabled', false);
-            $('#details').on('click', () => 
-            {
-                //Código do modal
-            });
-
-        }
-
         $('#search-search').on('click', () => 
         {
             pagination.itensPerPage = document.getElementById('search-item-pagina').value;
@@ -129,28 +110,16 @@
             });
         });
 
-        $('#page-first').on('click', () => 
+        function onClickSelectRow (id)
         {
-            pagination.page = 1;
-            list({pagina: pagination.page});
-        });
-        
-        $('#page-prev').on('click', () => 
-        {
-            pagination.prev();
-            list({pagina: pagination.page});
-        });
-        $('#page-next').on('click', () => 
-        {
-            pagination.next();
-            list({pagina: pagination.page});
-        });
-        $('#page-last').on('click', () => 
-        {
-            pagination.page = Math.ceil (pagination.size/pagination.itensPerPage);
-            list({pagina: pagination.page});
-        });
-
-
+            selectRow(id, () => 
+            {
+                //Código do modal
+            },
+            () => 
+            {
+                //Código do modal
+            });
+        }
     </script>
 }
