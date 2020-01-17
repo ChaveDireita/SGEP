@@ -3,6 +3,26 @@
 
 // Write your JavaScript code.
 
+var pagination = 
+{
+    size: 0,
+    page: 1,
+    itensPerPage: 10,
+    next: () => pagination.page = Math.min (Math.ceil (pagination.size/pagination.itensPerPage), pagination.page + 1),
+    prev: () => pagination.page = Math.max (1, pagination.page - 1)
+};
+
+function _search ()
+{
+    const fields = $('.search-field');
+    pagination.itensPerPage = document.getElementById('search-item-pagina').value;
+    const searchParams = { pagina: pagination.page };
+    for (const f of fields) {
+        searchParams[f.name] = f.value;
+    }
+    return searchParams;
+}
+
 const http = 
 {
     GET: (resource, responseType, callback) => 
@@ -60,16 +80,4 @@ function selectRow (id, editCallback, detailsCallback)
     $('#edit').on('click', editCallback);
     $('#details').attr('disabled', false);
     $('#details').on('click', detailsCallback);
-}
-
-function search()
-{
-    const fields = $('.search-field');
-    pagination.itensPerPage = document.getElementById('search-item-pagina').value;
-    pagination.page = 1;
-    const searchParams = { pagina: pagination.page };
-    for (const f of fields) {
-        searchParams[f.name] = f.value;
-    }
-    return searchParams;
 }

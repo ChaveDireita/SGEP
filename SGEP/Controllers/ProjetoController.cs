@@ -24,7 +24,7 @@ namespace SGEP.Controllers
         // GET: Projeto
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projeto.ToListAsync());
+            return View();
         }
 
         // GET: Projeto/Details/5

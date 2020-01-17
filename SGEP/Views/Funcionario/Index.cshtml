@@ -48,15 +48,6 @@
         const checkDel = document.getElementById('checkDel');
         const controller = 'FuncionarioApi';
 
-        var pagination = 
-        {
-            size: 0,
-            page: 1,
-            itensPerPage: 10,
-            next: () => pagination.page = Math.min (Math.ceil (pagination.size/pagination.itensPerPage), pagination.page + 1),
-            prev: () => pagination.page = Math.max (1, pagination.page - 1)
-        };
-
         list({});
 
         function list(searchParams)
@@ -96,13 +87,6 @@
             for(const btn of btnDels)
                 btn.hidden = !btn.hidden;
         }
-
-        $('#search-search').on('click', () => 
-        {
-            pagination.itensPerPage = document.getElementById('search-item-pagina').value;
-            pagination.page = 1;
-            list(search());
-        });
 
         function onClickSelectRow (id)
         {

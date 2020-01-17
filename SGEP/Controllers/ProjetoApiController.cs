@@ -15,21 +15,33 @@ namespace SGEP.Controllers
     {
         public static int next = 1;
         public static List<Projeto> Projetos { get; set; } = new List<Projeto>();
+        public static List<string> Nomes { get; set; } = new List<string>
+        {
+            "Projeto A",
+            "Projeto B",
+            "Projeto C",
+            "CIMATEC PARK",
+            "PFC",
+            "Bolo"
+        };
         private readonly ApplicationDbContext _context;
         public ProjetoApiController(ApplicationDbContext context) => _context = context;
-        public JsonResult List(string id, DateTime? inicio, DateTime? fim, int[] funcionarios, int? itensPorPagina, int? pagina)
+        public JsonResult List(string id, string nome, DateTime? inicio, DateTime? fim, int[] funcionarios, int? itensPorPagina, int? pagina)
         {
-            Task.Delay(1500).Wait();
             IEnumerable<Projeto> result = Projetos;
             if (id != null && id.Trim() != "")
-                result = result.Where(m => m.Id.ToString().Contains(id));
-            if (inicio != null && inicio?.Trim() != "")
-            //     result = result.Where(m => m.Descricao.Contains(descricao));
-            // if (preco != null && preco?.Trim() != "")
-            //     result = result.Where(m => m.Preco.ToString().Contains(preco));
-            // int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
-            // int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
-            // result = result.ToList().GetRange(inicio, qtd);
+                result = result.Where(p => p.Id.ToString().Contains(id));
+            if (nome != null && nome.Trim() != "")
+                result = result.Where(p => p.Nome.Contains(nome));
+            if (inicio != null && inicio?.ToString().Trim() != "")
+                result = result.Where(p => p.Inicio.ToString().Contains(inicio.ToString()));
+            if (fim != null && fim?.ToString().Trim() != "")
+                result = result.Where(p => p.Fim.ToString().Contains(fim.ToString()));
+            // if (funcionarios != null && funcionarios.Count() > 0)
+            //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
+            int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
+            int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
+            result = result.ToList().GetRange(_inicio, qtd);
             
             return Json(new {size = Projetos.Count(), entities = result});
         }
@@ -38,36 +50,14 @@ namespace SGEP.Controllers
         {
             for (int i = 0; i < 50; i++)
             {
-                if (new Random().Next()%10 == 0)
+                Projetos.Add(new Projeto
                 {
-                    Projetos.Add(new Projeto
-                    {
-                        Id = next++,
-                        
-                    });
-                }
-                else
-                {
-                    Projetos.Add(new Projeto
-                    {
-                        Id = next,
-                    });
-                }
+                    Id = next++,
+                    Inicio = DateTime.Now,
+                    Fim = DateTime.Now,
+                    Nome = Nomes[new Random().Next()%Nomes.Count()]
+                });
             }
-            return Ok();
-        }
-
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var projeto = Projetos.First(p => p.Id == id);
-            if (projeto == null)
-                return NotFound();
-            Projetos.Remove(projeto);
-            //var funcionario = Funcionarios.First(e => e.Key == id && e.Value != null ).Value;//await _context.Funcionario.FindAsync(id);
-            
-            //_context.Funcionario.Remove(funcionario);
-            //await _context.SaveChangesAsync();
             return Ok();
         }
     }
