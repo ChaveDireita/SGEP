@@ -67,9 +67,9 @@ function search()
     const fields = $('.search-field');
     pagination.itensPerPage = document.getElementById('search-item-pagina').value;
     pagination.page = 1;
-    const searchParams = {pagina: pagination.page};
+    const searchParams = { pagina: pagination.page };
     for (const f of fields) {
         searchParams[f.name] = f.value;
     }
-    list(searchParams);
+    return searchParams;
 }

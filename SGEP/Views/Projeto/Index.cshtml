@@ -2,16 +2,26 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["search-fields"] = "_Projeto";
 }
-
-<h2>Index</h2>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<br />
+<h2>Projetos</h2>
+<br />
+@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+<div class="float-right d-inline">
+    @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
+</div>
+<br/>
+<div class="container row justify-content-center">
+    @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
+</div>
+<br/>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nome)
             </th>
@@ -21,27 +31,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.Fim)
             </th>
-            <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Inicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fim)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="lista">
     </tbody>
 </table>

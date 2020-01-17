@@ -23,7 +23,7 @@ namespace SGEP.Controllers
             IEnumerable<Projeto> result = Projetos;
             if (id != null && id.Trim() != "")
                 result = result.Where(m => m.Id.ToString().Contains(id));
-            // if (descricao != null && descricao?.Trim() != "")
+            if (inicio != null && inicio?.Trim() != "")
             //     result = result.Where(m => m.Descricao.Contains(descricao));
             // if (preco != null && preco?.Trim() != "")
             //     result = result.Where(m => m.Preco.ToString().Contains(preco));

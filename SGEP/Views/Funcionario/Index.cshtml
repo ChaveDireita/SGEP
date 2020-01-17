@@ -101,13 +101,7 @@
         {
             pagination.itensPerPage = document.getElementById('search-item-pagina').value;
             pagination.page = 1;
-            list({
-                id: document.getElementById('search-codigo').value,
-                nome: document.getElementById('search-nome').value,
-                cargo: document.getElementById('search-cargo').value,
-                itensPorPagina: pagination.itensPerPage,
-                pagina: pagination.page
-            });
+            list(search());
         });
 
         function onClickSelectRow (id)

@@ -5,7 +5,7 @@
     ViewData["search-fields"] = "_Material";
 }
 
-<h2>Index</h2>
+<h2>Materiais</h2>
 @await Html.PartialAsync("Partial/Index/Button/_CRUD")
 
 <div class="float-right d-inline">
@@ -68,13 +68,7 @@
         {
             pagination.itensPerPage = document.getElementById('search-item-pagina').value;
             pagination.page = 1;
-            list({
-                id: document.getElementById('search-codigo').value,
-                nome: document.getElementById('search-nome').value,
-                preco: document.getElementById('search-preco').value,
-                itensPorPagina: pagination.itensPerPage,
-                pagina: pagination.page
-            });
+            list(search());
         });
 
         function onClickSelectRow (id)
