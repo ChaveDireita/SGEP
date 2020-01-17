@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
+using System.Reflection;
 
 namespace SGEP.Controllers
 {
@@ -44,7 +45,48 @@ namespace SGEP.Controllers
 
             return View(projeto);
         }
+        public JsonResult FuncionariosNaoAlocados(int? id)
+        {
 
+            List<Funcionario> funcnaoalocados = new List<Funcionario>(), funcalocados, functotais;
+            funcalocados = FuncionariosAlocados(id);
+            functotais = _context.Funcionario.ToList();
+            foreach (Funcionario f in functotais)
+            {
+                if (!funcalocados.Contains(f))
+                {
+                    funcnaoalocados.Add(f);
+                }
+            }
+            return Json(funcnaoalocados);
+        }
+        public List<Funcionario> FuncionariosAlocados(int? id)
+        {
+            List<Funcionario> funcalocados = (List<Funcionario>)_context.ProjetosxFuncionarios
+                .Where(p => p.ProjetoAssociado.Id == id)
+                .Select(p => p.FuncionarioAssociado);
+            return funcalocados;
+        }
+        [HttpPost]
+        public async Task<IActionResult> AlocarFuncionario([Bind("Id,FuncionarioAssociado,ProjetoAssociado")] ProjetosxFuncionarios pxf)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(pxf);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return NotFound();
+        }
+        public JsonResult FuncionarioNomes() {
+            //return Json(_context.Funcionario.GetType().GetFields());
+            return Json(new string[]{"ID","Nome","Cargo" });
+        }
+        public JsonResult Funcionarios()
+        {
+            //return Json(_context.Funcionario.GetType().GetFields());
+            return Json(_context.Funcionario);
+        }
         // GET: Projeto/Create
         public IActionResult Create()
         {

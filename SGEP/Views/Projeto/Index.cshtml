@@ -9,6 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<button type="button" class="btn btn-primary" id="modalbutton">Modal grande</button>
 <table class="table">
     <thead>
         <tr>
@@ -26,7 +27,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr onclick="showvariablenames(@Html.DisplayFor(modelItem => item.Id))">
             <td>
                 @Html.DisplayFor(modelItem => item.Nome)
             </td>
@@ -45,3 +46,72 @@
 }
     </tbody>
 </table>
+<div class="modal fade bd-example-modal-lg" id="modals" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="modalbody">
+            aaaa
+            <table class="table" id="tableid">
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    //var btn = document.getElementById('modalbutton');
+    //btn.onclick = function () { showvariablenames() };
+    function showvariablenames(id) {
+        
+        /*fetch('/Projeto/FuncionarioNomes').then((res) => res.json())
+            .then((json) => {
+                var modalbody = document.getElementById('modalbody');
+                modalbody.innerHTML = '';
+                gerarlista('tableid',)
+                for (var i of json) {
+                    modalbody.innerHTML += '<h5>' + i.toString() + '<\h5>';
+                }
+            });*/
+        fetch('/Projeto/FuncionarioNomes').then((res) => res.json()).then(nomes => {
+            fetch('/Projeto/Funcionarios').then((res) => res.json()).then(lista => {
+                var tabela = document.getElementById('tableid');
+                //gerarlista(table, nomes, lista);
+                //EXEMPLO
+                var thead = document.createElement('thead');
+                for (n of nomes) thead.appendChild(document.createElement('th').innerHTML = n);
+                tabela.appendChild(thead);
+                var tbody = document.createElement('tbody');
+                for (item of lista) {
+                    var th = document.createElement('th');
+                    for (variavel in item) {
+                        if (nomes.contains(variavel).ignoreCase) {
+                            th.appendChild(document.createElement('td').innerHTML = variavel[item]);
+                            //tabela.innerHTML += '<td>' + variavel[item] + '<\td>';
+                        }
+                    }
+                    tbody.appendChild(th);
+                }
+                tabela.appendChild(tbody);
+                /*
+                tabela.innerHTML += '<thead>';
+                for (n of nomes) tabela += '<th>' + n + '<\th>';
+                tabela.innerHTML += '<\thead> <tbody>';
+                for (item of lista) {
+                    tabela.innerHTML += '<tr>';
+                    for (variavel in item) {
+                        if (nomes.contains(variavel).ignoreCase) {
+                            tabela.innerHTML += '<td>' + variavel[item] + '<\td>';
+                        }
+                    }
+                    tabela.innerHTML += '<\tr>';
+                }
+                tabela.innerHTML += '<\tbody>';*/
+                //EXEMPLO
+                /*var modal = document.getElementById('modalbody');
+                for (i of nomes) modal.innerHTML += '<h5>Nome: ' + i + '<\h5>';
+                for (j of lista) modal.innerHTML += '<h5>Lista: ' + j.nome + '<\h5>';*/
+            });
+        });
+        $('#modals').modal('toggle');
+    }
+</script>
+
+<script type="text/javascript" src="~/js/site.js"></script>
