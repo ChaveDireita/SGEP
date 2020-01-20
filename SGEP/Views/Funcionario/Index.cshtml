@@ -59,11 +59,6 @@
             });
         }
 
-        function add()
-        {
-            http.POST('/' + controller + '/Add', () => list({}));
-        }
-
         function remove(id)
         {
             http.POST('/' + controller + '/Delete/' + id, () => 

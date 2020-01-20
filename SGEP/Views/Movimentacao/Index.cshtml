@@ -2,16 +2,22 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["search-fields"] = "_Movimentacao";
 }
 <br />
 <h2>Movimentações</h2>
 <br />
 @await Html.PartialAsync("Partial/Index/Button/_CRUD")
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="float-right d-inline">
+    @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
+</div>
+<br/>
+<div class="container row justify-content-center">
+    @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
+</div>
+<br/>
 <table class="table">
-    <thead>
+    <thead class="thead-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Data)
@@ -20,35 +26,43 @@
                 @Html.DisplayNameFor(model => model.MaterialId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Quantidade)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Tipo)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Origem)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Destino)
+            </th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Data)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaterialId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantidade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Tipo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="lista">
     </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+        const lista = document.getElementById('lista');
+        const controller = 'MovimentacaoApi';
+
+        list({});
+
+        function list(searchParams)
+        {
+            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origem', 'destino'], ({size}) => pagination.size = size);
+        }
+
+        function onClickSelectRow (id)
+        {
+            selectRow(id, () => 
+            {
+                //Código do modal
+            },
+            () => 
+            {
+                //Código do modal
+            });
+        }
+    </script>
+}

@@ -46,11 +46,6 @@
 
         list({});
 
-        function add()
-        {
-            http.POST('/' + controller + '/Add', () => list({}));
-        }
-
         function list(searchParams)
         {
             refreshTable(controller, searchParams, ['id', 'nome', 'inicio', 'fim'], ({size}) => pagination.size = size);

@@ -81,3 +81,8 @@ function selectRow (id, editCallback, detailsCallback)
     $('#details').attr('disabled', false);
     $('#details').on('click', detailsCallback);
 }
+
+function add()
+{
+    http.POST('/' + controller + '/Add', () => list({}));
+}
