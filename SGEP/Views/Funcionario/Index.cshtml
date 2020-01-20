@@ -11,6 +11,8 @@
     <a asp-action="_Create" data-toggle="modal" data-target="#meuModal">Create New</a>
 </p>
 
+@await Html.PartialAsync("_Create", new Funcionario())
+
 <table class="table">
     <thead>
         <tr>
@@ -43,8 +45,4 @@
     </tbody>
 </table>
 
-
-@section Scripts {
-    @{Html.Partial("_Create", new Funcionario());}
-}
 
