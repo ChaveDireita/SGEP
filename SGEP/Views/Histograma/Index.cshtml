@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Index";
+}
+<br />
+<h2>Histograma</h2>
+<br />
+<button type="button" class="btn btn-primary squareborder" data-toggle="modal" data-target="#form-modal">
+    <i class="fas fa-clock"></i> Escolher período
+</button>
+@await Html.PartialAsync("Partial/_Form.cshtml")
+<br />
+<br />
+<canvas id="graph" width="800" height="300"></canvas>
+
+@section Scripts
+{
+    <script>
+
+        //function load (start, end, material)
+        //{
+
+        //}
+
+        const ctx = get.id('graph').getContext('2d');
+        const chart = new Chart(ctx, 
+        {
+            type: 'bar',
+            data: {
+                labels: [
+                         'jan/2019', 'fev/2019', 'mar/2019', 
+                         'abr/2019', 'mai/2019', 'jun/2019',
+                         'jul/2019', 'ago/2019', 'set/2019', 
+                         'out/2019', 'nov/2019', 'dez/2019',
+                         'jan/2020', 'fev/2020', 'mar/2020',
+                         ],
+                datasets: [{
+                    label: 'Entrada de _INSERT MATERIAL NAME HERE_.',
+                    data: [1200, 1900, 300, 
+                            500, 200,  300, 
+                           1000, 200,  100, 
+                           1200, 1300, 200, 
+                           1100, 800, 600, 300],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 159, 64, 1)',
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+}

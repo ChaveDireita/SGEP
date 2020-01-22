@@ -3,6 +3,21 @@
 
 // Write your JavaScript code.
 
+const get =
+{
+    id: (id) => document.getElementById(id),
+    cls: (cls) => document.getElementsByClassName(cls)[0],
+    tag: (tag) => document.getElementsByTagName(tag)[0],
+    name: (name) => document.getElementsByName(name)[0]
+};
+
+const gets = 
+{
+    cls: (cls) => document.getElementsByClassName(cls),
+    tag: (tag) => document.getElementsByTagName(tag),
+    name: (name) => document.getElementsByName(name)
+};
+
 var pagination = 
 {
     size: 0,

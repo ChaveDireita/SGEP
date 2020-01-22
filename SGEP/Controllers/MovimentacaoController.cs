@@ -22,9 +22,9 @@ namespace SGEP.Controllers
         }
 
         // GET: Movimentacao
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Movimentacao.ToListAsync());
+            return View();
         }
 
         // GET: Movimentacao/Details/5
