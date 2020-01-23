@@ -27,7 +27,7 @@ namespace SGEP.Controllers
         public JsonResult GraphData(DateTime? inicio, DateTime? fim, string tipo, int? material)
         {
             if (inicio == null || fim == null || material == null)
-                return Json(new {});
+                return Json(new object[]{});
 
             MonthPeriod mpInicio = inicio.Value;
             MonthPeriod mpFim = fim.Value;
@@ -36,8 +36,7 @@ namespace SGEP.Controllers
                                                         m.Data >= inicio && 
                                                         m.Data <= fim);
 
-            Dictionary<string, int> data = new Dictionary<string, int>();
-
+            Dictionary<string, int> data = new Dictionary<string, int> {{"teste", 2}};
             foreach (var month in mpFim - mpInicio)
                 data[month] = movs.Where(m => month == m.Data).Sum(m => m.Quantidade);
             

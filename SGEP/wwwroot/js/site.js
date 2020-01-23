@@ -8,7 +8,8 @@ const get =
     id: (id) => document.getElementById(id),
     cls: (cls) => document.getElementsByClassName(cls)[0],
     tag: (tag) => document.getElementsByTagName(tag)[0],
-    name: (name) => document.getElementsByName(name)[0]
+    name: (name) => document.getElementsByName(name)[0],
+    body: () => document.body
 };
 
 const gets = 

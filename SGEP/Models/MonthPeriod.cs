@@ -50,18 +50,18 @@ namespace SGEP.Models
         public static bool operator !=(MonthPeriod m1, MonthPeriod m2) => m1 != m2;
         public static readonly string[] Months = new string[]
         {
-            "janeiro",
-            "fevereiro",
-            "março",
-            "abril",
-            "maio",
-            "junho",
-            "julho",
-            "agosto",
-            "setembro",
-            "outubro",
-            "novembro",
-            "dezembro"
+            "jan",
+            "fev",
+            "mar",
+            "abr",
+            "mai",
+            "jun",
+            "jul",
+            "ago",
+            "set",
+            "out",
+            "nov",
+            "dez"
         };
         public override string ToString() => $"{Months[Month]}/{Year}";
     }
