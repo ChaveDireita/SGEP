@@ -19,8 +19,19 @@
             .then(res => res.json)
             .then(json => 
             {
-                for (const d in json)
-                    
+                chart.data.datasets[0].label = json.tipo + ' de ' + json.material;
+                chart.data.datasets[0].data = new Array();
+                chart.data.datasets[0].backgroundColor = new Array();
+                chart.data.datasets[0].borderColor = new Array();
+                chart.data.labels = new Array();
+
+                for (const d in json.data)
+                {
+                    chart.data.labels.push(d);
+                    chart.data.datasets[0].data.push(json.data[d]);
+                    chart.data.datasets[0].backgroundColor.push('rgba(255, 99, 132, 0.2)');
+                    chart.data.datasets[0].borderColor.push('rgba(255, 99, 132, 1)');
+                }
                 chart.update();
                 $('#form-modal').modal('show');
             });

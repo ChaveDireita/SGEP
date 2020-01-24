@@ -34,13 +34,15 @@ namespace SGEP.Controllers
 
             var movs = _context.Movimentacao.Where(m => m.Tipo == tipo && 
                                                         m.Data >= inicio && 
-                                                        m.Data <= fim);
+                                                        m.Data <= fim &&
+                                                        m.MaterialId == material.Value);
 
             Dictionary<string, int> data = new Dictionary<string, int> {{"teste", 2}};
+
             foreach (var month in mpFim - mpInicio)
                 data[month] = movs.Where(m => month == m.Data).Sum(m => m.Quantidade);
             
-            return Json(data);
+            return Json(new { data, material = "PLACEHOLDER", tipo });
         }
     }
 }

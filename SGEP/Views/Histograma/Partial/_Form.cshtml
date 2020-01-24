@@ -15,7 +15,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="form">
+        <form class="form" onclick="function(e){e.preventDefault();}">
             <div class="form-group">
                 <label for="inicio">Data inicial</label>
                 <input class="form-control squareborder" type="date" name="inicio"/>
@@ -33,7 +33,10 @@
             <div class="form-group">
                 <label for="tipo">Tipo</label>
                 <select class="form-control squareborder" name="tipo">
-                    <option selected disabled>Selecione um tipo</option>
+                    <option value="Entrada" selected disabled>Selecione um tipo</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Saída">Saída</option>
+                    <option value="Consumo">Consumo</option>
                 </select>
             </div>
         </form>
@@ -44,3 +47,19 @@
     </div>
   </div>
 </div>
+
+@section Scripts
+{
+  <script>
+    get.tag('form').onsubmit = (e) => e.preventDefault();
+    fetch('/Material/List')
+    .then(res => res.json())
+    .then(json => 
+    {
+      for(const m in json)
+      {
+        get('material').innerHTML += '<option value="' + m.id + '">' + m.id + '</option>';
+      }
+    })
+  </script>
+}
