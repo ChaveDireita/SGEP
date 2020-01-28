@@ -12,10 +12,11 @@
 @section Scripts
 {
     <script>
-
-        function load (start, end, material)
+        function load (start, end, material, tipo)
         {
-            fetch('/Histograma/GraphData?')
+            fetch('/Histograma/GraphData?inicio=' + start.getYear() + '-' + start.getMonth() + start.getDate() + '-' + 
+                                        '&fim=' + end.getYear() + '-' + end.getMonth() + '-' + end.getDate() + 
+                                        '&material=' + material + '&tipo=' + tipo)
             .then(res => res.json)
             .then(json => 
             {
@@ -107,5 +108,7 @@
                 }
             }
         });
+
+        load(new Date(), new Date() , 1, 'Entrada');
     </script>
 }

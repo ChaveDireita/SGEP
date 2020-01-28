@@ -26,13 +26,21 @@ namespace SGEP.Controllers
 
         public JsonResult GraphData(DateTime? inicio, DateTime? fim, string tipo, int? material)
         {
+            // if (tipo == null)
+            //     throw new ArgumentException("tipo is null");
+            // if (material == null)
+            //     throw new ArgumentException("material is null");
+            // if (inicio == null)
+            //     throw new ArgumentException("inicio is null");
+            // if (fim == null)
+            //     throw new ArgumentException("fim is null");
             if (inicio == null || fim == null || material == null)
                 return Json(new object[]{});
 
             MonthPeriod mpInicio = inicio.Value;
             MonthPeriod mpFim = fim.Value;
 
-            var movs = _context.Movimentacao.Where(m => m.Tipo == tipo && 
+            var movs = new Movimentacao[2].Where(m => m.Tipo == tipo && 
                                                         m.Data >= inicio && 
                                                         m.Data <= fim &&
                                                         m.MaterialId == material.Value);
