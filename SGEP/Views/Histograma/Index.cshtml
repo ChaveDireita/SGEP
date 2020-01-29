@@ -14,10 +14,10 @@
     <script>
         function load (start, end, material, tipo)
         {
-            fetch('/Histograma/GraphData?inicio=' + start.getYear() + '-' + start.getMonth() + start.getDate() + '-' + 
-                                        '&fim=' + end.getYear() + '-' + end.getMonth() + '-' + end.getDate() + 
+            fetch('/Histograma/GraphData?inicio=' + start.getUTCFullYear() + start.getUTCMonth() +
+                                        '&fim=' + end.getUTCFullYear() + end.getUTCMonth() +
                                         '&material=' + material + '&tipo=' + tipo)
-            .then(res => res.json)
+            .then(res => res.json())
             .then(json => 
             {
                 chart.data.datasets[0].label = json.tipo + ' de ' + json.material;
@@ -34,7 +34,7 @@
                     chart.data.datasets[0].borderColor.push('rgba(255, 99, 132, 1)');
                 }
                 chart.update();
-                $('#form-modal').modal('show');
+                $('#form-modal').modal('hide');
             });
         }
 

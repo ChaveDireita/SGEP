@@ -24,7 +24,7 @@ namespace SGEP.Controllers
             return View();
         }
 
-        public JsonResult GraphData(DateTime? inicio, DateTime? fim, string tipo, int? material)
+        public JsonResult GraphData(string inicio, string fim, string tipo, int? material)
         {
             // if (tipo == null)
             //     throw new ArgumentException("tipo is null");
@@ -37,17 +37,17 @@ namespace SGEP.Controllers
             if (inicio == null || fim == null || material == null)
                 return Json(new object[]{});
 
-            MonthPeriod mpInicio = inicio.Value;
-            MonthPeriod mpFim = fim.Value;
+            MonthPeriod mpInicio = inicio;
+            MonthPeriod mpFim = fim;
 
-            var movs = new Movimentacao[2].Where(m => m.Tipo == tipo && 
-                                                        m.Data >= inicio && 
-                                                        m.Data <= fim &&
+            var movs = new List<Movimentacao>().Where(m => m.Tipo == tipo && 
+                                                        (MonthPeriod) m.Data >= inicio && 
+                                                        (MonthPeriod) m.Data <= fim &&
                                                         m.MaterialId == material.Value);
 
-            Dictionary<string, int> data = new Dictionary<string, int> {{"teste", 2}};
-
-            foreach (var month in mpFim - mpInicio)
+            Dictionary<string, int> data = new Dictionary<string, int> ();
+            IEnumerable<MonthPeriod> months = mpFim - mpInicio;
+            foreach (var month in months)
                 data[month] = movs.Where(m => month == m.Data).Sum(m => m.Quantidade);
             
             return Json(new { data, material = "PLACEHOLDER", tipo });

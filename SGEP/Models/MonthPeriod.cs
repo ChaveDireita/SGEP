@@ -8,11 +8,12 @@ namespace SGEP.Models
         public int Year { get; private set; }
         public int Month { get; private set; }
 
-        public static MonthPeriod operator +(MonthPeriod m, int months) => new MonthPeriod
+        public static MonthPeriod operator +(MonthPeriod m, int months)
         {
-            Year = (m.Year + m.Month + months)/12,
-            Month = (m.Month + months)%12 + 1
-        };
+            m.Year = (m.Year*12 + m.Month + months)/12;
+            m.Month = (m.Month + months)%12;
+            return m;
+        }
 
         public static MonthPeriod operator ++(MonthPeriod m) => m + 1;
 
@@ -39,7 +40,7 @@ namespace SGEP.Models
         public static bool operator >(MonthPeriod m1, MonthPeriod m2) => m1.Year > m2.Year || 
                                                                          m1.Year == m2.Year && 
                                                                          m1.Month > m2.Month;
-        public static bool operator <=(MonthPeriod m1, MonthPeriod m2) => m1.Year <= m2.Year || 
+        public static bool operator <=(MonthPeriod m1, MonthPeriod m2) => m1.Year < m2.Year || 
                                                                          m1.Year == m2.Year && 
                                                                          m1.Month <= m2.Month;
         public static bool operator >=(MonthPeriod m1, MonthPeriod m2) => m1.Year >= m2.Year || 
@@ -64,5 +65,14 @@ namespace SGEP.Models
             "dez"
         };
         public override string ToString() => $"{Months[Month]}/{Year}";
+        public static implicit operator MonthPeriod (string s)
+        {
+            MonthPeriod mp = new MonthPeriod
+            {
+                Year = int.Parse(s.Substring(0, 4)),
+                Month = int.Parse(s.Substring(4))
+            };
+            return mp;
+        }
     }
 }
