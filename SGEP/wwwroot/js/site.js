@@ -2,36 +2,45 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
-function gerartabela(tabela, nomes, lista) {
-    //tabela.innerHTML = '';
-    tabela.innerHTML += '<thead>';
-    for (n of nomes) tabela += '<th>' + n + '<\th>';
-    tabela.innerHTML += '<\thead> <tbody>';
+function gerarlist(nomes, lista,acao,relevanteid) {
+    var html = '';
+    html += '<thead class="thead-dark">';
+    for (n of nomes) html += '<th>' + n + '</th>';
+    html += '</thead> <tbody>';
     for (item of lista) {
-        tabela.innerHTML += '<tr>';
+        if (!(acao === undefined || relevanteid === undefined)) html += '<tr onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
+        else html += '<tr>';
         for (variavel in item) {
-            if (nomes.contains(variavel).ignoreCase) {
-                tabela.innerHTML += '<td>' + variavel[item] + '<\td>';
+            if (verificarsemacentoecaixa(nomes,variavel)) {
+            html += '<td>' + item[variavel] + '</td>';
             }
         }
-        tabela.innerHTML += '<\tr>';
+        html += '</tr>';
     }
-    tabela.innerHTML += '<\tbody>';
-    //Aqui ta uma forma alternativa de fazer a msm coisa
-    /*
-    var thead = document.createElement('thead');
-    for (n of nomes) thead.appendChild(document.createElement('th').innerHTML = n);
-    tabela.appendChild(thead);
-    var tbody = document.createElement('tbody');
-    for (item of lista) {
-        var th = document.createElement('th');
-        for (variavel in item) {
-            if (nomes.contains(variavel).ignoreCase) {
-                th.appendChild(document.createElement('td').innerHTML = variavel[item]);
-                //tabela.innerHTML += '<td>' + variavel[item] + '<\td>';
-            }
-        }
-        tbody.appendChild(th);
+    html += '</tbody>';
+    return html;
+}
+function tiraracento(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+function gerardetailslist(nome, content) {
+    var html = '',i=0;
+    for (c in content) {
+        html += '<tr>';
+        html += '<td class="table-dark alert-link" style="width:250px">' + nome[i] +
+            '</td>' +
+            '<td>' + content[c] + '</td>';
+        i++;
     }
-    tabela.appendChild(tbody);*/
+    return html;
+}
+function verificarsemacentoecaixa(lista, palavra) {
+    var nms = [];
+    for (n of lista) {
+        n = n.toUpperCase();
+        n = tiraracento(n);
+        nms.push(n);
+    }
+    if (nms.includes(palavra.toUpperCase())) return true;
+    else return false;
 }

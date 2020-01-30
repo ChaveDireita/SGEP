@@ -45,30 +45,25 @@ namespace SGEP.Controllers
 
             return View(projeto);
         }
+        public JsonResult ProjetoSelecionado(int? id) {
+            return Json(_context.Projeto.FirstOrDefault(i=>i.Id==id));
+        }
         public JsonResult FuncionariosNaoAlocados(int? id)
         {
-
-            List<Funcionario> funcnaoalocados = new List<Funcionario>(), funcalocados, functotais;
-            funcalocados = FuncionariosAlocados(id);
-            functotais = _context.Funcionario.ToList();
-            foreach (Funcionario f in functotais)
-            {
-                if (!funcalocados.Contains(f))
-                {
-                    funcnaoalocados.Add(f);
-                }
-            }
+            List<Funcionario> funcnaoalocados;
+            List<int> funcalocados;
+            funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
+            funcnaoalocados = _context.Funcionario.Where(f => !funcalocados.Contains(f.Id)).ToList();
             return Json(funcnaoalocados);
         }
-        public List<Funcionario> FuncionariosAlocados(int? id)
+        public JsonResult FuncionariosAlocados(int? id)
         {
-            List<Funcionario> funcalocados = (List<Funcionario>)_context.ProjetosxFuncionarios
-                .Where(p => p.ProjetoAssociado.Id == id)
-                .Select(p => p.FuncionarioAssociado);
-            return funcalocados;
+            List<int> funcalocados;
+            funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
+            return Json(_context.Funcionario.Where(f => funcalocados.Contains(f.Id)).ToList());
         }
         [HttpPost]
-        public async Task<IActionResult> AlocarFuncionario([Bind("Id,FuncionarioAssociado,ProjetoAssociado")] ProjetosxFuncionarios pxf)
+        public async Task<IActionResult> AlocarFuncionario([Bind("Id,IdFuncionario,IdProjeto")] ProjetosxFuncionarios pxf)
         {
             if (ModelState.IsValid)
             {
@@ -86,6 +81,9 @@ namespace SGEP.Controllers
         {
             //return Json(_context.Funcionario.GetType().GetFields());
             return Json(_context.Funcionario);
+        }
+        public JsonResult Funcionario(int? id) {
+            return Json(_context.Funcionario.Find(id));
         }
         // GET: Projeto/Create
         public IActionResult Create()
@@ -159,7 +157,16 @@ namespace SGEP.Controllers
             }
             return View(projeto);
         }
-
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DesalocarProjeto(int? idfunc,int idproj)
+        {
+            var projeto = await _context.ProjetosxFuncionarios
+                .FirstOrDefaultAsync(m => m.IdFuncionario == idfunc && m.IdProjeto == idproj);
+            _context.ProjetosxFuncionarios.Remove(projeto);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
         // GET: Projeto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -177,7 +184,6 @@ namespace SGEP.Controllers
 
             return View(projeto);
         }
-
         // POST: Projeto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

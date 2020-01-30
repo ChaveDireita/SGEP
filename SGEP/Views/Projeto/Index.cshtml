@@ -5,11 +5,9 @@
 }
 
 <h2>Index</h2>
-
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<button type="button" class="btn btn-primary" id="modalbutton">Modal grande</button>
 <table class="table">
     <thead>
         <tr>
@@ -26,92 +24,154 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr onclick="showvariablenames(@Html.DisplayFor(modelItem => item.Id))">
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Inicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fim)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            //Se ligue nesse onclick aq, ele é importante
+            <tr onclick="showdetailsmodal(@Html.DisplayFor(modelItem => item.Id))">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Inicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fim)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-<div class="modal fade bd-example-modal-lg" id="modals" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content" id="modalbody">
-            aaaa
-            <table class="table" id="tableid">
-
-            </table>
+<script>
+    //script pra abrir o modal de detalhes
+    function showdetailsmodal(id) {
+        atualizaralocacao(id);
+        fetch('/Projeto/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
+            var detailstable = document.getElementById('detailstable');
+            var nomes = ['ID', 'Nome', 'Início', 'Fim'];
+            detailstable.innerHTML = gerardetailslist(nomes, proj);
+        });
+        document.getElementById('abriralocacao').onclick = function () {
+            gerartabelas(id);
+            $('#alocacaomodal').modal('toggle');
+            $('#detailsmodal').modal('toggle');
+        }
+        $('#detailsmodal').modal('toggle');
+    }
+    //script pra atualizar a tabela de alocação sempre que precisar
+    function atualizaralocacao(id) {
+        fetch('/Projeto/FuncionarioNomes').then((res) => res.json()).then(nomes => {
+            fetch('/Projeto/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(lista => {
+                var tabela = document.getElementById('tableidd');
+                tabela.innerHTML = gerarlist(nomes, lista);
+            });
+        });
+    }
+</script>
+<!--MODAL DE DETALHES-->
+<div class="modal fade" id="detailsmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes do Projeto</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbodyr">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular" id="detailstable"></table>
+                <h4>Funcionários Associados:</h4>
+                <table class="table" id="tableidd"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary squareborder" id="abriralocacao">Editar Alocações</button>
+            </div>
         </div>
     </div>
 </div>
+
+<!--MODAL DE ALOCAÇÃO-->
+
+<div class="modal fade" id="alocacaomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title">Alocação</h5>
+                <button type="button" style="color:white;" class="close" onclick="alocardismiss()" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbody">
+                <h5 class="modal-title" style="float: left;">Funcionários alocados:</h5>
+                <h5 class="modal-title" style="float: right;">Funcionários não alocados:</h5>
+                <br />
+                <table class="table table-bordered shadow-regular" style="float: left; width: 45%" id="tabelaalocados"></table>
+                <table class="table table-bordered shadow-regular" style="float: right; width: 45%" id="tabelanaoalocados"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" onclick="alocardismiss()">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
-    //var btn = document.getElementById('modalbutton');
-    //btn.onclick = function () { showvariablenames() };
-    function showvariablenames(id) {
-        
-        /*fetch('/Projeto/FuncionarioNomes').then((res) => res.json())
-            .then((json) => {
-                var modalbody = document.getElementById('modalbody');
-                modalbody.innerHTML = '';
-                gerarlista('tableid',)
-                for (var i of json) {
-                    modalbody.innerHTML += '<h5>' + i.toString() + '<\h5>';
-                }
-            });*/
+    //scripts pra alocação
+    var alocadostab = document.getElementById('tabelaalocados');
+    var nalocadostab = document.getElementById('tabelanaoalocados');
+    function gerartabelas(id) {
         fetch('/Projeto/FuncionarioNomes').then((res) => res.json()).then(nomes => {
-            fetch('/Projeto/Funcionarios').then((res) => res.json()).then(lista => {
-                var tabela = document.getElementById('tableid');
-                //gerarlista(table, nomes, lista);
-                //EXEMPLO
-                var thead = document.createElement('thead');
-                for (n of nomes) thead.appendChild(document.createElement('th').innerHTML = n);
-                tabela.appendChild(thead);
-                var tbody = document.createElement('tbody');
-                for (item of lista) {
-                    var th = document.createElement('th');
-                    for (variavel in item) {
-                        if (nomes.contains(variavel).ignoreCase) {
-                            th.appendChild(document.createElement('td').innerHTML = variavel[item]);
-                            //tabela.innerHTML += '<td>' + variavel[item] + '<\td>';
-                        }
-                    }
-                    tbody.appendChild(th);
-                }
-                tabela.appendChild(tbody);
-                /*
-                tabela.innerHTML += '<thead>';
-                for (n of nomes) tabela += '<th>' + n + '<\th>';
-                tabela.innerHTML += '<\thead> <tbody>';
-                for (item of lista) {
-                    tabela.innerHTML += '<tr>';
-                    for (variavel in item) {
-                        if (nomes.contains(variavel).ignoreCase) {
-                            tabela.innerHTML += '<td>' + variavel[item] + '<\td>';
-                        }
-                    }
-                    tabela.innerHTML += '<\tr>';
-                }
-                tabela.innerHTML += '<\tbody>';*/
-                //EXEMPLO
-                /*var modal = document.getElementById('modalbody');
-                for (i of nomes) modal.innerHTML += '<h5>Nome: ' + i + '<\h5>';
-                for (j of lista) modal.innerHTML += '<h5>Lista: ' + j.nome + '<\h5>';*/
+            fetch('/Projeto/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
+                alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id);
+            });
+            fetch('/Projeto/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
+                nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id);
             });
         });
-        $('#modals').modal('toggle');
     }
+    function alocar(funid, projid) {
+        const data = new FormData();
+        data.append('IdFuncionario', funid);
+        data.append('IdProjeto', projid);
+        fetch('/Projeto/AlocarFuncionario', { method: 'POST', body: data }).then(retorno => {
+            gerartabelas(projid);
+        });
+        atualizaralocacao(projid);
+    }
+    function desalocar(funid, projid) {
+        fetch('/Projeto/DesalocarProjeto?idfunc=' + funid + '&idproj=' + projid, { method: 'POST' }).then(retorno => {
+            gerartabelas(projid);
+        });
+        atualizaralocacao(projid);
+    }
+    function alocardismiss() {
+        $('#alocacaomodal').modal('toggle');
+        $('#detailsmodal').modal('toggle');
+    }
+    /*function testemodal(id) {
+        fetch('/Projeto/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
+            var bd = document.getElementById('mdbody');
+            for (f of func) {
+                bd.innerHTML += '<h5>' + f + '</h5>';
+            }
+        });
+        $('#mdteste').modal('toggle');
+    }*/
 </script>
+<!--TESTE COM MODAL
+<div class="modal fade bd-example-modal-sm" tabindex="-1" id="mdteste" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" id="mdbody">
+            ...
+        </div>
+    </div>
+</div>
+TESTE COM MODAL-->
 
 <script type="text/javascript" src="~/js/site.js"></script>

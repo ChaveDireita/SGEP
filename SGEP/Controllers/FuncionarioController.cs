@@ -111,10 +111,8 @@ namespace SGEP.Controllers
 
         public JsonResult ProjetosAssociados(int? id)
         {
-            List<Projeto> projAss = (List<Projeto>) _context.ProjetosxFuncionarios
-                .Where(f => f.FuncionarioAssociado.Id == id)
-                .Select(p => p.ProjetoAssociado);
-            return Json(projAss);
+            List<int> Ids = (List<int>)_context.ProjetosxFuncionarios.Where(f => f.IdFuncionario == id).Select(p=>p.IdProjeto);
+            return Json(_context.Projeto.Where(p => Ids.Contains(p.Id)));
         }
         //public JsonResult ProjetoNomes()
         //{
