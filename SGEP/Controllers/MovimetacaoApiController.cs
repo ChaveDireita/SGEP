@@ -53,9 +53,9 @@ namespace SGEP.Controllers
                 Movimentacao m = new Movimentacao
                 {
                     Id = next++,
-                    Data = DateTime.Now,
+                    Data = new DateTime(new Random().Next()%20 + 2000, new Random().Next()%12 + 1, new Random().Next()%15 + 1),
                     Tipo = tipo,
-                    Quantidade = new Random().Next(),
+                    Quantidade = new Random().Next()%100,
                     MaterialId = new Random().Next()
                 };
 

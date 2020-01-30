@@ -15,7 +15,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="form" onclick="function(e){e.preventDefault();}">
+        <form class="form" id="graph-query">
             <div class="form-group">
                 <label for="inicio">Data inicial</label>
                 <input class="form-control squareborder" type="date" name="inicio"/>
@@ -27,7 +27,7 @@
             <div class="form-group">
                 <label for="material">Material</label>
                 <select class="form-control squareborder" name="material">
-                    <option selected disabled>Selecione um material</option>
+                    <option value="0" selected disabled>Selecione um material</option>
                 </select>
             </div>
             <div class="form-group">
@@ -42,24 +42,14 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" data-dismiss="modal" class="btn btn-primary squareborder">Atualizar</button>
+        <button type="button" 
+                id="graph-update" 
+                class="btn btn-primary squareborder"
+                onclick="load(new Date(get.name('inicio').value), 
+                              new Date(get.name('fim').value),
+                              get.name('material').value,
+                              get.name('tipo').value)">Atualizar</button>
       </div>
     </div>
   </div>
 </div>
-
-@section Scripts
-{
-  <script>
-    get.tag('form').onsubmit = (e) => e.preventDefault();
-    fetch('/Material/List')
-    .then(res => res.json())
-    .then(json => 
-    {
-      for(const m in json)
-      {
-        get('material').innerHTML += '<option value="' + m.id + '">' + m.id + '</option>';
-      }
-    })
-  </script>
-}

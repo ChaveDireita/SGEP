@@ -14,8 +14,8 @@
     <script>
         function load (start, end, material, tipo)
         {
-            fetch('/Histograma/GraphData?inicio=' + start.getUTCFullYear() + start.getUTCMonth() +
-                                        '&fim=' + end.getUTCFullYear() + end.getUTCMonth() +
+            fetch('/Histograma/GraphData?inicio=' + start.getUTCFullYear() + (start.getUTCMonth() + 1)+
+                                        '&fim=' + end.getUTCFullYear() + (end.getUTCMonth() + 1) +
                                         '&material=' + material + '&tipo=' + tipo)
             .then(res => res.json())
             .then(json => 
@@ -43,58 +43,12 @@
         {
             type: 'bar',
             data: {
-                labels: [
-                         'jan/2019', 'fev/2019', 'mar/2019', 
-                         'abr/2019', 'mai/2019', 'jun/2019',
-                         'jul/2019', 'ago/2019', 'set/2019', 
-                         'out/2019', 'nov/2019', 'dez/2019',
-                         'jan/2020', 'fev/2020', 'mar/2020',
-                        ],
+                labels: [],
                 datasets: [{
-                    label: 'Entrada de _INSERT MATERIAL NAME HERE_.',
-                    data: [1200, 1900, 300, 
-                            500, 200,  300, 
-                           1000, 200,  100, 
-                           1200, 1300, 200, 
-                           1100, 800, 600, 300],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 159, 64, 1)',
-                    ],
+                    label: '',
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
                     borderWidth: 1
                 }]
             },
@@ -109,6 +63,17 @@
             }
         });
 
-        load(new Date(), new Date() , 1, 'Entrada');
+        fetch('/MaterialApi/List')
+        .then(res => res.json())
+        .then(json => 
+        {
+        console.log(json);
+        for(const m of json.entities)
+        {
+            get.name('material').innerHTML += '<option value="' + m.id + '">' + m.id + '</option>';
+        }
+        });
+
+        load(new Date(2018, 1), new Date(2020, 01), 1, 'Entrada');
     </script>
 }

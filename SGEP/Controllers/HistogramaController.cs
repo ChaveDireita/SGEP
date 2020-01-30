@@ -26,24 +26,16 @@ namespace SGEP.Controllers
 
         public JsonResult GraphData(string inicio, string fim, string tipo, int? material)
         {
-            // if (tipo == null)
-            //     throw new ArgumentException("tipo is null");
-            // if (material == null)
-            //     throw new ArgumentException("material is null");
-            // if (inicio == null)
-            //     throw new ArgumentException("inicio is null");
-            // if (fim == null)
-            //     throw new ArgumentException("fim is null");
             if (inicio == null || fim == null || material == null)
                 return Json(new object[]{});
 
             MonthPeriod mpInicio = inicio;
             MonthPeriod mpFim = fim;
 
-            var movs = new List<Movimentacao>().Where(m => m.Tipo == tipo && 
-                                                        (MonthPeriod) m.Data >= inicio && 
-                                                        (MonthPeriod) m.Data <= fim &&
-                                                        m.MaterialId == material.Value);
+            var movs = MovimentacaoApiController.Movimentacoes.Where(m => m.Tipo == tipo && 
+                                                                    (MonthPeriod) m.Data >= inicio && 
+                                                                    (MonthPeriod) m.Data <= fim /*&&
+                                                                    m.MaterialId == material.Value*/);
 
             Dictionary<string, int> data = new Dictionary<string, int> ();
             IEnumerable<MonthPeriod> months = mpFim - mpInicio;
