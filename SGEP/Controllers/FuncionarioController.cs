@@ -14,16 +14,12 @@ namespace SGEP.Controllers
     public class FuncionarioController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         public FuncionarioController(ApplicationDbContext context)
         {
             _context = context;
         }
         // GET: Funcionario
-        public async Task<IActionResult> Index()
-        {
-            return View(/*await _context.Funcionario.ToListAsync()*/);
-        }
+        public IActionResult Index() => View();
 
         // GET: Funcionario/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -65,6 +61,16 @@ namespace SGEP.Controllers
             return View(funcionario);
         }
 
+        public JsonResult ProjetosAssociados(int? id)
+        {
+            List<int> Ids = (List<int>)_context.ProjetosxFuncionarios.Where(f => f.IdFuncionario == id).Select(p=>p.IdProjeto);
+            return Json(_context.Projeto.Where(p => Ids.Contains(p.Id)));
+        }
+        //public JsonResult ProjetoNomes()
+        //{
+            //return Json(new { titulos = string[] titulos, lista = _context.Model.ToList() };
+        //}
+            
         // GET: Funcionario/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

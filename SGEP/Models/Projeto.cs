@@ -9,7 +9,6 @@ namespace SGEP.Models
         public string Nome { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime Fim { get; set; }
-        public List<Funcionario> Funcionarios { get; set; }
         //public int AlmoxarifadoId { get; set; }
     }
 }

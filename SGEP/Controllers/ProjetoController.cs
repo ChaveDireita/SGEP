@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
+using System.Reflection;
 
 namespace SGEP.Controllers
 {
@@ -44,7 +45,46 @@ namespace SGEP.Controllers
 
             return View(projeto);
         }
-
+        public JsonResult ProjetoSelecionado(int? id) {
+            return Json(_context.Projeto.FirstOrDefault(i=>i.Id==id));
+        }
+        public JsonResult FuncionariosNaoAlocados(int? id)
+        {
+            List<Funcionario> funcnaoalocados;
+            List<int> funcalocados;
+            funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
+            funcnaoalocados = _context.Funcionario.Where(f => !funcalocados.Contains(f.Id)).ToList();
+            return Json(funcnaoalocados);
+        }
+        public JsonResult FuncionariosAlocados(int? id)
+        {
+            List<int> funcalocados;
+            funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
+            return Json(_context.Funcionario.Where(f => funcalocados.Contains(f.Id)).ToList());
+        }
+        [HttpPost]
+        public async Task<IActionResult> AlocarFuncionario([Bind("Id,IdFuncionario,IdProjeto")] ProjetosxFuncionarios pxf)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(pxf);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return NotFound();
+        }
+        public JsonResult FuncionarioNomes() {
+            //return Json(_context.Funcionario.GetType().GetFields());
+            return Json(new string[]{"ID","Nome","Cargo" });
+        }
+        public JsonResult Funcionarios()
+        {
+            //return Json(_context.Funcionario.GetType().GetFields());
+            return Json(_context.Funcionario);
+        }
+        public JsonResult Funcionario(int? id) {
+            return Json(_context.Funcionario.Find(id));
+        }
         // GET: Projeto/Create
         public IActionResult Create()
         {
@@ -117,7 +157,16 @@ namespace SGEP.Controllers
             }
             return View(projeto);
         }
-
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> DesalocarProjeto(int? idfunc,int idproj)
+        {
+            var projeto = await _context.ProjetosxFuncionarios
+                .FirstOrDefaultAsync(m => m.IdFuncionario == idfunc && m.IdProjeto == idproj);
+            _context.ProjetosxFuncionarios.Remove(projeto);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
         // GET: Projeto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -135,7 +184,6 @@ namespace SGEP.Controllers
 
             return View(projeto);
         }
-
         // POST: Projeto/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

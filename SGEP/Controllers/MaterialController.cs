@@ -22,10 +22,7 @@ namespace SGEP.Controllers
         }
 
         // GET: Material
-        public async Task<IActionResult> Index()
-        {
-            return View();
-        }
+        public IActionResult Index() => View();
 
         // GET: Material/Details/5
         public async Task<IActionResult> Details(int? id)

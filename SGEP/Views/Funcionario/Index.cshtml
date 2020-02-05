@@ -74,6 +74,38 @@
                 list({})
             })
         }
+        function getAll(id, nome, cargo)
+        {
+            console.log(id, nome, cargo);
+            lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
+            fetch('/' + controller + '/List/?id=' + id + '&nome=' + nome + '&cargo=' + cargo)
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                lista.innerHTML = '';
+                for(const f of json)
+                {
+                    var tr = document.createElement("tr");
+                    tr.id = f.id
+                    tr.className = "selectable loading";
+                    tr.onclick = function () { selectRow(f) };
+                    tr.innerHTML = '';
+                    tr.innerHTML = '<td>' +
+                        f.id +
+                        '</td>' +
+                        '<td>' +
+                        f.nome +
+                        '</td>' +
+                        '<td>' +
+                        f.cargo +
+                        '</td>' +
+                        '<td>' +
+                        '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>' +
+                        '</td>';
+                    lista.appendChild(tr);
+                }
+            });
+        }
 
         function toggleDelete()
         {
@@ -94,5 +126,119 @@
                 //Código do modal
             });
         }
+        function gerarlista(id)
+        {
+            fetch('/' + controller + '/ProjetosAssociados/?id=' + id).then((res) => res.json())
+                .then((json) => {
+                    var theadr = document.getElementById('theadr');
+                    theadr.innerHTML = '';
+                    theadr.innerHTML = '<th>' +
+                        json.id +
+                        '</th >' +
+                        '<th>' +
+                        json.nome +
+                        '</th>' +
+                        '<th>' +
+                        json.inicio +
+                        '</th>' +
+                        '<th>' +
+                        json.fim +
+                        '</th>';
+                    var tbody = document.getElementById('projlista');
+                    tbody.innerHTML = '';
+                    for (const p of json) {
+                        tbody.innerHTML += '<tr>' +
+                            '<td>' +
+                            p.id +
+                            '</td>' +
+                            '<td>' +
+                            p.nome +
+                            '</td>' +
+                            '<td>' +
+                            p.inicio +
+                            '</td>' +
+                            '<td>' +
+                            p.fim +
+                            '</td>' +
+                            '</tr>';
+                    }
+                });
+        }
     </script>
 }
+<!--Código do Modal de detalhes-->
+<div class="modal fade" id="detailsmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes do Funcionário</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbody">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular">
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Id)</td>
+                        <td id="idfield">FUN-</td>
+                    </tr>
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Nome)</td>
+                        <td id="namefield">placeholder</td>
+                    </tr>
+                    <tr>
+                        <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Cargo)</td>
+                        <td id="cargofield">placeholder</td>
+                    </tr>
+                </table>
+                <h4>Projetos Associados:</h4>
+                <table class="table">
+                    <thead class="thead-dark" id="theadproj">
+                        <tr id="theadr">
+                            <!--<th>
+                                ID
+                            </th>
+                            <th>
+                                Nome
+                            </th>
+                            <th>
+                                Início
+                            </th>-->
+                            <th>
+                                Fim
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="projlista">
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary">Salvar mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="surprassmodal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" id="modalbody">
+            <table class="table table-bordered shadow-regular">
+                <tr>
+                    <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Id)</td>
+                    <td id="idfield">FUN-</td>
+                </tr>
+                <tr>
+                    <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Nome)</td>
+                    <td id="namefield">placeholder</td>
+                </tr>
+                <tr>
+                    <td class="table-dark alert-link" style="width:250px">@Html.DisplayNameFor(model => model.Cargo)</td>
+                    <td id="cargofield">placeholder</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
