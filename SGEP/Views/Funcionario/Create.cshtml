@@ -5,35 +5,54 @@
 }
 
 <h2>Create</h2>
-  <h4>Funcionario</h4>
-<hr />
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+<div class="modal fade" id="meuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cadastrar Funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="form-group">
-                <label asp-for="Cargo" class="control-label"></label>
-                <input asp-for="Cargo" class="form-control" />
-                <span asp-validation-for="Cargo" class="text-danger"></span>
+            <div class="modal-body">
+                <form asp-action="Create" asp-controller="Create" id="form">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Nome" class="control-label">Nome</label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Cargo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Cargo" class="control-label">Cargo</label>
+                        <input asp-for="Cargo" class="form-control" />
+                        <span asp-validation-for="Cargo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-success" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    
+
+    <script>
+        $('#form').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/Funcionario/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form'))
+                }).then(function (response) {
+                    return response.text();
+                });
+            }
+        })
+    </script>
+
 }
