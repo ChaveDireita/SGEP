@@ -63,7 +63,12 @@ namespace SGEP.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(funcionario);
+            return JsonResult(funcionario);
+        }
+
+        private IActionResult JsonResult(Funcionario funcionario)
+        {
+            throw new NotImplementedException();
         }
 
         // GET: Funcionario/Edit/5

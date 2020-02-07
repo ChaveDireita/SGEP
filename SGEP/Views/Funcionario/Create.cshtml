@@ -37,22 +37,3 @@
     </div>
 </div>
 
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script>
-        $('#form').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/Funcionario/Create', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form'))
-                }).then(function (response) {
-                    return response.text();
-                });
-            }
-        })
-    </script>
-
-}
