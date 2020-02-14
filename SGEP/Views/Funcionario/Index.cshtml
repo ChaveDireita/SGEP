@@ -8,10 +8,10 @@
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create" data-toggle="modal" data-target="#meuModal">Create New</a>
+    <a asp-action="Create" data-toggle="modal" data-target="#modal-create">Create New</a>
 </p>
 
-@await Html.PartialAsync("Create", new Funcionario())
+@await Html.PartialAsync("_Create", new Funcionario())
 
 <table class="table">
     <thead>
@@ -36,7 +36,7 @@
                     @Html.DisplayFor(modelItem => item.Cargo)
                 </td>
                 <td>
-                    <a asp-action="_Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a  asp-action="_Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
@@ -51,19 +51,21 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        $('#form').submit(function (e) {
+        $('#form-create').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
                 fetch('/Funcionario/Create', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form'))
-                }).then(function (response) {
-                    return response.json();
-                }).then(function () {
-                    console.log(json)
+                    body: new FormData(document.querySelector('#form-create'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create').modal('hide');
                 });
             }
-        })
-    </script>
+        });
 
+        
+    </script>
 }
