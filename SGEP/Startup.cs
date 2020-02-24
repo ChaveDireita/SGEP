@@ -68,14 +68,17 @@ namespace SGEP
             }
 
             app.UseHttpsRedirection ();
-            app.UseStaticFiles (new StaticFileOptions
+            if (env.IsDevelopment())
             {
-                OnPrepareResponse = ctx => 
+                app.UseStaticFiles (new StaticFileOptions
                 {
-                    ctx.Context.Response.Headers.Add("Cache-Control", "no-cache, no-storage");
-                    ctx.Context.Response.Headers.Add("Expires", "-1");
-                }
-            });
+                    OnPrepareResponse = ctx => 
+                    {
+                        ctx.Context.Response.Headers.Add("Cache-Control", "no-cache, no-storage");
+                        ctx.Context.Response.Headers.Add("Expires", "-1");
+                    }
+                });
+            }
 
             app.UseCookiePolicy ();
             app.UseAuthentication ();

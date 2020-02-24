@@ -1,0 +1,46 @@
+@model SGEP.Models.Movimentacao
+
+@{
+    ViewData["Title"] = "_Create";
+}
+
+<div class="modal fade" id="modal-create" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-create-title">Cadastrar Funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="_Create" asp-controller="Create" id="form-create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Data" class="control-label"></label>
+                        <input asp-for="Data" class="form-control" />
+                        <span asp-validation-for="Data" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="MaterialId" class="control-label">Cargo</label>
+                        <input asp-for="MaterialId" class="form-control" />
+                        <span asp-validation-for="MaterialId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Quantidade" class="control-label">Cargo</label>
+                        <input asp-for="Quantidade" class="form-control" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+                    @* <div class="form-group">
+                        <label asp-for="Origem" class="control-label">Cargo</label>
+                        <input asp-for="Destino" class="form-control" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div> *@
+                    <div class="form-group">
+                        <input type="submit" hidden value="Salvar" class="btn btn-success squareborder" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

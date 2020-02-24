@@ -14,6 +14,12 @@ const gets =
     name: (name) => document.getElementsByName(name)
 };
 
+const utils = 
+{
+    get: get,
+    gets: gets
+}
+
 var pagination = 
 {
     size: 0,
@@ -95,7 +101,7 @@ function selectRow (id, editCallback, detailsCallback)
 
 function add()
 {
-    http.POST('/' + controller + '/Add', () => list({}));
+    $('#modal-create').modal('show');
 }
 function tiraracento(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");

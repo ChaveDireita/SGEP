@@ -7,7 +7,19 @@
 <br />
 <h2>Movimentações</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+<div class="btn-group">
+  <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-plus"></i> Adicionar Entrada
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create">Entrada</a>
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create">Saída</a>
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create">Sobra (?)</a>
+  </div>
+</div>
+<button id="details" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled><i class="fas fa-info"></i> Detalhes</button>
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
@@ -15,6 +27,7 @@
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
+@await Html.PartialAsync("_Create")
 <br/>
 <table class="table">
     <thead class="thead-dark">
@@ -44,7 +57,7 @@
 {
     <script>
         const lista = document.getElementById('lista');
-        const controller = 'MovimentacaoApi';
+        const controller = 'Movimentacao';
 
         list({});
 

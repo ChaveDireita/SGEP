@@ -17,6 +17,8 @@
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
 <br/>
+@await Html.PartialAsync("_Create")
+@await Html.PartialAsync("_Edit")
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -40,7 +42,7 @@
     <script>
         
         const lista = document.getElementById('lista');
-        const controller = 'MaterialApi';
+        const controller = 'Material';
 
         list({});
 
@@ -51,9 +53,21 @@
 
         function onClickSelectRow (id)
         {
-            selectRow(id, () => 
+            selectRow(id, 
+            () => 
             {
-                //Código do modal
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(mat => 
+                {
+                    const idField = get.id('Id-edit');
+                    const descricaoField = get.id('Descricao-edit');
+                    const precoField = get.id('Preco-edit');
+                    idField.value = mat.id;
+                    descricaoField.value = mat.descricao;
+                    precoField.value = mat.preco;
+                    $('#modal-edit').modal('show');
+                });
             },
             () => 
             {
@@ -61,4 +75,37 @@
             });
         }
     </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $('#form-create').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create'))
+                }).then(function (response) {
+                    $('#modal-create').modal('hide');
+                    list({});
+                });
+            }
+        });
+        $('#form-edit').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Edit', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-edit'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-edit').modal('hide');
+                    list({});
+                });
+            }
+        });
+    </script>
+
 }

@@ -16,6 +16,10 @@
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
 <br/>
+
+@await Html.PartialAsync("_Create")
+@await Html.PartialAsync("_Edit")
+
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -33,15 +37,18 @@
             </th>
         </tr>
     </thead>
+    <tbody id="lista">
     </tbody>
 </table>
+
+@await Html.PartialAsync("_Details")
 
 @section Scripts 
 {
     <script>
 
         const lista = document.getElementById('lista');
-        const controller = 'ProjetoApi';
+        const controller = 'Projeto';
 
         list({});
 
@@ -54,17 +61,27 @@
         {
             selectRow(id, () => 
             {
-                //Código do modal
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(proj => 
+                {
+                    const idField = get.id('Id-edit');
+                    const nomeField = get.id('Nome-edit');
+                    const inicioField = get.id('Inicio-edit');
+                    const fimField = get.id('Fim-edit');
+                    idField.value = proj.id;
+                    nomeField.value = proj.nome;
+                    inicioField.value = proj.inicio;
+                    fimField.value = proj.fim;
+                    $('#modal-edit').modal('show');
+                });
             },
-            () => 
-            {
-                //Código do modal
-            });
+            () => showdetailsmodal(id));
         }
     
         function showdetailsmodal(id) {
             atualizaralocacao(id);
-            fetch('/Projeto/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
+            fetch('/' + controller + '/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
                 var detailstable = document.getElementById('detailstable');
                 var nomes = ['ID', 'Nome', 'Início', 'Fim'];
                 detailstable.innerHTML = gerardetailslist(nomes, proj);
@@ -78,8 +95,8 @@
         }
         //script pra atualizar a tabela de alocação sempre que precisar
         function atualizaralocacao(id) {
-            fetch('/Projeto/FuncionarioNomes').then((res) => res.json()).then(nomes => {
-                fetch('/Projeto/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(lista => {
+            fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
+                fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(lista => {
                     var tabela = document.getElementById('tableidd');
                     tabela.innerHTML = gerarlist(nomes, lista);
                 });
@@ -89,11 +106,12 @@
         var alocadostab = document.getElementById('tabelaalocados');
         var nalocadostab = document.getElementById('tabelanaoalocados');
         function gerartabelas(id) {
-            fetch('/Projeto/FuncionarioNomes').then((res) => res.json()).then(nomes => {
-                fetch('/Projeto/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
+            console.log(id);
+            fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
+                fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
                     alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id);
                 });
-                fetch('/Projeto/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
+                fetch('/' + controller + '/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
                     nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id);
                 });
             });
@@ -102,13 +120,13 @@
             const data = new FormData();
             data.append('IdFuncionario', funid);
             data.append('IdProjeto', projid);
-            fetch('/Projeto/AlocarFuncionario', { method: 'POST', body: data }).then(retorno => {
+            fetch('/' + controller + '/AlocarFuncionario', { method: 'POST', body: data }).then(retorno => {
                 gerartabelas(projid);
             });
             atualizaralocacao(projid);
         }
         function desalocar(funid, projid) {
-            fetch('/Projeto/DesalocarProjeto?idfunc=' + funid + '&idproj=' + projid, { method: 'POST' }).then(retorno => {
+            fetch('/' + controller + '/DesalocarProjeto?idfunc=' + funid + '&idproj=' + projid, { method: 'POST' }).then(retorno => {
                 gerartabelas(projid);
             });
             atualizaralocacao(projid);
@@ -118,52 +136,36 @@
             $('#detailsmodal').modal('toggle');
         }
     </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $('#form-create').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create'))
+                }).then(function (response) {
+                    $('#modal-create').modal('hide');
+                    list({});
+                });
+            }
+        });
+        $('#form-edit').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Edit', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-edit'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-edit').modal('hide');
+                    list({});
+                });
+            }
+        });
+    </script>
 }
-<!--MODAL DE DETALHES-->
-<div class="modal fade" id="detailsmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content squareborder">
-            <div class="modal-header header-dark squareborder">
-                <h5 class="modal-title" id="modaltitle">Detalhes do Projeto</h5>
-                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="modalbodyr">
-                <h4>Informações:</h4>
-                <table class="table table-bordered shadow-regular" id="detailstable"></table>
-                <h4>Funcionários Associados:</h4>
-                <table class="table" id="tableidd"></table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary squareborder" id="abriralocacao">Editar Alocações</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--MODAL DE ALOCAÇÃO-->
-
-<div class="modal fade" id="alocacaomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content squareborder">
-            <div class="modal-header header-dark squareborder">
-                <h5 class="modal-title">Alocação</h5>
-                <button type="button" style="color:white;" class="close" onclick="alocardismiss()" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body" id="modalbody">
-                <h5 class="modal-title" style="float: left;">Funcionários alocados:</h5>
-                <h5 class="modal-title" style="float: right;">Funcionários não alocados:</h5>
-                <br />
-                <table class="table table-bordered shadow-regular" style="float: left; width: 45%" id="tabelaalocados"></table>
-                <table class="table table-bordered shadow-regular" style="float: right; width: 45%" id="tabelanaoalocados"></table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary squareborder" onclick="alocardismiss()">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>

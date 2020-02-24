@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200111021130_Migracao")]
+    [Migration("20200218215916_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -207,11 +207,7 @@ namespace SGEP.Migrations
 
                     b.Property<string>("Nome");
 
-                    b.Property<int?>("ProjetoId");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProjetoId");
 
                     b.ToTable("Funcionario");
                 });
@@ -221,6 +217,8 @@ namespace SGEP.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Categoria");
 
                     b.Property<string>("Descricao");
 
@@ -275,6 +273,21 @@ namespace SGEP.Migrations
                     b.ToTable("Projeto");
                 });
 
+            modelBuilder.Entity("SGEP.Models.ProjetosxFuncionarios", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("IdFuncionario");
+
+                    b.Property<int>("IdProjeto");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjetosxFuncionarios");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole")
@@ -318,13 +331,6 @@ namespace SGEP.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SGEP.Models.Funcionario", b =>
-                {
-                    b.HasOne("SGEP.Models.Projeto")
-                        .WithMany("Funcionarios")
-                        .HasForeignKey("ProjetoId");
                 });
 
             modelBuilder.Entity("SGEP.Models.Movimentacao", b =>

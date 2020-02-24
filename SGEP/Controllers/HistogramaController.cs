@@ -32,7 +32,7 @@ namespace SGEP.Controllers
             MonthPeriod mpInicio = inicio;
             MonthPeriod mpFim = fim;
 
-            var movs = MovimentacaoApiController.Movimentacoes.Where(m => m.Tipo == tipo && 
+            var movs = MovimentacaoController.Movimentacoes.Where(m => m.Tipo == tipo && 
                                                                     (MonthPeriod) m.Data >= inicio && 
                                                                     (MonthPeriod) m.Data <= fim /*&&
                                                                     m.MaterialId == material.Value*/);

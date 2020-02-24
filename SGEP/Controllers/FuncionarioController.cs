@@ -14,91 +14,43 @@ namespace SGEP.Controllers
     public class FuncionarioController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public FuncionarioController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-        // GET: Funcionario
+        public FuncionarioController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
-
-        // GET: Funcionario/Details/5
-        public async Task<IActionResult> Details(int? id)
+        
+        [HttpGet("/Funcionario/Get/{id}")]
+        public async Task<JsonResult> Get (int id) => Json(await _context.Funcionario.FindAsync(id));
+        public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var funcionario = await _context.Funcionario
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (funcionario == null)
-            {
-                return NotFound();
-            }
-
-            return View(funcionario);
+            IEnumerable<Funcionario> result = _context.Funcionario;
+            if (id != null && id.Trim() != "")
+                result = result.Where(f => f.Id.ToString().Contains(id));
+            if (nome != null && nome?.Trim() != "")
+                result = result.Where(f => f.Nome.Contains(nome));
+            if (cargo != null && cargo?.Trim() != "")
+                result = result.Where(f => f.Cargo.Contains(cargo));
+            int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
+            int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
+            result = result.ToList().GetRange(inicio, qtd);
+            
+            return Json(new {size = _context.Funcionario.Count(), entities = result});
         }
-
-        // GET: Funcionario/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Funcionario/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cargo")] Funcionario funcionario)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(funcionario);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(funcionario);
+            return BadRequest();
         }
-
-        public JsonResult ProjetosAssociados(int? id)
-        {
-            List<int> Ids = (List<int>)_context.ProjetosxFuncionarios.Where(f => f.IdFuncionario == id).Select(p=>p.IdProjeto);
-            return Json(_context.Projeto.Where(p => Ids.Contains(p.Id)));
-        }
-        //public JsonResult ProjetoNomes()
-        //{
-            //return Json(new { titulos = string[] titulos, lista = _context.Model.ToList() };
-        //}
-            
-        // GET: Funcionario/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var funcionario = await _context.Funcionario.FindAsync(id);
-            if (funcionario == null)
-            {
-                return NotFound();
-            }
-            return View(funcionario);
-        }
-
-        // POST: Funcionario/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo")] Funcionario funcionario)
         {
             if (id != funcionario.Id)
-            {
                 return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -109,39 +61,37 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!FuncionarioExists(funcionario.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(funcionario);
+            return BadRequest();
         }
 
-        // GET: Funcionario/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            
-            var funcionario = await _context.Funcionario
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var funcionario = await _context.Funcionario.FirstAsync(f => f.Id == id);
             if (funcionario == null)
-            {
                 return NotFound();
-            }
+            
+            _context.Funcionario.Remove(funcionario);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
-            return View(funcionario);
-        }
-        private bool FuncionarioExists(int id)
+        public async Task<JsonResult> ProjetosAssociados(int? id)
         {
-            return _context.Funcionario.Any(e => e.Id == id);
+            IEnumerable<int> Ids = (await _context.ProjetosxFuncionarios.ToListAsync())
+                                                                        .Where(f => f.IdFuncionario == id)
+                                                                        .Select(p => p.IdProjeto);
+            List<Projeto> projetos = await _context.Projeto.Where(p => Ids.Contains(p.Id))
+                                                           .ToListAsync();
+            return Json(projetos);
         }
+
+        private bool FuncionarioExists(int id) =>  _context.Funcionario.Any(e => e.Id == id);
     }
 }

@@ -60,13 +60,28 @@ namespace SGEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Funcionario",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    Cargo = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Funcionario", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Material",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Descricao = table.Column<string>(nullable: true),
-                    Preco = table.Column<decimal>(nullable: false)
+                    Preco = table.Column<decimal>(nullable: false),
+                    Categoria = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,6 +101,20 @@ namespace SGEP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Projeto", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjetosxFuncionarios",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    IdFuncionario = table.Column<int>(nullable: false),
+                    IdProjeto = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjetosxFuncionarios", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -224,27 +253,6 @@ namespace SGEP.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Funcionario",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
-                    Cargo = table.Column<string>(nullable: true),
-                    ProjetoId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Funcionario", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Funcionario_Projeto_ProjetoId",
-                        column: x => x.ProjetoId,
-                        principalTable: "Projeto",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -285,11 +293,6 @@ namespace SGEP.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Funcionario_ProjetoId",
-                table: "Funcionario",
-                column: "ProjetoId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Movimentacao_DestinoId",
                 table: "Movimentacao",
                 column: "DestinoId");
@@ -327,13 +330,16 @@ namespace SGEP.Migrations
                 name: "Movimentacao");
 
             migrationBuilder.DropTable(
+                name: "Projeto");
+
+            migrationBuilder.DropTable(
+                name: "ProjetosxFuncionarios");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
-                name: "Projeto");
 
             migrationBuilder.DropTable(
                 name: "Almoxarifado");

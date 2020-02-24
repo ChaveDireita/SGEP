@@ -16,35 +16,64 @@ namespace SGEP.Controllers
     public class ProjetoController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public ProjetoController(ApplicationDbContext context)
+        public ProjetoController(ApplicationDbContext context) => _context = context;
+        
+        public IActionResult Index() => View();
+        public async Task<JsonResult> List(string id, string nome, DateTime? inicio, DateTime? fim, int[] funcionarios, int? itensPorPagina, int? pagina)
         {
-            _context = context;
+            IEnumerable<Projeto> result = await _context.Projeto.ToListAsync();
+            if (id != null && id.Trim() != "")
+                result = result.Where(p => p.Id.ToString().Contains(id));
+            if (nome != null && nome.Trim() != "")
+                result = result.Where(p => p.Nome.Contains(nome));
+            if (inicio != null && inicio?.ToString().Trim() != "")
+                result = result.Where(p => p.Inicio.ToString().Contains(inicio.ToString()));
+            if (fim != null && fim?.ToString().Trim() != "")
+                result = result.Where(p => p.Fim.ToString().Contains(fim.ToString()));
+            // if (funcionarios != null && funcionarios.Count() > 0)
+            //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
+            int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
+            int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
+            result = result.ToList().GetRange(_inicio, qtd);
+            
+            return Json(new {size = _context.Projeto.Count(), entities = result});
         }
-
-        // GET: Projeto
-        public async Task<IActionResult> Index()
+        public async Task<JsonResult> Get (int id) => Json(await _context.Projeto.FindAsync(id));
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
         {
-            return View();
-        }
-
-        // GET: Projeto/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                _context.Add(projeto);
+                await _context.SaveChangesAsync();
+                return Ok();
             }
-
-            var projeto = await _context.Projeto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
-            {
-                return NotFound();
-            }
-
-            return View(projeto);
+            return BadRequest();
         }
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
+        {
+            if (id != projeto.Id)
+                return NotFound();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(projeto);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProjetoExists(projeto.Id))
+                        return NotFound();
+                    else
+                        throw;
+                }
+                return Ok();
+            }
+            return BadRequest();
+        }
+        private bool ProjetoExists(int id) =>  _context.Projeto.Any(e => e.Id == id);
         public JsonResult ProjetoSelecionado(int? id) {
             return Json(_context.Projeto.FirstOrDefault(i=>i.Id==id));
         }
@@ -85,80 +114,7 @@ namespace SGEP.Controllers
         public JsonResult Funcionario(int? id) {
             return Json(_context.Funcionario.Find(id));
         }
-        // GET: Projeto/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Projeto/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(projeto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(projeto);
-        }
-
-        // GET: Projeto/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var projeto = await _context.Projeto.FindAsync(id);
-            if (projeto == null)
-            {
-                return NotFound();
-            }
-            return View(projeto);
-        }
-
-        // POST: Projeto/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
-        {
-            if (id != projeto.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(projeto);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProjetoExists(projeto.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(projeto);
-        }
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DesalocarProjeto(int? idfunc,int idproj)
         {
             var projeto = await _context.ProjetosxFuncionarios
@@ -166,38 +122,6 @@ namespace SGEP.Controllers
             _context.ProjetosxFuncionarios.Remove(projeto);
             await _context.SaveChangesAsync();
             return Ok();
-        }
-        // GET: Projeto/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var projeto = await _context.Projeto
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (projeto == null)
-            {
-                return NotFound();
-            }
-
-            return View(projeto);
-        }
-        // POST: Projeto/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var projeto = await _context.Projeto.FindAsync(id);
-            _context.Projeto.Remove(projeto);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProjetoExists(int id)
-        {
-            return _context.Projeto.Any(e => e.Id == id);
         }
     }
 }

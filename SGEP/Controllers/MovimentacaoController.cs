@@ -15,141 +15,60 @@ namespace SGEP.Controllers
     public class MovimentacaoController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public MovimentacaoController(ApplicationDbContext context)
+        public MovimentacaoController(ApplicationDbContext context) => _context = context;
+        public static int next = 1;
+        public static List<Movimentacao> Movimentacoes { get; set; } = new List<Movimentacao>();
+        public static List<string> Nomes { get; set; } = new List<string>
         {
-            _context = context;
-        }
-
-        // GET: Movimentacao
-        public IActionResult Index()
+            "Projeto A",
+            "Projeto B",
+            "Projeto C",
+            "CIMATEC PARK",
+            "PFC",
+            "Bolo"
+        };
+        public IActionResult Index() => View();
+        public JsonResult List(DateTime? data, string origem, string destino, string material, int? quantidade, int? itensPorPagina, int? pagina)
         {
-            return View();
+            IEnumerable<Movimentacao> result = Movimentacoes;
+            // if (nome != null && nome.Trim() != "")
+            //     result = result.Where(p => p.Nome.Contains(nome));
+            // if (inicio != null && inicio?.ToString().Trim() != "")
+            //     result = result.Where(p => p.Inicio.ToString().Contains(inicio.ToString()));
+            // if (fim != null && fim?.ToString().Trim() != "")
+            //     result = result.Where(p => p.Fim.ToString().Contains(fim.ToString()));
+            // if (funcionarios != null && funcionarios.Count() > 0)
+            //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
+            int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
+            int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
+            result = result.ToList().GetRange(_inicio, qtd);
+            
+            return Json(new {size = Movimentacoes.Count(), entities = result});
         }
-
-        // GET: Movimentacao/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var movimentacao = await _context.Movimentacao
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movimentacao == null)
-            {
-                return NotFound();
-            }
-
-            return View(movimentacao);
-        }
-
-        // GET: Movimentacao/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Movimentacao/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Data,MaterialId,Quantidade,Tipo")] Movimentacao movimentacao)
+        public IActionResult Add()
         {
-            if (ModelState.IsValid)
+            
+            for (int i = 0; i < 50; i++)
             {
-                _context.Add(movimentacao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(movimentacao);
-        }
-
-        // GET: Movimentacao/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var movimentacao = await _context.Movimentacao.FindAsync(id);
-            if (movimentacao == null)
-            {
-                return NotFound();
-            }
-            return View(movimentacao);
-        }
-
-        // POST: Movimentacao/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Data,MaterialId,Quantidade,Tipo")] Movimentacao movimentacao)
-        {
-            if (id != movimentacao.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                string tipo = new string[] {"Entrada", "Saída", "Consumo"}[new Random().Next()%3];
+                Movimentacao m = new Movimentacao
                 {
-                    _context.Update(movimentacao);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MovimentacaoExists(movimentacao.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    Id = next++,
+                    Data = new DateTime(new Random().Next()%20 + 2000, new Random().Next()%12 + 1, new Random().Next()%15 + 1),
+                    Tipo = tipo,
+                    Quantidade = new Random().Next()%100,
+                    MaterialId = new Random().Next()
+                };
+
+                if (m.Tipo != "Entrada")
+                    m.Origem = new Almoxarifado { Id = new Random().Next() };
+                if (m.Tipo != "Consumo")
+                    m.Destino = new Almoxarifado { Id = new Random().Next() };
+
+                Movimentacoes.Add(m);
             }
-            return View(movimentacao);
-        }
-
-        // GET: Movimentacao/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var movimentacao = await _context.Movimentacao
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (movimentacao == null)
-            {
-                return NotFound();
-            }
-
-            return View(movimentacao);
-        }
-
-        // POST: Movimentacao/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var movimentacao = await _context.Movimentacao.FindAsync(id);
-            _context.Movimentacao.Remove(movimentacao);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool MovimentacaoExists(int id)
-        {
-            return _context.Movimentacao.Any(e => e.Id == id);
+            return Ok();
         }
     }
 }

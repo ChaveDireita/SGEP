@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
@@ -15,83 +14,41 @@ namespace SGEP.Controllers
     public class MaterialController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public MaterialController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: Material
+        public MaterialController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
-
-        // GET: Material/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<JsonResult> List(string id, string descricao, string preco, string categoria, int? itensPorPagina, int? pagina)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var material = await _context.Material
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-
-            return View(material);
+            IEnumerable<Material> result = await _context.Material.ToListAsync();
+            if (id != null && id.Trim() != "")
+                result = result.Where(m => m.Id.ToString().Contains(id));
+            if (descricao != null && descricao?.Trim() != "")
+                result = result.Where(m => m.Descricao.Contains(descricao));
+            if (preco != null && preco?.Trim() != "")
+                result = result.Where(m => m.Preco.ToString().Contains(preco));
+            int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
+            int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
+            result = result.ToList().GetRange(inicio, qtd);
+            
+            return Json(new {size = _context.Material.Count(), entities = result});
         }
-
-        // GET: Material/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Material/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpGet("/Material/Get/{id}")]
+        public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Descricao,Preco")] Material material)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(material);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(material);
+            return BadRequest();
         }
-
-        // GET: Material/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var material = await _context.Material.FindAsync(id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-            return View(material);
-        }
-
-        // POST: Material/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,Preco")] Material material)
         {
             if (id != material.Id)
-            {
                 return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
@@ -102,51 +59,14 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!MaterialExists(material.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
-                    }
                 }
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(material);
+            return BadRequest();
         }
-
-        // GET: Material/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var material = await _context.Material
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (material == null)
-            {
-                return NotFound();
-            }
-
-            return View(material);
-        }
-
-        // POST: Material/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var material = await _context.Material.FindAsync(id);
-            _context.Material.Remove(material);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool MaterialExists(int id)
-        {
-            return _context.Material.Any(e => e.Id == id);
-        }
+        private bool MaterialExists(int id) =>  _context.Material.Any(e => e.Id == id);
     }
 }
