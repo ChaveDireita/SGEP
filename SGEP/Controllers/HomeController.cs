@@ -9,7 +9,6 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : Controller
     {
         public IActionResult Index ()

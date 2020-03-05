@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> signInManager;
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -14,23 +17,26 @@
 <body>
     <header class="position-sticky">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+            <div class="container justify-content-center">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse">
                         <i class="fas fa-bars" style="color: white;"></i>
                     </button>
                     <a asp-action="Index" asp-controller="Inicio" class="nav-a navbar-brand"><h1 style="color:white; padding-left:20px">SGEP</h1></a>
                 </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
-                        <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
-                        <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
-                        <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
-                        <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
+                @if (signInManager.IsSignedIn(User))
+                {
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                            <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
+                            <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
+                            <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
+                            <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
+                            <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
+                        </ul>
+                        <partial name="_LoginPartial" />
+                    </div>
+                }
             </div>
         </nav>
     </header>

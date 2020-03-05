@@ -41,9 +41,17 @@ namespace SGEP
                 //options.UseMySql (Configuration.GetConnectionString ("mysql"));
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
-            services.AddDefaultIdentity<IdentityUser> ()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext> ();
+            services.AddDefaultIdentity<IdentityUser> (o => 
+            {
+                o.SignIn.RequireConfirmedEmail = false;
+                o.SignIn.RequireConfirmedPhoneNumber = false;
+                o.Password.RequireDigit = false;
+                o.Password.RequiredLength = 3;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireLowercase = false;
+            }).AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext> ();
 
             services.AddMvc (config => 
             {

@@ -10,7 +10,6 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
     public class FuncionarioController : Controller
     {
         private readonly ApplicationDbContext _context;
