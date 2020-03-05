@@ -10,8 +10,9 @@
                 <a asp-area="Identity" asp-page="/Account/Manage/Index" class="nav-li-a" style="font-size: 22px">Olá @UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
-                   <button type="submit" class="btn btn-link nav-li-a" style="font-size: 22px"><i class="fas fa-power-off"></i></button>
+                <a href="#" class="nav-li-a" onclick="$('#form-logout').submit()"><i class="fas fa-power-off"></i> Sair</a>
+                <form id="form-logout" asp-area="Identity" hidden asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+                   <button type="submit" class="btn btn-link " style="font-size: 22px"></button>
                 </form>
             </li>
         </ul>

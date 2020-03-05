@@ -36,11 +36,12 @@ namespace SGEP.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Insira seu e-mail")]
             [EmailAddress]
+            [Display(Name = "E-mail")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Insira sua senha")]
             [DataType(DataType.Password)]
             [Display(Name = "Senha")]
             public string Password { get; set; }

@@ -39,12 +39,12 @@ namespace SGEP.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
+            [Required(ErrorMessage = "Insira um e-mail")]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "E-mail")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Insira uma senha")]
             [StringLength(100, ErrorMessage = "O campo \"{0}\" deve possuir de {2} a {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Senha")]
