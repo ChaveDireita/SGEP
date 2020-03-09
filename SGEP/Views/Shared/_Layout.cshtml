@@ -24,9 +24,10 @@
                 <div class="collapse navbar-collapse">
                     <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                         <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
-                        <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
                         <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
+                        <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
                         <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
+                        <li><a asp-area="" asp-controller="Almoxarifado" asp-action="Index"  class="nav-li-a">Almoxarifados</a></li>
                         <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -52,8 +53,7 @@
     <script>
         $(() => $('[data-toggle="tooltip"]').tooltip());
     </script>
-
-
+    
     @RenderSection("Scripts", required: false)
 </body>
 </html>

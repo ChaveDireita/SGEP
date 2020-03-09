@@ -12,11 +12,13 @@ namespace SGEP.Data
         public ApplicationDbContext (DbContextOptions<ApplicationDbContext> options)
             : base (options)
         {
+
         }
-        public DbSet<SGEP.Models.Funcionario> Funcionario { get; set; }
-        public DbSet<SGEP.Models.Material> Material { get; set; }
-        public DbSet<SGEP.Models.Projeto> Projeto { get; set; }
-        public DbSet<SGEP.Models.Movimentacao> Movimentacao { get; set; }
+        public DbSet<Funcionario> Funcionario { get; set; }
+        public DbSet<Material> Material { get; set; }
+        public DbSet<Projeto> Projeto { get; set; }
+        public DbSet<Movimentacao> Movimentacao { get; set; }
         public DbSet<ProjetosxFuncionarios> ProjetosxFuncionarios { get; set; }
+        public DbSet<Almoxarifado> Almoxarifado { get; set; }
     }
 }

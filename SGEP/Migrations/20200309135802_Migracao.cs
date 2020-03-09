@@ -13,7 +13,9 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    Projeto = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,21 +91,6 @@ namespace SGEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Projeto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
-                    Inicio = table.Column<DateTime>(nullable: false),
-                    Fim = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projeto", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProjetosxFuncionarios",
                 columns: table => new
                 {
@@ -145,6 +132,28 @@ namespace SGEP.Migrations
                         principalTable: "Almoxarifado",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projeto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    Inicio = table.Column<DateTime>(nullable: false),
+                    Fim = table.Column<DateTime>(nullable: false),
+                    AlmoxarifadoId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projeto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projeto_Almoxarifado_AlmoxarifadoId",
+                        column: x => x.AlmoxarifadoId,
+                        principalTable: "Almoxarifado",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -301,6 +310,11 @@ namespace SGEP.Migrations
                 name: "IX_Movimentacao_OrigemId",
                 table: "Movimentacao",
                 column: "OrigemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projeto_AlmoxarifadoId",
+                table: "Projeto",
+                column: "AlmoxarifadoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

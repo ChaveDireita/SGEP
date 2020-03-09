@@ -15,7 +15,7 @@ namespace SGEP.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -190,6 +190,10 @@ namespace SGEP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Nome");
+
+                    b.Property<bool>("Projeto");
+
                     b.HasKey("Id");
 
                     b.ToTable("Almoxarifado");
@@ -260,6 +264,8 @@ namespace SGEP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AlmoxarifadoId");
+
                     b.Property<DateTime>("Fim");
 
                     b.Property<DateTime>("Inicio");
@@ -267,6 +273,8 @@ namespace SGEP.Migrations
                     b.Property<string>("Nome");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlmoxarifadoId");
 
                     b.ToTable("Projeto");
                 });
@@ -340,6 +348,14 @@ namespace SGEP.Migrations
                     b.HasOne("SGEP.Models.Almoxarifado", "Origem")
                         .WithMany()
                         .HasForeignKey("OrigemId");
+                });
+
+            modelBuilder.Entity("SGEP.Models.Projeto", b =>
+                {
+                    b.HasOne("SGEP.Models.Almoxarifado", "Almoxarifado")
+                        .WithMany()
+                        .HasForeignKey("AlmoxarifadoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -21,7 +21,7 @@ namespace SGEP.Controllers
         public IActionResult Index() => View();
         public async Task<JsonResult> List(string id, string nome, DateTime? inicio, DateTime? fim, int[] funcionarios, int? itensPorPagina, int? pagina)
         {
-            IEnumerable<Projeto> result = await _context.Projeto.ToListAsync();
+            IEnumerable<Projeto> result = await _context.Projeto.Include(p => p.Almoxarifado).ToListAsync();
             if (id != null && id.Trim() != "")
                 result = result.Where(p => p.Id.ToString().Contains(id));
             if (nome != null && nome.Trim() != "")
@@ -44,6 +44,12 @@ namespace SGEP.Controllers
         {
             if (ModelState.IsValid)
             {
+                Almoxarifado a = new Almoxarifado
+                {
+                    Nome = projeto.Nome,
+                    Projeto = true,
+                };
+                projeto.Almoxarifado = a;
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
                 return Ok();
