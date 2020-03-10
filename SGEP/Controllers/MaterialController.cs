@@ -31,6 +31,7 @@ namespace SGEP.Controllers
             
             return Json(new {size = _context.Material.Count(), entities = result});
         }
+        public async Task<JsonResult> All () => Json(await _context.Material.ToListAsync());
         [HttpGet("/Material/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
         [HttpPost]

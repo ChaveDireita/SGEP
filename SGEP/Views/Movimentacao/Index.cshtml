@@ -9,12 +9,77 @@
 <br />
 <div class="btn-group">
   <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-plus"></i> Adicionar Entrada
+    <i class="fas fa-plus"></i> Adicionar Movimentação
   </button>
   <div class="dropdown-menu">
-    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create">Entrada</a>
-    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create">Saída</a>
-    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create">Sobra (?)</a>
+    <a class="dropdown-item" 
+       href="#" 
+       data-toggle="modal" 
+       data-target="#modal-create-in" 
+       onclick="
+            const selectDest = get.id('Destino-in');
+            selectDest.innerHTML = '<option>carregando dados...</option>';
+            selectDest.disabled = true;
+            fetch('/Almoxarifado/All')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
+                console.log (json);
+                for(alm of json)
+                {
+                    const opt = document.createElement('option');
+                    opt.value = alm.id;
+                    opt.innerText = alm.nome;
+                    selectDest.appendChild(opt);
+                }
+                selectDest.disabled = false;
+            });
+            const selectMat = get.id('Material-in');
+            selectMat.innerHTML = '<option>carregando dados...</option>';
+            selectMat.disabled = true;
+            fetch('/Material/All')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                console.log (json);
+                for(mat of json)
+                {
+                    const opt = document.createElement('option');
+                    opt.value = mat.id;
+                    opt.innerText = mat.id;
+                    opt.title = mat.descricao;
+                    selectMat.appendChild(opt);
+                }
+                selectMat.disabled = false;
+            });
+            ">Entrada</a>
+    <a class="dropdown-item" 
+       href="#" 
+       data-toggle="modal" 
+       data-target="#modal-create-out"
+       onclick="
+            const selectOrig = get.id('Origem-out');
+            selectOrig.innerHTML = '<option>carregando dados...</option>';
+            selectOrig.disabled = true;
+            fetch('/Almoxarifado/All')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                console.log (json);
+                for(alm of json)
+                {
+                    const opt = document.createElement('option');
+                    opt.value = alm.id;
+                    opt.innerText = alm.nome;
+                    selectOrig.appendChild(opt);
+                }
+                selectOrig.disabled = false;
+            });
+       " >Saída</a>
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create-diff">Sobra (?)</a>
   </div>
 </div>
 <button id="details" 

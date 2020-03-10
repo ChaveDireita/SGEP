@@ -31,8 +31,17 @@ namespace SGEP.Controllers
             
             return Json(new {size = _context.Almoxarifado.Count(), entities = result});
         }
+
+        public async Task<JsonResult> All() => Json(await _context.Almoxarifado.ToListAsync());
+        
+
         [HttpGet("/Almoxarifado/Get/{id}")]
-        public async Task<JsonResult> Get (int id) => Json(await _context.Almoxarifado.FindAsync(id));
+        public async Task<JsonResult> Get (int id)
+        {
+            Almoxarifado a = await _context.Almoxarifado.FindAsync(id);
+            //List<AlmoxarifadosxMateriais> materiais = await _context.
+            return Json(new {almoxarifado = a});
+        } 
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Projeto")] Almoxarifado almoxarifado)
         {

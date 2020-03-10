@@ -11,8 +11,8 @@ namespace SGEP.Models
         public DateTime Data { get; set; }
         public int MaterialId { get; set; }
         public int Quantidade { get; set; }
-        public Almoxarifado Origem { get; set; }
-        public Almoxarifado Destino { get; set; }
+        public int Origem { get; set; }
+        public int Destino { get; set; }
         public string Tipo { get; set; }
     }
 }

@@ -190,6 +190,8 @@ namespace SGEP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AlmoxarifadosxMateriaisId");
+
                     b.Property<string>("Nome");
 
                     b.Property<bool>("Projeto");
@@ -197,6 +199,21 @@ namespace SGEP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Almoxarifado");
+                });
+
+            modelBuilder.Entity("SGEP.Models.AlmoxarifadosxMateriais", b =>
+                {
+                    b.Property<int>("AlmoxarifadoId");
+
+                    b.Property<int>("MaterialId");
+
+                    b.Property<decimal>("Quantidade");
+
+                    b.HasKey("AlmoxarifadoId", "MaterialId");
+
+                    b.HasIndex("MaterialId");
+
+                    b.ToTable("AlmoxarifadosxMateriais");
                 });
 
             modelBuilder.Entity("SGEP.Models.Funcionario", b =>
@@ -220,6 +237,8 @@ namespace SGEP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AlmoxarifadosxMateriaisId");
+
                     b.Property<int>("Categoria");
 
                     b.Property<string>("Descricao");
@@ -239,21 +258,17 @@ namespace SGEP.Migrations
 
                     b.Property<DateTime>("Data");
 
-                    b.Property<int?>("DestinoId");
+                    b.Property<int>("Destino");
 
                     b.Property<int>("MaterialId");
 
-                    b.Property<int?>("OrigemId");
+                    b.Property<int>("Origem");
 
                     b.Property<int>("Quantidade");
 
                     b.Property<string>("Tipo");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DestinoId");
-
-                    b.HasIndex("OrigemId");
 
                     b.ToTable("Movimentacao");
                 });
@@ -339,15 +354,17 @@ namespace SGEP.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SGEP.Models.Movimentacao", b =>
+            modelBuilder.Entity("SGEP.Models.AlmoxarifadosxMateriais", b =>
                 {
-                    b.HasOne("SGEP.Models.Almoxarifado", "Destino")
-                        .WithMany()
-                        .HasForeignKey("DestinoId");
+                    b.HasOne("SGEP.Models.Almoxarifado", "Almoxarifado")
+                        .WithMany("AlmoxarifadosxMateriais")
+                        .HasForeignKey("AlmoxarifadoId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SGEP.Models.Almoxarifado", "Origem")
-                        .WithMany()
-                        .HasForeignKey("OrigemId");
+                    b.HasOne("SGEP.Models.Material", "Material")
+                        .WithMany("AlmoxarifadosxMateriais")
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SGEP.Models.Projeto", b =>

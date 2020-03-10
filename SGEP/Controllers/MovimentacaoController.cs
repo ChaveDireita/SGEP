@@ -61,11 +61,6 @@ namespace SGEP.Controllers
                     MaterialId = new Random().Next()
                 };
 
-                if (m.Tipo != "Entrada")
-                    m.Origem = new Almoxarifado { Id = new Random().Next() };
-                if (m.Tipo != "Consumo")
-                    m.Destino = new Almoxarifado { Id = new Random().Next() };
-
                 Movimentacoes.Add(m);
             }
             return Ok();

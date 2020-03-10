@@ -14,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace SGEP
 {
@@ -38,12 +40,13 @@ namespace SGEP
 
             services.AddDbContext<ApplicationDbContext> (options =>
             {
+                options.UseLazyLoadingProxies(true);
                 //options.UseMySql (Configuration.GetConnectionString ("mysql"));
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
             services.AddDefaultIdentity<IdentityUser> ()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext> ();
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext> ();
 
             services.AddMvc (config => 
             {
@@ -56,6 +59,18 @@ namespace SGEP
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure (IApplicationBuilder app, IHostingEnvironment env)
         {
+            CultureInfo culturaPT_BR = new CultureInfo("pt-BR");
+            culturaPT_BR.NumberFormat.NumberDecimalSeparator = ".";
+            culturaPT_BR.NumberFormat.CurrencyDecimalSeparator = ".";
+
+            IList<CultureInfo> culturaSuportada = new[] { culturaPT_BR };
+            app.UseRequestLocalization(new RequestLocalizationOptions()
+            {
+                DefaultRequestCulture = new RequestCulture(culturaPT_BR),
+                SupportedCultures = culturaSuportada,
+                SupportedUICultures = culturaSuportada
+            });
+
             if (env.IsDevelopment ())
             {
                 app.UseDeveloperExceptionPage ();
