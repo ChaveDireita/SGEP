@@ -26,15 +26,6 @@ namespace SGEP.Data
             base.OnModelCreating(builder);
             builder.Entity<AlmoxarifadosxMateriais>()
                    .HasKey(am => new {am.AlmoxarifadoId, am.MaterialId});
-            builder.Entity<AlmoxarifadosxMateriais>()
-                   .HasOne(am => am.Almoxarifado)
-                   .WithMany(a => a.AlmoxarifadosxMateriais)
-                   .HasForeignKey(am => am.AlmoxarifadoId);
-            builder.Entity<AlmoxarifadosxMateriais>()
-                   .HasOne(am => am.Material)
-                   .WithMany(m => m.AlmoxarifadosxMateriais)
-                   .HasForeignKey(am => am.MaterialId);
-            
             //builder
         }
     }

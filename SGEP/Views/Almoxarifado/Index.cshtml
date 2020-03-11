@@ -19,7 +19,7 @@
 </div>
 <br/>
 <div class="container row justify-content-center">
-    @*@await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)*@
+    @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
 <br/>
 @await Html.PartialAsync("_Create")
@@ -206,6 +206,7 @@
                 .then(_ => 
                 {
                     $('#modal-create').modal('hide');
+                    get.id ('form-create').reset();
                     list({});
                 });
             }
@@ -221,6 +222,7 @@
                 .then(_ => 
                 {
                     $('#modal-edit').modal('hide');
+                    get.id ('form-edit').reset();
                     list({});
                 });
             }

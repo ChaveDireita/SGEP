@@ -28,7 +28,7 @@
             id="page-last"
             onclick="(() => 
             {
-                pagination.page = Math.ceil (pagination.size/pagination.itensPerPage);
+                pagination.page = Math.max(Math.ceil (pagination.size/pagination.itensPerPage), 1);
                 list(_search());
             })()">>></button>
 </div>

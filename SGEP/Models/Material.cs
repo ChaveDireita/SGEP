@@ -8,7 +8,5 @@ namespace SGEP.Models
         public string Descricao { get; set; }
         public decimal Preco { get; set; }
         public int Categoria { get; set; }
-        public int AlmoxarifadosxMateriaisId { get; set; }
-        public virtual List<AlmoxarifadosxMateriais> AlmoxarifadosxMateriais { get; set; }
     }
 }

@@ -37,9 +37,7 @@ namespace SGEP.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
         {
-            Almoxarifado destino = await _context.Almoxarifado.Where(a => a.Id == movimentacao.DestinoId)
-                                                              .Include(a => a.AlmoxarifadosxMateriais)
-                                                              .FirstAsync();
+            Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
             if (movimentacao.Quantidade < 0)
                 return BadRequest("Quantidade não pode ser menor que 0");
             if (!movimentacao.Tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))

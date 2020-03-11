@@ -77,22 +77,6 @@ namespace SGEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Material",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Descricao = table.Column<string>(nullable: true),
-                    Preco = table.Column<decimal>(nullable: false),
-                    Categoria = table.Column<int>(nullable: false),
-                    AlmoxarifadosxMateriaisId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Material", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Movimentacao",
                 columns: table => new
                 {
@@ -123,6 +107,25 @@ namespace SGEP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProjetosxFuncionarios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AlmoxarifadosxMateriais",
+                columns: table => new
+                {
+                    AlmoxarifadoId = table.Column<int>(nullable: false),
+                    MaterialId = table.Column<int>(nullable: false),
+                    Quantidade = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AlmoxarifadosxMateriais", x => new { x.AlmoxarifadoId, x.MaterialId });
+                    table.ForeignKey(
+                        name: "FK_AlmoxarifadosxMateriais_Almoxarifado_AlmoxarifadoId",
+                        column: x => x.AlmoxarifadoId,
+                        principalTable: "Almoxarifado",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,34 +257,27 @@ namespace SGEP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AlmoxarifadosxMateriais",
+                name: "Material",
                 columns: table => new
                 {
-                    AlmoxarifadoId = table.Column<int>(nullable: false),
-                    MaterialId = table.Column<int>(nullable: false),
-                    Quantidade = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Descricao = table.Column<string>(nullable: true),
+                    Preco = table.Column<decimal>(nullable: false),
+                    Categoria = table.Column<int>(nullable: false),
+                    AlmoxarifadosxMateriaisAlmoxarifadoId = table.Column<int>(nullable: true),
+                    AlmoxarifadosxMateriaisMaterialId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AlmoxarifadosxMateriais", x => new { x.AlmoxarifadoId, x.MaterialId });
+                    table.PrimaryKey("PK_Material", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AlmoxarifadosxMateriais_Almoxarifado_AlmoxarifadoId",
-                        column: x => x.AlmoxarifadoId,
-                        principalTable: "Almoxarifado",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AlmoxarifadosxMateriais_Material_MaterialId",
-                        column: x => x.MaterialId,
-                        principalTable: "Material",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Material_AlmoxarifadosxMateriais_AlmoxarifadosxMateriaisAlmoxarifadoId_AlmoxarifadosxMateriaisMaterialId",
+                        columns: x => new { x.AlmoxarifadosxMateriaisAlmoxarifadoId, x.AlmoxarifadosxMateriaisMaterialId },
+                        principalTable: "AlmoxarifadosxMateriais",
+                        principalColumns: new[] { "AlmoxarifadoId", "MaterialId" },
+                        onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AlmoxarifadosxMateriais_MaterialId",
-                table: "AlmoxarifadosxMateriais",
-                column: "MaterialId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -323,6 +319,11 @@ namespace SGEP.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Material_AlmoxarifadosxMateriaisAlmoxarifadoId_AlmoxarifadosxMateriaisMaterialId",
+                table: "Material",
+                columns: new[] { "AlmoxarifadosxMateriaisAlmoxarifadoId", "AlmoxarifadosxMateriaisMaterialId" });
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Projeto_AlmoxarifadoId",
                 table: "Projeto",
                 column: "AlmoxarifadoId");
@@ -330,9 +331,6 @@ namespace SGEP.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AlmoxarifadosxMateriais");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -352,6 +350,9 @@ namespace SGEP.Migrations
                 name: "Funcionario");
 
             migrationBuilder.DropTable(
+                name: "Material");
+
+            migrationBuilder.DropTable(
                 name: "Movimentacao");
 
             migrationBuilder.DropTable(
@@ -361,13 +362,13 @@ namespace SGEP.Migrations
                 name: "ProjetosxFuncionarios");
 
             migrationBuilder.DropTable(
-                name: "Material");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "AlmoxarifadosxMateriais");
 
             migrationBuilder.DropTable(
                 name: "Almoxarifado");

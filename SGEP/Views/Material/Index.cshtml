@@ -87,6 +87,7 @@
                     body: new FormData(document.querySelector('#form-create'))
                 }).then(function (response) {
                     $('#modal-create').modal('hide');
+                    get.id ('form-create').reset();
                     list({});
                 });
             }
@@ -102,6 +103,7 @@
                 .then(_ => 
                 {
                     $('#modal-edit').modal('hide');
+                    get.id ('form-edit').reset();
                     list({});
                 });
             }

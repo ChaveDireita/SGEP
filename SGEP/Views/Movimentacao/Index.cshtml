@@ -169,6 +169,7 @@
                 .then(_ => 
                 {
                     $('#modal-create-in').modal('hide');
+                    get.id ('form-create-in').reset();
                     list({});
                 });
             }
@@ -184,6 +185,7 @@
                 .then(_ => 
                 {
                     $('#modal-create-out').modal('hide');
+                    get.id ('form-create-out').reset();
                     list({});
                 });
             }

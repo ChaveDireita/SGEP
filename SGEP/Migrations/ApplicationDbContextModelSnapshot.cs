@@ -211,8 +211,6 @@ namespace SGEP.Migrations
 
                     b.HasKey("AlmoxarifadoId", "MaterialId");
 
-                    b.HasIndex("MaterialId");
-
                     b.ToTable("AlmoxarifadosxMateriais");
                 });
 
@@ -237,7 +235,9 @@ namespace SGEP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AlmoxarifadosxMateriaisId");
+                    b.Property<int?>("AlmoxarifadosxMateriaisAlmoxarifadoId");
+
+                    b.Property<int?>("AlmoxarifadosxMateriaisMaterialId");
 
                     b.Property<int>("Categoria");
 
@@ -246,6 +246,8 @@ namespace SGEP.Migrations
                     b.Property<decimal>("Preco");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlmoxarifadosxMateriaisAlmoxarifadoId", "AlmoxarifadosxMateriaisMaterialId");
 
                     b.ToTable("Material");
                 });
@@ -358,15 +360,17 @@ namespace SGEP.Migrations
 
             modelBuilder.Entity("SGEP.Models.AlmoxarifadosxMateriais", b =>
                 {
-                    b.HasOne("SGEP.Models.Almoxarifado", "Almoxarifado")
+                    b.HasOne("SGEP.Models.Almoxarifado")
                         .WithMany("AlmoxarifadosxMateriais")
                         .HasForeignKey("AlmoxarifadoId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
 
-                    b.HasOne("SGEP.Models.Material", "Material")
-                        .WithMany("AlmoxarifadosxMateriais")
-                        .HasForeignKey("MaterialId")
-                        .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity("SGEP.Models.Material", b =>
+                {
+                    b.HasOne("SGEP.Models.AlmoxarifadosxMateriais")
+                        .WithMany("Material")
+                        .HasForeignKey("AlmoxarifadosxMateriaisAlmoxarifadoId", "AlmoxarifadosxMateriaisMaterialId");
                 });
 
             modelBuilder.Entity("SGEP.Models.Projeto", b =>

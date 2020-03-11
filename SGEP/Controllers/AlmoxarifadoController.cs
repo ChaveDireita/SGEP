@@ -33,13 +33,11 @@ namespace SGEP.Controllers
         }
         public async Task<JsonResult> All() => Json(await _context.Almoxarifado.ToListAsync());
         [HttpGet("/Almoxarifado/GetMateriais/{id}")]
-        public async Task<JsonResult> GetMateriais(int id)
+        public /*async Task<*/JsonResult/*>*/ GetMateriais(int id)
         {
-            var almoxarifadoMateriais = (await _context.Almoxarifado.Where(a => a.Id == id).Include(a => a.AlmoxarifadosxMateriais).FirstAsync()).AlmoxarifadosxMateriais;
-            var materiais = await _context.Material.Where(m => almoxarifadoMateriais.ConvertAll(am => am.MaterialId)
-                                                                                    .Contains(m.Id))
-                                                                                    .ToListAsync();
-            return Json(materiais);
+            var materiais = (/*await*/ _context.Almoxarifado.Find/*Async*/(id)).AlmoxarifadosxMateriais.ConvertAll(/*async*/ am => /*await*/ _context.Material.Find/*Async*/(am.MaterialId));
+            var json = Json(materiais);
+            return json;
         } 
 
         [HttpGet("/Almoxarifado/GetQuantidade/{idAlm}/{idMat}")]

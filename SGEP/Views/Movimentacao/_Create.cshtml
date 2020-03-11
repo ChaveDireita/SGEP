@@ -77,7 +77,7 @@
                                 selectMat.innerHTML = '<option disabled selected>Selecione a origem</option>';
                                 
                                 fetch('/Almoxarifado/All')
-                                .then(res => json)
+                                .then(res => res.json())
                                 .then(json => 
                                 {
                                     for(alm of json)
@@ -142,7 +142,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-out" disabled placeholder="Selecione um material" class="form-control squareborder" type="number" min="0" max="0"/>
+                        <input asp-for="Quantidade" id="Quantidade-out" disabled placeholder="Selecione o material" class="form-control squareborder" type="number" min="0" max="0"/>
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">

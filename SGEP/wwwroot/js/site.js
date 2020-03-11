@@ -25,7 +25,7 @@ var pagination =
     size: 0,
     page: 1,
     itensPerPage: 10,
-    next: () => pagination.page = Math.min (Math.ceil (pagination.size/pagination.itensPerPage), pagination.page + 1),
+    next: () => pagination.page = Math.min (Math.max(Math.ceil (pagination.size/pagination.itensPerPage), 1), pagination.page + 1),
     prev: () => pagination.page = Math.max (1, pagination.page - 1)
 };
 
@@ -33,6 +33,8 @@ function _search ()
 {
     const fields = $('.search-field');
     pagination.itensPerPage = document.getElementById('search-item-pagina').value;
+    if (pagination.page == 0)
+        throw {message: 'asdsad'};
     const searchParams = { pagina: pagination.page };
     for (const f of fields) {
         searchParams[f.name] = f.value;
