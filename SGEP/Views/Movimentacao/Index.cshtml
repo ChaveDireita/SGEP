@@ -112,6 +112,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DestinoId)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantidade)
+            </th>
         </tr>
     </thead>
     <tbody id="lista">
@@ -128,7 +131,7 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origemId', 'destinoId'], ({size, entities}) => 
+            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origemId', 'destinoId', 'quantidade'], ({size, entities}) => 
             {
                 pagination.size = size;
                 entities.forEach(e => 

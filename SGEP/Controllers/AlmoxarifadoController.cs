@@ -29,18 +29,16 @@ namespace SGEP.Controllers
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(new {size = _context.Almoxarifado.Count(), entities = result.ToList().ConvertAll(a => new { a.Id, a.Nome, a.Projeto })});
+            return Json(new {size = _context.Almoxarifado.Count(), entities = result.ToList()});
         }
-
-        public async Task<JsonResult> All() => Json((await _context.Almoxarifado.ToListAsync()).ConvertAll(a => new { a.Id, a.Nome, a.Projeto }));
+        public async Task<JsonResult> All() => Json(await _context.Almoxarifado.ToListAsync());
         [HttpGet("/Almoxarifado/GetMateriais/{id}")]
         public async Task<JsonResult> GetMateriais(int id)
         {
-            var almoxarifadoMateriais = (await _context.Almoxarifado.FindAsync(id)).AlmoxarifadosxMateriais;
-            var materiais = (await _context.Material.Where(m => almoxarifadoMateriais.ConvertAll(am => am.MaterialId)
-                                                                              .Contains(m.Id))
-                                                                              .ToListAsync())
-                                                                              .ConvertAll(m => new { m.Id, m.Descricao, m.Categoria, m.Preco});
+            var almoxarifadoMateriais = (await _context.Almoxarifado.Where(a => a.Id == id).Include(a => a.AlmoxarifadosxMateriais).FirstAsync()).AlmoxarifadosxMateriais;
+            var materiais = await _context.Material.Where(m => almoxarifadoMateriais.ConvertAll(am => am.MaterialId)
+                                                                                    .Contains(m.Id))
+                                                                                    .ToListAsync();
             return Json(materiais);
         } 
 
@@ -49,9 +47,7 @@ namespace SGEP.Controllers
                                                                                                  .FindAsync(idAlm))
                                                                                                  .AlmoxarifadosxMateriais
                                                                                                  .Where(am => am.MaterialId == idMat)
-                                                                                                 .ToList()
-                                                                                                 .ConvertAll(am => new { material = am.MaterialId, quantidade = am.Quantidade}));
-            
+                                                                                                 .ToList());
 
         [HttpGet("/Almoxarifado/Get/{id}")]
         public async Task<JsonResult> Get (int id)
@@ -107,6 +103,6 @@ namespace SGEP.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
-        private bool AlmoxarifadoExists(int id) =>  _context.Almoxarifado.Any(e => e.Id == id);
+        private bool AlmoxarifadoExists(int id) => _context.Almoxarifado.Any(e => e.Id == id);
     }
 }

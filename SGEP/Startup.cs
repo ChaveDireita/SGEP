@@ -40,7 +40,7 @@ namespace SGEP
 
             services.AddDbContext<ApplicationDbContext> (options =>
             {
-                options.UseLazyLoadingProxies(true);
+                options.UseLazyLoadingProxies(false);
                 //options.UseMySql (Configuration.GetConnectionString ("mysql"));
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });

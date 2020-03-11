@@ -30,14 +30,16 @@ namespace SGEP.Controllers
             //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
-            result = result.ToList().GetRange(_inicio, qtd);
+            result = result.OrderByDescending(m => m.Id).ToList().GetRange(_inicio, qtd);
             
             return Json(new {size = _context.Movimentacao.Count(), entities = result});
         }
         [HttpPost]
         public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
         {
-            Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
+            Almoxarifado destino = await _context.Almoxarifado.Where(a => a.Id == movimentacao.DestinoId)
+                                                              .Include(a => a.AlmoxarifadosxMateriais)
+                                                              .FirstAsync();
             if (movimentacao.Quantidade < 0)
                 return BadRequest("Quantidade não pode ser menor que 0");
             if (!movimentacao.Tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))
