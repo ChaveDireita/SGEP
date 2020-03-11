@@ -16,21 +16,10 @@ namespace SGEP.Controllers
     {
         private readonly ApplicationDbContext _context;
         public MovimentacaoController(ApplicationDbContext context) => _context = context;
-        public static int next = 1;
-        public static List<Movimentacao> Movimentacoes { get; set; } = new List<Movimentacao>();
-        public static List<string> Nomes { get; set; } = new List<string>
-        {
-            "Projeto A",
-            "Projeto B",
-            "Projeto C",
-            "CIMATEC PARK",
-            "PFC",
-            "Bolo"
-        };
         public IActionResult Index() => View();
         public JsonResult List(DateTime? data, string origem, string destino, string material, int? quantidade, int? itensPorPagina, int? pagina)
         {
-            IEnumerable<Movimentacao> result = Movimentacoes;
+            IEnumerable<Movimentacao> result = _context.Movimentacao;
             // if (nome != null && nome.Trim() != "")
             //     result = result.Where(p => p.Nome.Contains(nome));
             // if (inicio != null && inicio?.ToString().Trim() != "")
@@ -43,26 +32,26 @@ namespace SGEP.Controllers
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
             result = result.ToList().GetRange(_inicio, qtd);
             
-            return Json(new {size = Movimentacoes.Count(), entities = result});
+            return Json(new {size = _context.Movimentacao.Count(), entities = result});
         }
         [HttpPost]
-        public IActionResult Add()
+        public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
         {
-            
-            for (int i = 0; i < 50; i++)
-            {
-                string tipo = new string[] {"Entrada", "Saída", "Consumo"}[new Random().Next()%3];
-                Movimentacao m = new Movimentacao
-                {
-                    Id = next++,
-                    Data = new DateTime(new Random().Next()%20 + 2000, new Random().Next()%12 + 1, new Random().Next()%15 + 1),
-                    Tipo = tipo,
-                    Quantidade = new Random().Next()%100,
-                    MaterialId = new Random().Next()
-                };
-
-                Movimentacoes.Add(m);
-            }
+            Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
+            if (movimentacao.Quantidade < 0)
+                return BadRequest("Quantidade não pode ser menor que 0");
+            if (!movimentacao.Tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))
+                return BadRequest("O tipo de ser \"entrada\"");
+            if (destino == null)
+                return BadRequest("O destino não existe");
+            _context.Add(movimentacao);
+            var almoxarifadoMaterial = destino.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
+            if (almoxarifadoMaterial == null)
+                destino.AlmoxarifadosxMateriais.Add(new AlmoxarifadosxMateriais{AlmoxarifadoId = destino.Id, MaterialId = movimentacao.MaterialId, Quantidade = movimentacao.Quantidade});
+            else
+                almoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
+            _context.Update(destino);
+            await _context.SaveChangesAsync();
             return Ok();
         }
     }

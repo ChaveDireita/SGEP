@@ -78,7 +78,7 @@
                 }
                 selectOrig.disabled = false;
             });
-       " >Saída</a>
+       ">Saída</a>
     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create-diff">Sobra (?)</a>
   </div>
 </div>
@@ -107,10 +107,10 @@
                 @Html.DisplayNameFor(model => model.Tipo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Origem)
+                @Html.DisplayNameFor(model => model.OrigemId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Destino)
+                @Html.DisplayNameFor(model => model.DestinoId)
             </th>
         </tr>
     </thead>
@@ -128,7 +128,17 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origem', 'destino'], ({size}) => pagination.size = size);
+            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origemId', 'destinoId'], ({size, entities}) => 
+            {
+                pagination.size = size;
+                entities.forEach(e => 
+                {
+                    if (e.destinoId == 0)
+                        e.destinoId = '--';
+                    if (e.origemId == 0)
+                        e.origemId = '--';
+                });
+            });
         }
 
         function onClickSelectRow (id)
@@ -142,5 +152,53 @@
                 //Código do modal
             });
         }
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#form-create-in').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/CreateEntrada', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-in'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create-in').modal('hide');
+                    list({});
+                });
+            }
+        });
+        $('#form-create-out').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-out'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create-out').modal('hide');
+                    list({});
+                });
+            }
+        });
+        $('#form-create-diff').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-diff'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create-diff').modal('hide');
+                    list({});
+                });
+            }
+        });
     </script>
 }

@@ -29,11 +29,29 @@ namespace SGEP.Controllers
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(new {size = _context.Almoxarifado.Count(), entities = result});
+            return Json(new {size = _context.Almoxarifado.Count(), entities = result.ToList().ConvertAll(a => new { a.Id, a.Nome, a.Projeto })});
         }
 
-        public async Task<JsonResult> All() => Json(await _context.Almoxarifado.ToListAsync());
-        
+        public async Task<JsonResult> All() => Json((await _context.Almoxarifado.ToListAsync()).ConvertAll(a => new { a.Id, a.Nome, a.Projeto }));
+        [HttpGet("/Almoxarifado/GetMateriais/{id}")]
+        public async Task<JsonResult> GetMateriais(int id)
+        {
+            var almoxarifadoMateriais = (await _context.Almoxarifado.FindAsync(id)).AlmoxarifadosxMateriais;
+            var materiais = (await _context.Material.Where(m => almoxarifadoMateriais.ConvertAll(am => am.MaterialId)
+                                                                              .Contains(m.Id))
+                                                                              .ToListAsync())
+                                                                              .ConvertAll(m => new { m.Id, m.Descricao, m.Categoria, m.Preco});
+            return Json(materiais);
+        } 
+
+        [HttpGet("/Almoxarifado/GetQuantidade/{idAlm}/{idMat}")]
+        public async Task<JsonResult> GetMateriais(int idAlm, int idMat) => Json ((await _context.Almoxarifado
+                                                                                                 .FindAsync(idAlm))
+                                                                                                 .AlmoxarifadosxMateriais
+                                                                                                 .Where(am => am.MaterialId == idMat)
+                                                                                                 .ToList()
+                                                                                                 .ConvertAll(am => new { material = am.MaterialId, quantidade = am.Quantidade}));
+            
 
         [HttpGet("/Almoxarifado/Get/{id}")]
         public async Task<JsonResult> Get (int id)

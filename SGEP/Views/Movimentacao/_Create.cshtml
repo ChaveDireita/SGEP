@@ -12,16 +12,17 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-create-in">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" value="entrada" asp-for="Tipo"/>
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-in" class="form-control squareborder" />
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Destino" class="control-label">Destino</label>
-                        <select asp-for="Destino" id="Destino-in" class="form-control squareborder">
+                        <label asp-for="DestinoId" class="control-label">Destino</label>
+                        <select asp-for="DestinoId" id="Destino-in" class="form-control squareborder">
                         </select>
-                        <span asp-validation-for="Destino" class="text-danger"></span>
+                        <span asp-validation-for="DestinoId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="MaterialId" class="control-label">Material</label>
@@ -35,7 +36,7 @@
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" hidden value="Salvar" class="btn btn-success squareborder" />
+                        <input type="submit" value="Salvar" class="btn btn-success squareborder" />
                     </div>
                 </form>
             </div>
@@ -61,33 +62,91 @@
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Origem" class="control-label">Origem</label>
-                        <select asp-for="Origem" 
+                        <label asp-for="OrigemId" class="control-label">Origem</label>
+                        <select asp-for="OrigemId" 
                                 id="Origem-out" 
                                 class="form-control squareborder"
-                                onclick="">
+                                onchange="
+                                const selected = get.id('Origem-out').value;
+                                const selectDest = get.id ('Destino-out');
+                                const selectMat = get.id ('Material-out');
+                                
+                                selectDest.disabled = true;
+                                selectMat.disabled = true;
+                                selectDest.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                                selectMat.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                                
+                                fetch('/Almoxarifado/All')
+                                .then(res => json)
+                                .then(json => 
+                                {
+                                    for(alm of json)
+                                    {
+                                        if (alm.id == selected)
+                                            continue;
+                                        const opt = document.createElement('option');
+                                        opt.value = alm.id;
+                                        opt.innerText = alm.nome;
+                                        selectDest.appendChild(opt);
+                                    }
+                                    selectDest.disabled = false;
+                                });
+
+                                fetch('/Almoxarifado/GetMateriais/' + selected)
+                                .then(res => res.json())
+                                .then(json => 
+                                {
+                                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                                    console.log (json);
+                                    for(mat of json)
+                                    {
+                                        const opt = document.createElement('option');
+                                        opt.value = mat.id;
+                                        opt.innerText = mat.id;
+                                        opt.title = mat.descricao;
+                                        selectMat.appendChild(opt);
+                                    }
+                                    selectMat.disabled = false;
+                                })
+                                ">
                         </select>
-                        <span asp-validation-for="Origem" class="text-danger"></span>
+                        <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Destino" class="control-label">Destino</label>
-                        <select asp-for="Destino" id="Destino-out" class="form-control squareborder">
+                        <label asp-for="DestinoId" class="control-label">Destino</label>
+                        <select asp-for="DestinoId" id="Destino-out" class="form-control squareborder">
                         </select>
-                        <span asp-validation-for="Destino" class="text-danger"></span>
+                        <span asp-validation-for="DestinoId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="MaterialId" class="control-label">Material</label>
-                        <select asp-for="MaterialId" id="Material-out" class="form-control squareborder">
+                        <select asp-for="MaterialId" id="Material-out" class="form-control squareborder"
+                        onchange="
+                        const origin = get.id('Origem-out').value;
+                        const material = get.id('Material-out').value;
+                        const qtdField = get.id('Quantidade-out');
+                        qtdField.disabled = true;
+                        
+                        fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material)
+                        .then(res => res.json())
+                        .then(json => 
+                        {
+                            for (o in json) 
+                                if (o.material == material) 
+                                    qtdField.max = o.quantidade;
+                            qtdField.disabled = false;
+                        });
+                        ">
                         </select>
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-out" class="form-control squareborder" type="number" min="0"/>
+                        <input asp-for="Quantidade" id="Quantidade-out" disabled placeholder="Selecione um material" class="form-control squareborder" type="number" min="0" max="0"/>
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" hidden value="Salvar" class="btn btn-success squareborder" />
+                        <input type="submit" value="Salvar" class="btn btn-success squareborder" />
                     </div>
                 </form>
             </div>

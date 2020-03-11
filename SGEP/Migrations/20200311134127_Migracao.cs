@@ -101,9 +101,10 @@ namespace SGEP.Migrations
                     Data = table.Column<DateTime>(nullable: false),
                     MaterialId = table.Column<int>(nullable: false),
                     Quantidade = table.Column<int>(nullable: false),
-                    Origem = table.Column<int>(nullable: false),
-                    Destino = table.Column<int>(nullable: false),
-                    Tipo = table.Column<string>(nullable: true)
+                    OrigemId = table.Column<int>(nullable: false),
+                    DestinoId = table.Column<int>(nullable: false),
+                    Tipo = table.Column<string>(nullable: true),
+                    Preco = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -258,7 +259,7 @@ namespace SGEP.Migrations
                 {
                     AlmoxarifadoId = table.Column<int>(nullable: false),
                     MaterialId = table.Column<int>(nullable: false),
-                    Quantidade = table.Column<decimal>(nullable: false)
+                    Quantidade = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

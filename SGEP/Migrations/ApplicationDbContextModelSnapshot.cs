@@ -207,7 +207,7 @@ namespace SGEP.Migrations
 
                     b.Property<int>("MaterialId");
 
-                    b.Property<decimal>("Quantidade");
+                    b.Property<int>("Quantidade");
 
                     b.HasKey("AlmoxarifadoId", "MaterialId");
 
@@ -258,11 +258,13 @@ namespace SGEP.Migrations
 
                     b.Property<DateTime>("Data");
 
-                    b.Property<int>("Destino");
+                    b.Property<int>("DestinoId");
 
                     b.Property<int>("MaterialId");
 
-                    b.Property<int>("Origem");
+                    b.Property<int>("OrigemId");
+
+                    b.Property<decimal>("Preco");
 
                     b.Property<int>("Quantidade");
 
