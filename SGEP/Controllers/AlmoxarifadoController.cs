@@ -35,7 +35,7 @@ namespace SGEP.Controllers
         [HttpGet("/Almoxarifado/GetMateriais/{id}")]
         public JsonResult GetMateriais(int id)
         {
-            var materiais = (/*await*/ _context.Almoxarifado.Find/*Async*/(id)).AlmoxarifadosxMateriais.ConvertAll(/*async*/ am => /*await*/ _context.Material.Find/*Async*/(am.MaterialId));
+            var materiais = _context.Almoxarifado.Find(id).AlmoxarifadosxMateriais.Where(am => am.Quantidade > 0).ToList().ConvertAll(am => _context.Material.Find(am.MaterialId));
             var json = Json(materiais);
             return json;
         } 
@@ -43,7 +43,7 @@ namespace SGEP.Controllers
         [HttpGet("/Almoxarifado/GetQuantidade/{idAlm}/{idMat}")]
         public JsonResult GetMateriais(int idAlm, int idMat) => Json (_context.Almoxarifado.Find(idAlm)
                                                                                            .AlmoxarifadosxMateriais
-                                                                                           .Where(am => am.MaterialId == idMat)
+                                                                                           .Where(am => am.MaterialId == idMat && am.Quantidade > 0)
                                                                                            .ToList());
 
         [HttpGet("/Almoxarifado/Get/{id}")]

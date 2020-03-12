@@ -80,5 +80,23 @@ namespace SGEP.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateConsumo([Bind("Data", "MaterialId", "Quantidade", "OrigemId", "Tipo")] Movimentacao movimentacao)
+        {
+            Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
+            if (movimentacao.Quantidade < 0 || movimentacao.Quantidade > origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId).Quantidade)
+                return BadRequest("Quantidade não pode ser menor que 0");
+            if (!movimentacao.Tipo.Equals("consumo", StringComparison.InvariantCultureIgnoreCase))
+                return BadRequest("O tipo de ser \"consumo\"");
+            if (origem == null)
+                return BadRequest("A origem não existe");
+            _context.Add(movimentacao);
+            var almoxarifadoMaterial = origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
+            almoxarifadoMaterial.Quantidade -= movimentacao.Quantidade;
+            _context.Update(origem);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

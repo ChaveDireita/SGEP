@@ -108,8 +108,7 @@
                                         selectMat.appendChild(opt);
                                     }
                                     selectMat.disabled = false;
-                                })
-                                ">
+                                });">
                         </select>
                         <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
@@ -168,7 +167,7 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-create-diff">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" value="entrada" asp-for="Tipo"/>
+                    <input type="hidden" value="consumo" asp-for="Tipo"/>
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-diff" class="form-control squareborder" />
@@ -176,13 +175,56 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="OrigemId" class="control-label">Origem</label>
-                        <select asp-for="OrigemId" id="Origem-diff" class="form-control squareborder">
+                        <select asp-for="OrigemId" 
+                                id="Origem-diff" 
+                                class="form-control squareborder"
+                                onchange="
+                                const selected = get.id('Origem-diff').value;
+                                const selectMat = get.id ('Material-diff');
+
+                                fetch('/Almoxarifado/GetMateriais/' + selected)
+                                .then(res => res.json())
+                                .then(json => 
+                                {
+                                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                                    console.log (json);
+                                    for(mat of json)
+                                    {
+                                        const opt = document.createElement('option');
+                                        opt.value = mat.id;
+                                        opt.innerText = mat.id;
+                                        opt.title = mat.descricao;
+                                        selectMat.appendChild(opt);
+                                    }
+                                    selectMat.disabled = false;
+                                });">
+                                ">
                         </select>
                         <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="MaterialId" class="control-label">Material</label>
-                        <select asp-for="MaterialId" id="Material-diff" class="form-control squareborder">
+                        <select asp-for="MaterialId" 
+                                id="Material-diff" 
+                                disabled 
+                                class="form-control squareborder"
+                                onchange="
+                                const origin = get.id('Origem-diff').value;
+                                const material = get.id('Material-diff').value;
+                                const qtdField = get.id('Quantidade-diff');
+                                qtdField.disabled = true;
+                                
+                                fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material)
+                                .then(res => res.json())
+                                .then(json => 
+                                {
+                                    for (o of json) 
+                                        if (o.materialId == material) 
+                                            qtdField.max = o.quantidade;
+                                    
+                                    qtdField.disabled = false;
+                                });
+                                ">
                         </select>
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>

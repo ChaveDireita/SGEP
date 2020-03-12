@@ -18,7 +18,7 @@
        data-target="#modal-create-in" 
        onclick="
             const selectDest = get.id('Destino-in');
-            selectDest.innerHTML = '<option>carregando dados...</option>';
+            selectDest.innerHTML = '<option>Carregando dados...</option>';
             selectDest.disabled = true;
             fetch('/Almoxarifado/All')
             .then((res) => res.json())
@@ -36,7 +36,7 @@
                 selectDest.disabled = false;
             });
             const selectMat = get.id('Material-in');
-            selectMat.innerHTML = '<option>carregando dados...</option>';
+            selectMat.innerHTML = '<option>Carregando dados...</option>';
             selectMat.disabled = true;
             fetch('/Material/All')
             .then((res) => res.json())
@@ -61,8 +61,9 @@
        data-target="#modal-create-out"
        onclick="
             const selectOrig = get.id('Origem-out');
-            selectOrig.innerHTML = '<option>carregando dados...</option>';
+            selectOrig.innerHTML = '<option>Carregando dados...</option>';
             selectOrig.disabled = true;
+
             fetch('/Almoxarifado/All')
             .then((res) => res.json())
             .then((json) => 
@@ -79,7 +80,33 @@
                 selectOrig.disabled = false;
             });
        ">Saída</a>
-    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create-diff">Consumo (?)</a>
+    <a class="dropdown-item" 
+       href="#" 
+       data-toggle="modal" 
+       data-target="#modal-create-diff"
+       onclick="
+        const selectOrigin = get.id('Origem-diff');
+        const selectMat = get.id('Material-diff');
+        selectOrigin.innerHTML = '<option>Carregando dados...</option>';
+        selectOrigin.disabled = true;
+        selectMat.disabled = true;
+        selectMat.innerHTML = '<option>Selecione a origem</option>'
+
+        fetch('/Almoxarifado/All')
+        .then((res) => res.json())
+        .then((json) => 
+        {
+            selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
+            console.log (json);
+            for(alm of json)
+            {
+                const opt = document.createElement('option');
+                opt.value = alm.id;
+                opt.innerText = alm.nome;
+                selectOrigin.appendChild(opt);
+            }
+            selectOrigin.disabled = false;
+        });">Consumo (?)</a>
   </div>
 </div>
 <button id="details" 
@@ -193,7 +220,7 @@
         $('#form-create-diff').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
-                fetch('/' + controller + '/Create', {
+                fetch('/' + controller + '/CreateConsumo', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-diff'))
                 })
@@ -201,6 +228,7 @@
                 .then(_ => 
                 {
                     $('#modal-create-diff').modal('hide');
+                    get.id ('form-create-diff').reset();
                     list({});
                 });
             }
