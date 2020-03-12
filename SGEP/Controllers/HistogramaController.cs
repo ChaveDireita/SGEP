@@ -14,16 +14,8 @@ namespace SGEP.Controllers
     public class HistogramaController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public HistogramaController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-        public IActionResult Index()
-        {
-
-            return View();
-        }
-
+        public HistogramaController(ApplicationDbContext context) => _context = context;
+        public IActionResult Index() => View();
         public JsonResult GraphData(string inicio, string fim, string tipo, int? material)
         {
             if (inicio == null || fim == null || material == null)
@@ -32,15 +24,22 @@ namespace SGEP.Controllers
             MonthPeriod mpInicio = inicio;
             MonthPeriod mpFim = fim;
 
-            var movs = _context.Movimentacao.Where(m => m.Tipo == tipo && 
-                                                        (MonthPeriod) m.Data >= inicio && 
-                                                        (MonthPeriod) m.Data <= fim /*&&
-                                                        m.MaterialId == material.Value*/);
+            var movs = _context.Movimentacao.Where(m => m.Tipo.Equals(tipo, StringComparison.InvariantCultureIgnoreCase) && 
+                                                        m.Data >= mpInicio && 
+                                                        m.Data <= mpFim &&
+                                                        m.MaterialId == material.Value);
+            movs.Where(m => m.Id == 2);                                                        
 
             Dictionary<string, int> data = new Dictionary<string, int> ();
             IEnumerable<MonthPeriod> months = mpFim - mpInicio;
             foreach (var month in months)
-                data[month] = movs.Where(m => month == m.Data).Sum(m => m.Quantidade);
+            {
+                data[month] = 0;
+                
+                int a = movs.Where(m => month == ((MonthPeriod) m.Data))
+                            .Sum(m => m.Quantidade);
+                data[month] = a;
+            }
             
             return Json(new { data, material = "PLACEHOLDER", tipo });
         }

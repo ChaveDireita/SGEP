@@ -79,7 +79,7 @@
                 selectOrig.disabled = false;
             });
        ">Saída</a>
-    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create-diff">Sobra (?)</a>
+    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal-create-diff">Consumo (?)</a>
   </div>
 </div>
 <button id="details" 
@@ -177,7 +177,7 @@
         $('#form-create-out').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
-                fetch('/' + controller + '/Create', {
+                fetch('/' + controller + '/CreateSaida', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-out'))
                 })

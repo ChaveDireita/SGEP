@@ -20,8 +20,8 @@ namespace SGEP.Controllers
         public JsonResult List(DateTime? data, string origem, string destino, string material, int? quantidade, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Movimentacao> result = _context.Movimentacao;
-            // if (nome != null && nome.Trim() != "")
-            //     result = result.Where(p => p.Nome.Contains(nome));
+            if (data != null)
+                result = result.Where(m => m.Data == data);
             // if (inicio != null && inicio?.ToString().Trim() != "")
             //     result = result.Where(p => p.Inicio.ToString().Contains(inicio.ToString()));
             // if (fim != null && fim?.ToString().Trim() != "")
@@ -30,7 +30,7 @@ namespace SGEP.Controllers
             //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
-            result = result.OrderByDescending(m => m.Id).ToList().GetRange(_inicio, qtd);
+            result = result.OrderByDescending(m => m.Data).ToList().GetRange(_inicio, qtd);
             
             return Json(new {size = _context.Movimentacao.Count(), entities = result});
         }
@@ -51,6 +51,32 @@ namespace SGEP.Controllers
             else
                 almoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
             _context.Update(destino);
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSaida([Bind("Data", "MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo")] Movimentacao movimentacao)
+        {
+            Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
+            Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
+            if (movimentacao.Quantidade < 0)
+                return BadRequest("Quantidade não pode ser menor que 0");
+            if (!movimentacao.Tipo.Equals("saída", StringComparison.InvariantCultureIgnoreCase))
+                return BadRequest("O tipo de ser \"saída\"");
+            if (destino == null)
+                return BadRequest("O destino não existe");
+            if (origem == null)
+                return BadRequest("A origem não existe");
+            _context.Add(movimentacao);
+            var destinoAlmoxarifadoMaterial = destino.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
+            var origemAlmoxarifadoMaterial = origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
+
+            origemAlmoxarifadoMaterial.Quantidade -= movimentacao.Quantidade;
+            if (destinoAlmoxarifadoMaterial == null)
+                destino.AlmoxarifadosxMateriais.Add(new AlmoxarifadosxMateriais{AlmoxarifadoId = destino.Id, MaterialId = movimentacao.MaterialId, Quantidade = movimentacao.Quantidade});
+            else
+                destinoAlmoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
+            _context.UpdateRange(origem, destino);
             await _context.SaveChangesAsync();
             return Ok();
         }

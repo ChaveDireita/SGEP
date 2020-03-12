@@ -56,6 +56,7 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-create-out">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" value="saída" asp-for="Tipo"/>
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-out" class="form-control squareborder" />
@@ -131,9 +132,10 @@
                         .then(res => res.json())
                         .then(json => 
                         {
-                            for (o in json) 
-                                if (o.material == material) 
+                            for (o of json) 
+                                if (o.materialId == material) 
                                     qtdField.max = o.quantidade;
+                            
                             qtdField.disabled = false;
                         });
                         ">
