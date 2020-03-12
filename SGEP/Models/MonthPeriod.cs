@@ -11,7 +11,7 @@ namespace SGEP.Models
         public static MonthPeriod operator +(MonthPeriod m, int months)
         {
             m.Year = (m.Year*12 + m.Month + months)/12;
-            m.Month = (m.Month + months)%12;
+            m.Month = (m.Month + months)%12 + 1;
             return m;
         }
 
@@ -51,18 +51,9 @@ namespace SGEP.Models
         public static bool operator !=(MonthPeriod m1, MonthPeriod m2) => m1 != m2;
         public static readonly string[] Months = new string[]
         {
-            "jan",
-            "fev",
-            "mar",
-            "abr",
-            "mai",
-            "jun",
-            "jul",
-            "ago",
-            "set",
-            "out",
-            "nov",
-            "dez"
+            "jan", "fev", "mar", "abr", 
+            "mai", "jun", "jul", "ago", 
+            "set", "out", "nov", "dez"
         };
         public override string ToString() => $"{Months[Month-1]}/{Year}";
         public static implicit operator MonthPeriod (string s)

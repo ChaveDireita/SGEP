@@ -20,7 +20,10 @@
             .then(res => res.json())
             .then(json => 
             {
-                chart.data.datasets[0].label = json.tipo + ' de ' + json.material;
+                if (json.almoxarifado == null)
+                    chart.data.datasets[0].label = json.tipo + ' total de ' + json.material;
+                else
+                    chart.data.datasets[0].label = json.tipo + ' de ' + json.material + "para" + json.almoxarifado;
                 chart.data.datasets[0].data = new Array();
                 chart.data.datasets[0].backgroundColor = new Array();
                 chart.data.datasets[0].borderColor = new Array();
