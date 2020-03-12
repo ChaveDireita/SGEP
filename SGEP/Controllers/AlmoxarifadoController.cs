@@ -39,13 +39,11 @@ namespace SGEP.Controllers
             var json = Json(materiais);
             return json;
         } 
-
         [HttpGet("/Almoxarifado/GetQuantidade/{idAlm}/{idMat}")]
         public JsonResult GetMateriais(int idAlm, int idMat) => Json (_context.Almoxarifado.Find(idAlm)
                                                                                            .AlmoxarifadosxMateriais
                                                                                            .Where(am => am.MaterialId == idMat && am.Quantidade > 0)
                                                                                            .ToList());
-
         [HttpGet("/Almoxarifado/Get/{id}")]
         public async Task<JsonResult> Get (int id)
         {
@@ -87,7 +85,6 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
-        
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

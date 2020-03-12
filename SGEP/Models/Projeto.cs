@@ -11,8 +11,9 @@ namespace SGEP.Models
         [DataType(DataType.Date)]
         public DateTime Inicio { get; set; }
         [DataType(DataType.Date)]
-        public DateTime Fim { get; set; }
+        public DateTime? Fim { get; set; }
         public int AlmoxarifadoId { get; set; }
         public virtual Almoxarifado Almoxarifado { get; set; }
+        public bool Finalizado { get => Fim != null; }
     }
 }

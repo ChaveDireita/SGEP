@@ -19,6 +19,7 @@
 
 @await Html.PartialAsync("_Create")
 @await Html.PartialAsync("_Edit")
+@await Html.PartialAsync("_End")
 
 <table class="table">
     <thead class="thead-dark">
@@ -169,5 +170,6 @@
                 });
             }
         });
+        //$('#form-end').submit
     </script>
 }

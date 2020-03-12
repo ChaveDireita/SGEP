@@ -16,7 +16,6 @@ namespace SGEP.Controllers
         private readonly ApplicationDbContext _context;
         public FuncionarioController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
-        
         [HttpGet("/Funcionario/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Funcionario.FindAsync(id));
         public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
@@ -34,7 +33,6 @@ namespace SGEP.Controllers
             
             return Json(new {size = _context.Funcionario.Count(), entities = result});
         }
-        
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cargo")] Funcionario funcionario)
         {
@@ -69,7 +67,6 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
-
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -81,7 +78,6 @@ namespace SGEP.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
-
         public async Task<JsonResult> ProjetosAssociados(int? id)
         {
             IEnumerable<int> Ids = (await _context.ProjetosxFuncionarios.ToListAsync())
@@ -91,7 +87,6 @@ namespace SGEP.Controllers
                                                            .ToListAsync();
             return Json(projetos);
         }
-
         private bool FuncionarioExists(int id) =>  _context.Funcionario.Any(e => e.Id == id);
     }
 }
