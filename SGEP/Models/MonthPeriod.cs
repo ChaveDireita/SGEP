@@ -64,7 +64,7 @@ namespace SGEP.Models
             "nov",
             "dez"
         };
-        public override string ToString() => $"{Months[Month]}/{Year}";
+        public override string ToString() => $"{Months[Month-1]}/{Year}";
         public static implicit operator MonthPeriod (string s)
         {
             MonthPeriod mp = new MonthPeriod

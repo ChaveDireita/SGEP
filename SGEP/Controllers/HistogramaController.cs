@@ -41,7 +41,7 @@ namespace SGEP.Controllers
                 data[month] = a;
             }
             
-            return Json(new { data, material = "PLACEHOLDER", tipo });
+            return Json(new { data, material, tipo });
         }
     }
 }
