@@ -285,7 +285,7 @@ namespace SGEP.Migrations
 
                     b.Property<int>("AlmoxarifadoId");
 
-                    b.Property<DateTime>("Fim");
+                    b.Property<DateTime?>("Fim");
 
                     b.Property<DateTime>("Inicio");
 

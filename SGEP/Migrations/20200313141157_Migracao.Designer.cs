@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200311164015_Migracao")]
+    [Migration("20200313141157_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -287,7 +287,7 @@ namespace SGEP.Migrations
 
                     b.Property<int>("AlmoxarifadoId");
 
-                    b.Property<DateTime>("Fim");
+                    b.Property<DateTime?>("Fim");
 
                     b.Property<DateTime>("Inicio");
 

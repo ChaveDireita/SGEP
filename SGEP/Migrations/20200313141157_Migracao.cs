@@ -136,7 +136,7 @@ namespace SGEP.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: true),
                     Inicio = table.Column<DateTime>(nullable: false),
-                    Fim = table.Column<DateTime>(nullable: false),
+                    Fim = table.Column<DateTime>(nullable: true),
                     AlmoxarifadoId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

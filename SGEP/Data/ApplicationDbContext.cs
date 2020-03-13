@@ -26,6 +26,8 @@ namespace SGEP.Data
             base.OnModelCreating(builder);
             builder.Entity<AlmoxarifadosxMateriais>()
                    .HasKey(am => new {am.AlmoxarifadoId, am.MaterialId});
+            
+            
             //builder
         }
     }

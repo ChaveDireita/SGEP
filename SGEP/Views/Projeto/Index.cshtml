@@ -4,12 +4,21 @@
     ViewData["Title"] = "Index";
     ViewData["search-fields"] = "_Projeto";
 }
+
 <br />
 <h2>Projetos</h2>
 <br />
 @await Html.PartialAsync("Partial/Index/Button/_CRUD")
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
+    <button id="btn-del" 
+            class="btn btn-outline-danger squareborder" 
+            title="Finalizar"
+            onclick="
+            const btns = gets.cls('delete');
+            for(btn of btns)
+                btn.hidden = !btn.hidden;
+            "><i class="fas fa-calendar-check"></i></button>
 </div>
 <br/>
 <div class="container row justify-content-center">
@@ -36,6 +45,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Fim)
             </th>
+            <th></th>
         </tr>
     </thead>
     <tbody id="lista">
@@ -47,15 +57,42 @@
 @section Scripts 
 {
     <script>
-
         const lista = document.getElementById('lista');
         const controller = 'Projeto';
 
         list({});
 
+        function finalize(id)
+        {
+            fetch ('/' + controller + '/Get/' + id)
+            .then(res => res.json())
+            .then(json => 
+            {
+                const title = get.id('modal-end-title');
+                const inicio = get.id('Inicio-end');
+                const fim = get.id('Fim-end');
+
+                title.innerText = json.nome;
+                inicio.value = json.inicio;
+                fim.value = json.end;
+                $('#modal-end').modal('show');
+            });
+        }
+
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['id', 'nome', 'inicio', 'fim'], ({size}) => pagination.size = size);
+            refreshTable(controller, searchParams, ['id', 'nome', 'inicio', 'fim', 'end-btn'], ({size, entities}) => 
+            {
+                pagination.size = size;
+                entities.forEach(p => 
+                {
+                    const condition = p.fim == null;
+                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>' 
+                                             : '';
+                    p.fim = condition ? '--'
+                                      : p.fim;
+                })
+            });
         }
 
         function onClickSelectRow (id)
@@ -94,7 +131,7 @@
             }
             $('#detailsmodal').modal('toggle');
         }
-        //script pra atualizar a tabela de alocação sempre que precisar
+        
         function atualizaralocacao(id) {
             fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
                 fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(lista => {
@@ -170,6 +207,21 @@
                 });
             }
         });
-        //$('#form-end').submit
+        $('#form-end').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Finalize', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-edit'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-edit').modal('hide');
+                    get.id ('form-edit').reset();
+                    list({});
+                });
+            }
+        });
     </script>
 }

@@ -48,7 +48,6 @@ namespace SGEP.Controllers
         public async Task<JsonResult> Get (int id)
         {
             Almoxarifado a = await _context.Almoxarifado.FindAsync(id);
-            //List<AlmoxarifadosxMateriais> materiais = await _context.
             return Json(new {almoxarifado = a});
         } 
         [HttpPost]

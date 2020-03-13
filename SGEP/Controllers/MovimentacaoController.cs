@@ -22,8 +22,10 @@ namespace SGEP.Controllers
             IEnumerable<Movimentacao> result = _context.Movimentacao;
             if (data != null)
                 result = result.Where(m => m.Data == data);
-            // if (inicio != null && inicio?.ToString().Trim() != "")
-            //     result = result.Where(p => p.Inicio.ToString().Contains(inicio.ToString()));
+            if (origem != null && origem?.ToString().Trim() != "")
+                result = result.Where(m => _context.Almoxarifado.Find(m.OrigemId).Nome.Contains(origem));
+            if (destino != null && destino?.ToString().Trim() != "")
+                result = result.Where(m => _context.Almoxarifado.Find(m.DestinoId).Nome.Contains(destino));
             // if (fim != null && fim?.ToString().Trim() != "")
             //     result = result.Where(p => p.Fim.ToString().Contains(fim.ToString()));
             // if (funcionarios != null && funcionarios.Count() > 0)
