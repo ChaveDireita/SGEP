@@ -85,10 +85,13 @@
                                     {
                                         if (alm.id == selected)
                                             continue;
-                                        const opt = document.createElement('option');
-                                        opt.value = alm.id;
-                                        opt.innerText = alm.nome;
-                                        selectDest.appendChild(opt);
+                                        if (alm.ativo)
+                                        {
+                                            const opt = document.createElement('option');
+                                            opt.value = alm.id;
+                                            opt.innerText = alm.nome;
+                                            selectDest.appendChild(opt);
+                                        }
                                     }
                                     selectDest.disabled = false;
                                 });

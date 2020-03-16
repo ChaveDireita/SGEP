@@ -4,12 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
-using System.Reflection;
-
 namespace SGEP.Controllers
 {
     [AllowAnonymous]
@@ -17,7 +14,6 @@ namespace SGEP.Controllers
     {
         private readonly ApplicationDbContext _context;
         public ProjetoController(ApplicationDbContext context) => _context = context;
-        
         public IActionResult Index() => View();
         public async Task<JsonResult> List(string id, string nome, DateTime? inicio, DateTime? fim, int[] funcionarios, int? itensPorPagina, int? pagina)
         {
@@ -145,17 +141,19 @@ namespace SGEP.Controllers
 
             if (start > end)
                 return BadRequest("End must be after start");
-            
+
             Projeto p = await _context.Projeto.FindAsync(_id);
             if (p == null)
                 return BadRequest("Project not found");
-            
+            if (p.Almoxarifado.AlmoxarifadosxMateriais.Count > 0)
+                return BadRequest("There are materials on this project");
+
             p.Fim = end;
             p.Almoxarifado.Ativo = false;
 
             _context.Update(p);
             await _context.SaveChangesAsync();
-            
+
             return Ok();
         }
     }

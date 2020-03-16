@@ -25,13 +25,15 @@
             .then((json) => 
             {
                 selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
-                console.log (json);
                 for(alm of json)
                 {
-                    const opt = document.createElement('option');
-                    opt.value = alm.id;
-                    opt.innerText = alm.nome;
-                    selectDest.appendChild(opt);
+                    if (alm.ativo)
+                    {
+                        const opt = document.createElement('option');
+                        opt.value = alm.id;
+                        opt.innerText = alm.nome;
+                        selectDest.appendChild(opt);
+                    }
                 }
                 selectDest.disabled = false;
             });
@@ -72,10 +74,13 @@
                 console.log (json);
                 for(alm of json)
                 {
-                    const opt = document.createElement('option');
-                    opt.value = alm.id;
-                    opt.innerText = alm.nome;
-                    selectOrig.appendChild(opt);
+                    if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+                    {
+                        const opt = document.createElement('option');
+                        opt.value = alm.id;
+                        opt.innerText = alm.nome;
+                        selectOrig.appendChild(opt);
+                    }
                 }
                 selectOrig.disabled = false;
             });
@@ -100,10 +105,13 @@
             console.log (json);
             for(alm of json)
             {
-                const opt = document.createElement('option');
-                opt.value = alm.id;
-                opt.innerText = alm.nome;
-                selectOrigin.appendChild(opt);
+                if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+                {
+                    const opt = document.createElement('option');
+                    opt.value = alm.id;
+                    opt.innerText = alm.nome;
+                    selectOrigin.appendChild(opt);
+                }
             }
             selectOrigin.disabled = false;
         });">Consumo (?)</a>
