@@ -62,7 +62,7 @@ namespace SGEP.Controllers
             return BadRequest();
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Projeto")] Almoxarifado almoxarifado)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Projeto,Ativo")] Almoxarifado almoxarifado)
         {
             if (id != almoxarifado.Id)
                 return NotFound();
@@ -84,15 +84,15 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
-        [HttpPost, ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> Toggle(int id)
         {
             var almoxarifado = await _context.Almoxarifado.FirstAsync(a => a.Id == id);
             if (almoxarifado == null)
                 return NotFound();
             if (almoxarifado.Projeto)
                 return BadRequest();
-            _context.Almoxarifado.Remove(almoxarifado);
+            almoxarifado.Ativo = !almoxarifado.Ativo;
             await _context.SaveChangesAsync();
             return Ok();
         }

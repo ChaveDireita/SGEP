@@ -60,15 +60,21 @@
                 pagination.size = size;
                 entities.forEach(a => {
                     if (a.projeto)
-                        a.nome += ' <span class="badge badge-info">Projeto</span>'; 
-                    a['delete-btn'] = (!a.projeto) ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + a.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>' : '';
+                        a.nome += ' <span class="badge badge-info">Projeto</span>';
+                    if (!a.ativo)
+                        a.nome += ' <span class="badge badge-danger">Desativado</span>';
+                    if (!a.projeto && a.almoxarifadosxMateriais.length == 0)
+                        a['delete-btn'] = (a.ativo) ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + a.id + ')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>' 
+                                                    : '<a class="txt-danger float-right delete text-success" href="#" + onclick="remove(' + a.id + ')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>';   
+                    else
+                        a['delete-btn'] = '';
                 });
             });
         }
 
         function remove(id)
         {
-            http.POST('/' + controller + '/Delete/' + id, () => 
+            http.POST('/' + controller + '/Toggle/' + id, () => 
             {
                 $('#edit').attr('disabled', true);
                 $('#edit').on('click', () => 

@@ -40,7 +40,7 @@ namespace SGEP.Controllers
         public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
         {
             Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
-            if (movimentacao.Quantidade < 0)
+            if (movimentacao.Quantidade <= 0)
                 return BadRequest("Quantidade não pode ser menor que 0");
             if (!movimentacao.Tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))
                 return BadRequest("O tipo de ser \"entrada\"");
@@ -61,7 +61,7 @@ namespace SGEP.Controllers
         {
             Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
             Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
-            if (movimentacao.Quantidade < 0)
+            if (movimentacao.Quantidade <= 0)
                 return BadRequest("Quantidade não pode ser menor que 0");
             if (!movimentacao.Tipo.Equals("saída", StringComparison.InvariantCultureIgnoreCase))
                 return BadRequest("O tipo de ser \"saída\"");
@@ -74,6 +74,8 @@ namespace SGEP.Controllers
             var origemAlmoxarifadoMaterial = origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
 
             origemAlmoxarifadoMaterial.Quantidade -= movimentacao.Quantidade;
+            if (origemAlmoxarifadoMaterial.Quantidade == 0)
+                origem.AlmoxarifadosxMateriais.Remove(origemAlmoxarifadoMaterial);
             if (destinoAlmoxarifadoMaterial == null)
                 destino.AlmoxarifadosxMateriais.Add(new AlmoxarifadosxMateriais{AlmoxarifadoId = destino.Id, MaterialId = movimentacao.MaterialId, Quantidade = movimentacao.Quantidade});
             else
@@ -87,7 +89,7 @@ namespace SGEP.Controllers
         public async Task<IActionResult> CreateConsumo([Bind("Data", "MaterialId", "Quantidade", "OrigemId", "Tipo")] Movimentacao movimentacao)
         {
             Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
-            if (movimentacao.Quantidade < 0 || movimentacao.Quantidade > origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId).Quantidade)
+            if (movimentacao.Quantidade <= 0 || movimentacao.Quantidade > origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId).Quantidade)
                 return BadRequest("Quantidade não pode ser menor que 0");
             if (!movimentacao.Tipo.Equals("consumo", StringComparison.InvariantCultureIgnoreCase))
                 return BadRequest("O tipo de ser \"consumo\"");
@@ -96,6 +98,8 @@ namespace SGEP.Controllers
             _context.Add(movimentacao);
             var almoxarifadoMaterial = origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
             almoxarifadoMaterial.Quantidade -= movimentacao.Quantidade;
+            if (almoxarifadoMaterial.Quantidade == 0)
+                origem.AlmoxarifadosxMateriais.Remove(almoxarifadoMaterial);
             _context.Update(origem);
             await _context.SaveChangesAsync();
             return Ok();

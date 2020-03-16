@@ -192,6 +192,8 @@ namespace SGEP.Migrations
 
                     b.Property<int>("AlmoxarifadosxMateriaisId");
 
+                    b.Property<bool>("Ativo");
+
                     b.Property<string>("Nome");
 
                     b.Property<bool>("Projeto");

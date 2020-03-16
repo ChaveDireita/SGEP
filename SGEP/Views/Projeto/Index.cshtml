@@ -68,11 +68,13 @@
             .then(res => res.json())
             .then(json => 
             {
+                const id = get.id ('Id-end');
                 const title = get.id('modal-end-title');
                 const inicio = get.id('Inicio-end');
                 const fim = get.id('Fim-end');
 
-                title.innerText = json.nome;
+                title.innerText = 'Finalizar ' + json.nome;
+                id.value = json.id;
                 inicio.value = json.inicio;
                 fim.value = json.end;
                 $('#modal-end').modal('show');
@@ -210,15 +212,15 @@
         $('#form-end').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
-                fetch('/' + controller + '/Finalize', {
+                fetch('/' + controller + '/Finalizar', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-edit'))
+                    body: new FormData(document.querySelector('#form-end'))
                 })
                 .then(res => res.text())
                 .then(_ => 
                 {
-                    $('#modal-edit').modal('hide');
-                    get.id ('form-edit').reset();
+                    $('#modal-end').modal('hide');
+                    get.id ('form-end').reset();
                     list({});
                 });
             }

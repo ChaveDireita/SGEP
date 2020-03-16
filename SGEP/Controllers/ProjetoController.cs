@@ -129,5 +129,34 @@ namespace SGEP.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+        [HttpPost]
+        public async Task<IActionResult> Finalizar (int? id, DateTime? inicio, DateTime? fim)
+        {
+            if (id == null)
+                return BadRequest("No id provided");
+            if (inicio == null)
+                return BadRequest("No start provided");
+            if (fim == null)
+                return BadRequest("No end provided");
+            
+            int _id = id.GetValueOrDefault();
+            DateTime start = inicio.GetValueOrDefault();
+            DateTime end = fim.GetValueOrDefault();
+
+            if (start > end)
+                return BadRequest("End must be after start");
+            
+            Projeto p = await _context.Projeto.FindAsync(_id);
+            if (p == null)
+                return BadRequest("Project not found");
+            
+            p.Fim = end;
+            p.Almoxarifado.Ativo = false;
+
+            _context.Update(p);
+            await _context.SaveChangesAsync();
+            
+            return Ok();
+        }
     }
 }

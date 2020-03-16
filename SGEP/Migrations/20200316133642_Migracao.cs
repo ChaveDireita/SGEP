@@ -16,6 +16,7 @@ namespace SGEP.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: true),
                     Projeto = table.Column<bool>(nullable: false),
+                    Ativo = table.Column<bool>(nullable: false),
                     AlmoxarifadosxMateriaisId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

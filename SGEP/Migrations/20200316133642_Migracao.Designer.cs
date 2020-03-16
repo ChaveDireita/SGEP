@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200313141157_Migracao")]
+    [Migration("20200316133642_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,6 +193,8 @@ namespace SGEP.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AlmoxarifadosxMateriaisId");
+
+                    b.Property<bool>("Ativo");
 
                     b.Property<string>("Nome");
 
