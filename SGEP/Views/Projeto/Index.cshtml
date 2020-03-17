@@ -88,7 +88,7 @@
                 pagination.size = size;
                 entities.forEach(p => 
                 {
-                    const condition = p.fim == null;
+                    const condition = p.fim == '--';
                     p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>' 
                                              : '';
                     p.fim = condition ? '--'

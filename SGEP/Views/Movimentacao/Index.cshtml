@@ -179,7 +179,7 @@
                     if (e.destino.projeto)
                     {
                         e.destino = `${e.destino.nome} <span class="badge badge-info">Projeto</span>`;
-                    } else 
+                    } else if (e.destino != '--')
                     {
                         e.destino = e.destino.nome;
                     }
@@ -187,7 +187,7 @@
                     if (e.origem.projeto)
                     {
                         e.origem = `${e.origem.nome} <span class="badge badge-info">Projeto</span>`;
-                    } else 
+                    } else if (e.origem != '--')
                     {
                         e.origem = e.origem.nome;
                     }

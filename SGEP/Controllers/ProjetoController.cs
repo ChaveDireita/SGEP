@@ -33,7 +33,7 @@ namespace SGEP.Controllers
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
             result = result.ToList().GetRange(_inicio, qtd);
             
-            return Json(new {size = _context.Projeto.Count(), entities = result});
+            return Json(new {size = _context.Projeto.Count(), entities = result.ToList().ConvertAll(p => new {p.Id, Inicio = p.Inicio.ToShortDateString(), Fim = (p.Fim == null) ? "--" : p.Fim.GetValueOrDefault().ToShortDateString(), p.Almoxarifado, p.Nome})});
         }
         public async Task<JsonResult> Get (int id) => Json(await _context.Projeto.FindAsync(id));
         [HttpPost]
