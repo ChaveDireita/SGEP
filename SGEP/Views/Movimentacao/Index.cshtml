@@ -166,15 +166,31 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origemId', 'destinoId', 'quantidade'], ({size, entities}) => 
+            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origem', 'destino', 'quantidade'], ({size, entities}) => 
             {
                 pagination.size = size;
                 entities.forEach(e => 
                 {
-                    if (e.destinoId == 0)
-                        e.destinoId = '--';
-                    if (e.origemId == 0)
-                        e.origemId = '--';
+                    if (e.destino == null)
+                        e.destino = '--';
+                    if (e.origem == null)
+                        e.origem = '--';
+                    
+                    if (e.destino.projeto)
+                    {
+                        e.destino = `${e.destino.nome} <span class="badge badge-info">Projeto</span>`;
+                    } else 
+                    {
+                        e.destino = e.destino.nome;
+                    }
+                    
+                    if (e.origem.projeto)
+                    {
+                        e.origem = `${e.origem.nome} <span class="badge badge-info">Projeto</span>`;
+                    } else 
+                    {
+                        e.origem = e.origem.nome;
+                    }
                 });
             });
         }

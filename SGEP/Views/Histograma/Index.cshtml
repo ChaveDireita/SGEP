@@ -72,7 +72,7 @@
         .then(json => 
         {
             console.log(json);
-            for(const m of json.entities)
+            for(const m of json)
             {
                 get.name('material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
             }

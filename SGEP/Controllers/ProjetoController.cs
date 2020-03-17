@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
+
 namespace SGEP.Controllers
 {
     [AllowAnonymous]
@@ -61,6 +62,7 @@ namespace SGEP.Controllers
             {
                 try
                 {
+                    projeto.Almoxarifado.Nome = projeto.Nome;
                     _context.Update(projeto);
                     await _context.SaveChangesAsync();
                 }

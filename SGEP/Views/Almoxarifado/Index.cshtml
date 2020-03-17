@@ -15,17 +15,17 @@
     <button id="btn-del" 
             class="btn btn-outline-danger squareborder" 
             onclick="toggleDelete()"
-            title="Remover"><i class="fas fa-trash"></i></button>
+            title="Remover"><i class="fas fa-power-off"></i></button>
 </div>
 <br/>
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
 <br/>
+
 @await Html.PartialAsync("_Create")
-@*
 @await Html.PartialAsync("_Edit")
-*@
+
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -130,14 +130,26 @@
             {
                 fetch('/' + controller + '/Get/' + id)
                 .then(res => res.json())
-                .then(func => 
+                .then(a => 
                 {
+                    console.log(a);
                     const idField = get.id('Id-edit');
                     const nomeField = get.id('Nome-edit');
-                    const cargoField = get.id('Cargo-edit');
-                    idField.value = func.id;
-                    nomeField.value = func.nome;
-                    cargoField.value = func.cargo;
+                    const projetoField = get.id('Projeto-edit');
+                    const ativoField = get.id('Ativo-edit');
+                    idField.value = a.id;
+                    nomeField.value = a.nome;
+                    projetoField.value = a.projeto;
+                    ativoField.value = a.ativo;
+                    if (a.projeto)
+                    {
+                        nomeField.disabled = true;
+                        nomeField.title = 'Projetos podem ser alterados na página "Projetos".';
+                    } else 
+                    {
+                        nomeField.disabled = false;
+                        nomeField.title = '';
+                    }
                     $('#modal-edit').modal('show');
                 });
             },
@@ -158,6 +170,7 @@
                 });
             });
         }
+
         function gerarlista(id)
         {
             fetch('/' + controller + '/ProjetosAssociados/?id=' + id).then((res) => res.json())
@@ -217,6 +230,7 @@
                 });
             }
         });
+
         $('#form-edit').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {

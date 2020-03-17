@@ -48,7 +48,7 @@ namespace SGEP.Controllers
         public async Task<JsonResult> Get (int id)
         {
             Almoxarifado a = await _context.Almoxarifado.FindAsync(id);
-            return Json(new {almoxarifado = a});
+            return Json(a);
         } 
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Projeto")] Almoxarifado almoxarifado)
@@ -66,6 +66,8 @@ namespace SGEP.Controllers
         {
             if (id != almoxarifado.Id)
                 return NotFound();
+            if (almoxarifado.Projeto)
+                return BadRequest("Projects can only be edited from 'Projects' page");
             if (ModelState.IsValid)
             {
                 try

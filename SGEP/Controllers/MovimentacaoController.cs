@@ -33,8 +33,17 @@ namespace SGEP.Controllers
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
             result = result.OrderByDescending(m => m.Data).ToList().GetRange(_inicio, qtd);
-            
-            return Json(new {size = _context.Movimentacao.Count(), entities = result});
+            var result2 = result.ToList().ConvertAll(m => new { 
+                    m.Id, 
+                    m.Data, 
+                    m.MaterialId, 
+                    m.Preco, 
+                    m.Quantidade, 
+                    m.Tipo, 
+                    Origem = _context.Almoxarifado.Find(m.OrigemId),
+                    Destino = _context.Almoxarifado.Find(m.DestinoId)
+                });
+            return Json(new {size = _context.Movimentacao.Count(), entities = result2});
         }
         [HttpPost]
         public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
