@@ -54,7 +54,7 @@ namespace SGEP.Controllers
             return BadRequest();
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim,AlmoxarifadoId")] Projeto projeto)
         {
             if (id != projeto.Id)
                 return NotFound();
@@ -62,6 +62,7 @@ namespace SGEP.Controllers
             {
                 try
                 {
+                    projeto.Almoxarifado = await _context.Almoxarifado.FindAsync(projeto.AlmoxarifadoId);
                     projeto.Almoxarifado.Nome = projeto.Nome;
                     _context.Update(projeto);
                     await _context.SaveChangesAsync();
