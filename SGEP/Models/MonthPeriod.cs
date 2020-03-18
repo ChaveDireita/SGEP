@@ -48,7 +48,7 @@ namespace SGEP.Models
                                                                          m1.Month >= m2.Month;
         public static bool operator ==(MonthPeriod m1, MonthPeriod m2) => m1.Year == m2.Year && 
                                                                           m1.Month == m2.Month;
-        public static bool operator !=(MonthPeriod m1, MonthPeriod m2) => m1 != m2;
+        public static bool operator !=(MonthPeriod m1, MonthPeriod m2) => !(m1 == m2);
         public static readonly string[] Months = new string[]
         {
             "jan", "fev", "mar", "abr", 
@@ -56,6 +56,18 @@ namespace SGEP.Models
             "set", "out", "nov", "dez"
         };
         public override string ToString() => $"{Months[Month-1]}/{Year}";
+
+        public override bool Equals(object obj)
+        {
+            return obj is MonthPeriod period &&
+                   this == period;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Year, Month);
+        }
+
         public static implicit operator MonthPeriod (string s)
         {
             MonthPeriod mp = new MonthPeriod
@@ -65,5 +77,7 @@ namespace SGEP.Models
             };
             return mp;
         }
+
+        
     }
 }
