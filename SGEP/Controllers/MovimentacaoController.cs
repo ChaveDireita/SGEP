@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
 
@@ -26,8 +24,8 @@ namespace SGEP.Controllers
                 result = result.Where(m => _context.Almoxarifado.Find(m.OrigemId).Nome.Contains(origem));
             if (destino != null && destino?.ToString().Trim() != "")
                 result = result.Where(m => _context.Almoxarifado.Find(m.DestinoId).Nome.Contains(destino));
-            // if (fim != null && fim?.ToString().Trim() != "")
-            //     result = result.Where(p => p.Fim.ToString().Contains(fim.ToString()));
+            if (material != null && material?.ToString().Trim() != "")
+                result = result.Where(m => m.Id.ToString().Contains(material.ToString()));
             // if (funcionarios != null && funcionarios.Count() > 0)
             //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);

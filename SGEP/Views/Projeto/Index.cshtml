@@ -90,8 +90,9 @@
                 pagination.size = size;
                 entities.forEach(p => 
                 {
-                    const condition = p.fim == '--';
-                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>' 
+                    console.log(p);
+                    const condition = p.fim == '--' && p.almoxarifado.almoxarifadosxMateriais.length == 0;
+                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>'
                                              : '';
                     p.fim = condition ? '--'
                                       : p.fim;

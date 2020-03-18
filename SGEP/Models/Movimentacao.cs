@@ -6,7 +6,6 @@ namespace SGEP.Models
     public class Movimentacao
     {
         public int Id { get; set; }
-        [DataType(DataType.Date)]
         public DateTime Data { get; set; }
         [Display(Name = "Material")]
         public int MaterialId { get; set; }
