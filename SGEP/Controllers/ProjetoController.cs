@@ -87,7 +87,7 @@ namespace SGEP.Controllers
             List<Funcionario> funcnaoalocados;
             List<int> funcalocados;
             funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
-            funcnaoalocados = _context.Funcionario.Where(f => !funcalocados.Contains(f.Id)).ToList();
+            funcnaoalocados = _context.Funcionario.Where(f => !f.Demitido && !funcalocados.Contains(f.Id)).ToList();
             return Json(funcnaoalocados);
         }
         public JsonResult FuncionariosAlocados(int? id)

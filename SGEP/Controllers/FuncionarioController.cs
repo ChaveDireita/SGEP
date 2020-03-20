@@ -34,7 +34,7 @@ namespace SGEP.Controllers
             return Json(new {size = _context.Funcionario.Count(), entities = result});
         }
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Cargo")] Funcionario funcionario)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Cargo,Demitido")] Funcionario funcionario)
         {
             if (ModelState.IsValid)
             {
@@ -45,7 +45,7 @@ namespace SGEP.Controllers
             return BadRequest();
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo")] Funcionario funcionario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo,Demitido")] Funcionario funcionario)
         {
             if (id != funcionario.Id)
                 return NotFound();
