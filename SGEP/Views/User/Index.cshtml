@@ -1,0 +1,168 @@
+﻿@model IEnumerable<SGEP.Models.SGEPUser>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["search-fields"] = "_User";
+}
+
+<br />
+<h2>Usuários</h2>
+<br />
+@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+
+<div class="float-right d-inline">
+    @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
+    <button id="btn-del"
+            class="btn btn-outline-danger squareborder"
+            onclick="toggleDelete()"
+            title="Ativar/Desativar">
+        <i class="fas fa-trash"></i>
+    </button>
+</div>
+<br />
+<div class="container row justify-content-center">
+    @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
+</div>
+<br />
+
+@await Html.PartialAsync("_Create")
+@await Html.PartialAsync("_Edit")
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+        </tr>
+    </thead>
+    <tbody id="lista">
+    </tbody>
+</table>
+
+@*@await Html.PartialAsync("_Details")*@
+
+@section Scripts
+{
+    <script>
+        const lista = document.getElementById('lista');
+        const checkDel = document.getElementById('checkDel');
+        const controller = 'User';
+
+        list({});
+
+        function list(searchParams)
+        {
+            refreshTable(controller, searchParams, ['nome', 'email', 'phoneNumber'], ({size, entities}) =>
+            {
+                pagination.size = size;
+                //entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
+            });
+        }
+
+        function remove(id)
+        {
+            http.POST('/' + controller + '/Delete/' + id, () =>
+            {
+                $('#edit').attr('disabled', true);
+                $('#edit').on('click', () =>
+                {
+                });
+                $('#details').attr('disabled', true);
+                $('#details').on('click', () =>
+                {
+                });
+                list({})
+            })
+        }
+
+        function toggleDelete()
+        {
+            const btnDels = document.getElementsByClassName('delete');
+            const checkDel = document.getElementById('checkDel');
+            for(const btn of btnDels)
+                btn.hidden = !btn.hidden;
+        }
+
+        function onClickSelectRow (id)
+        {
+            selectRow(id,
+            () =>
+            {
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(user =>
+                {
+                    const idField = get.id('Id-edit');
+                    const nomeField = get.id('Nome-edit');
+                    const emailField = get.id('Email-edit');
+                    const telefoneField = get.id('Telefone-edit');
+
+                    idField.value = user.id;
+                    nomeField.value = user.nome;
+                    emailField.value = user.email;
+                    telefoneField.value = user.telefone;
+                    $('#modal-edit').modal('show');
+                });
+            },
+            () =>
+            {
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(func =>
+                {
+                    var idfield = document.getElementById('idfield');
+                    idfield.innerText = "FUN - " + func.id;
+                    var namefield = document.getElementById('namefield');
+                    namefield.textContent = func.nome;
+                    var cargofield = document.getElementById('cargofield');
+                    cargofield.textContent = func.cargo;
+                    $('#detailsmodal').modal('toggle');
+                });
+            });
+        }
+        
+    </script>
+
+    @{await Html.RenderPartialAsync ("_ValidationScriptsPartial");}
+
+    <script>
+        $('#form-create').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create'))
+                })
+                .then(res => res.text())
+                .then(_ =>
+                {
+                    $('#modal-create').modal('hide');
+                    list({});
+                });
+            }
+        });
+        $('#form-edit').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Edit', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-edit'))
+                })
+                .then(res => res.text())
+                .then(_ =>
+                {
+                    $('#modal-edit').modal('hide');
+                    list({});
+                });
+            }
+        });
+    </script>
+}
+

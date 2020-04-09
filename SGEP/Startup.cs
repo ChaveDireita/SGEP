@@ -14,6 +14,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
+using SGEP.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SGEP.Areas.Identity.Services;
 
 namespace SGEP
 {
@@ -26,7 +29,6 @@ namespace SGEP
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions> (options =>
@@ -41,10 +43,14 @@ namespace SGEP
                 //options.UseMySql (Configuration.GetConnectionString ("mysql"));
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
-            services.AddDefaultIdentity<IdentityUser> (o => 
+
+            services.AddScoped<IEmailSender, GmailEmailSender>();
+
+            services.AddDefaultIdentity<SGEPUser> (o => 
             {
                 o.SignIn.RequireConfirmedEmail = false;
                 o.SignIn.RequireConfirmedPhoneNumber = false;
+                o.User.RequireUniqueEmail = true;
                 o.Password.RequireDigit = false;
                 o.Password.RequiredLength = 3;
                 o.Password.RequireNonAlphanumeric = false;

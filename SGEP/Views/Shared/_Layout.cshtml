@@ -1,5 +1,5 @@
 ﻿@using Microsoft.AspNetCore.Identity;
-@inject SignInManager<IdentityUser> signInManager;
+@inject SignInManager<SGEPUser> signInManager;
 
 <!DOCTYPE html>
 <html>
@@ -27,12 +27,13 @@
                 @if (signInManager.IsSignedIn(User))
                 {
                     <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <ul class="navbar-nav mr-auto mt-1 mt-lg-0">
                             <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
                             <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
                             <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
                             <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
                             <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
+                            <li><a asp-area="" asp-controller="User" asp-action="Index"  class="nav-li-a">Usuários</a></li>
                         </ul>
                         <partial name="_LoginPartial" />
                     </div>

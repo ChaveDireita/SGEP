@@ -13,10 +13,11 @@ namespace SGEP.Data
             : base (options)
         {
         }
-        public DbSet<SGEP.Models.Funcionario> Funcionario { get; set; }
-        public DbSet<SGEP.Models.Material> Material { get; set; }
-        public DbSet<SGEP.Models.Projeto> Projeto { get; set; }
-        public DbSet<SGEP.Models.Movimentacao> Movimentacao { get; set; }
+        public DbSet<SGEPUser> User { get; set; }
+        public DbSet<Funcionario> Funcionario { get; set; }
+        public DbSet<Material> Material { get; set; }
+        public DbSet<Projeto> Projeto { get; set; }
+        public DbSet<Movimentacao> Movimentacao { get; set; }
         public DbSet<ProjetosxFuncionarios> ProjetosxFuncionarios { get; set; }
     }
 }
