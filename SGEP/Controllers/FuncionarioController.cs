@@ -14,10 +14,14 @@ namespace SGEP.Controllers
     {
         private readonly ApplicationDbContext _context;
         public FuncionarioController(ApplicationDbContext context) => _context = context;
+        [Authorize(Roles = "Almoxarife,Gerente")]
         public IActionResult Index() => View();
-        
+
+        [Authorize(Roles = "Almoxarife,Gerente")]
         [HttpGet("/Funcionario/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Funcionario.FindAsync(id));
+
+        [Authorize(Roles = "Almoxarife,Gerente")]
         public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Funcionario> result = _context.Funcionario;
@@ -33,7 +37,7 @@ namespace SGEP.Controllers
             
             return Json(new {size = _context.Funcionario.Count(), entities = result});
         }
-        
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cargo")] Funcionario funcionario)
         {
@@ -45,6 +49,7 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo")] Funcionario funcionario)
         {
@@ -68,7 +73,7 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
-
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -80,7 +85,7 @@ namespace SGEP.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
-
+        [Authorize(Roles = "Almoxarife,Gerente")]
         public async Task<JsonResult> ProjetosAssociados(int? id)
         {
             IEnumerable<int> Ids = (await _context.ProjetosxFuncionarios.ToListAsync())

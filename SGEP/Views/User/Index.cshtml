@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SGEP.Models.SGEPUser>
+﻿@model IEnumerable<SGEP.Models.UserForm>
 
 @{
     ViewData["Title"] = "Index";
@@ -38,7 +38,10 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
+                @Html.DisplayNameFor(model => model.Telefone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
             </th>
         </tr>
     </thead>
@@ -59,7 +62,7 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['nome', 'email', 'phoneNumber'], ({size, entities}) =>
+            refreshTable(controller, searchParams, ['nome', 'email', 'telefone', 'role'], ({size, entities}) =>
             {
                 pagination.size = size;
                 //entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');

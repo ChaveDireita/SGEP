@@ -13,6 +13,11 @@ namespace SGEP.Data
             : base (options)
         {
         }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<SGEPUser>().HasData(new SGEPUser {});
+            base.OnModelCreating(builder);
+        }
         public DbSet<SGEPUser> User { get; set; }
         public DbSet<Funcionario> Funcionario { get; set; }
         public DbSet<Material> Material { get; set; }

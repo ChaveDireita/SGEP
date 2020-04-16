@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200331191454_Migracao")]
+    [Migration("20200416211601_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -299,13 +299,15 @@ namespace SGEP.Migrations
 
                     b.Property<bool>("Ativo");
 
-                    b.Property<string>("CPF");
-
                     b.Property<string>("Nome");
 
                     b.ToTable("SGEPUser");
 
                     b.HasDiscriminator().HasValue("SGEPUser");
+
+                    b.HasData(
+                        new { Id = "aef57ad3-2336-4877-b008-0d85940de63c", AccessFailedCount = 0, ConcurrencyStamp = "abb6e2e9-e131-4d32-9941-44d80819e132", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false, Ativo = true }
+                    );
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

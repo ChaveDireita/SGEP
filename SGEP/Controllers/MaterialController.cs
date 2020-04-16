@@ -10,12 +10,15 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
     public class MaterialController : Controller
     {
         private readonly ApplicationDbContext _context;
         public MaterialController(ApplicationDbContext context) => _context = context;
+
+        [Authorize(Roles = "Almoxarife,Gerente")]
         public IActionResult Index() => View();
+
+        [Authorize(Roles = "Almoxarife,Gerente")]
         public async Task<JsonResult> List(string id, string descricao, string preco, string categoria, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Material> result = await _context.Material.ToListAsync();
@@ -31,8 +34,12 @@ namespace SGEP.Controllers
             
             return Json(new {size = _context.Material.Count(), entities = result});
         }
+
+        [Authorize(Roles = "Almoxarife,Gerente")]
         [HttpGet("/Material/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
+        
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Descricao,Preco")] Material material)
         {
@@ -44,6 +51,8 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
+
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,Preco")] Material material)
         {

@@ -54,7 +54,6 @@ namespace SGEP.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
-                    CPF = table.Column<string>(nullable: true),
                     Nome = table.Column<string>(nullable: true),
                     Ativo = table.Column<bool>(nullable: true)
                 },
@@ -256,6 +255,11 @@ namespace SGEP.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Ativo", "Nome" },
+                values: new object[] { "aef57ad3-2336-4877-b008-0d85940de63c", 0, "abb6e2e9-e131-4d32-9941-44d80819e132", "SGEPUser", null, false, false, null, null, null, null, null, false, null, false, null, true, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
