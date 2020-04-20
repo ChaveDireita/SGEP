@@ -304,7 +304,7 @@ namespace SGEP.Migrations
                     b.HasDiscriminator().HasValue("SGEPUser");
 
                     b.HasData(
-                        new { Id = "aef57ad3-2336-4877-b008-0d85940de63c", AccessFailedCount = 0, ConcurrencyStamp = "abb6e2e9-e131-4d32-9941-44d80819e132", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false, Ativo = true }
+                        new { Id = "c00580b6-2636-48b1-b67f-32b4e7c99304", AccessFailedCount = 0, ConcurrencyStamp = "01735141-9cf7-4c20-9c4f-f4c5e3eb3d2d", EmailConfirmed = false, LockoutEnabled = false, PhoneNumberConfirmed = false, TwoFactorEnabled = false, Ativo = true }
                     );
                 });
 

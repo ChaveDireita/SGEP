@@ -65,10 +65,12 @@ namespace SGEP
                     new AuthorizationPolicyBuilder ().RequireAuthenticatedUser ()
                                                      .Build ()));
             }).SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
+            
+            services.AddScoped<UserAndRolesSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure (IApplicationBuilder app, IHostingEnvironment env, UserAndRolesSeeder seeder)
         {
             if (env.IsDevelopment ())
             {
@@ -103,6 +105,9 @@ namespace SGEP
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            seeder.Seed().Wait();
+            
         }
     }
 }

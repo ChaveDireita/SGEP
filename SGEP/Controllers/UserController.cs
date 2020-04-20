@@ -74,8 +74,8 @@ namespace SGEP.Controllers
                 savedUser.Nome = user.Nome;
                 savedUser.Email = user.Email;
                 savedUser.PhoneNumber = user.Telefone;
-                string role = (await _userManager.GetRolesAsync(savedUser))[0];
-                await _userManager.RemoveFromRoleAsync(savedUser, role);
+                string currentRole = (await _userManager.GetRolesAsync(savedUser))[0];
+                await _userManager.RemoveFromRoleAsync(savedUser, currentRole);
                 await _userManager.AddToRoleAsync(savedUser, user.Role);
 
                 var result = await _userManager.UpdateAsync(savedUser);

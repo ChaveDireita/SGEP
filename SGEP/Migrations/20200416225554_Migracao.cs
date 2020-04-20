@@ -259,7 +259,7 @@ namespace SGEP.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName", "Ativo", "Nome" },
-                values: new object[] { "aef57ad3-2336-4877-b008-0d85940de63c", 0, "abb6e2e9-e131-4d32-9941-44d80819e132", "SGEPUser", null, false, false, null, null, null, null, null, false, null, false, null, true, null });
+                values: new object[] { "c00580b6-2636-48b1-b67f-32b4e7c99304", 0, "01735141-9cf7-4c20-9c4f-f4c5e3eb3d2d", "SGEPUser", null, false, false, null, null, null, null, null, false, null, false, null, true, null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
