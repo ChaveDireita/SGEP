@@ -25,10 +25,33 @@
                         <span asp-validation-for="Nome" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Salvar" class="btn btn-success squareborder" />
+                        <input type="submit" value="Salvar" class="btn btn-success squareborder" id="btn_save_edit"/>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+
+@section Scripts
+{
+    <script>
+        var projeto_id = document.getElementById('Projeto-id').value
+        $('#form-edit').submit(function (e) {
+            e.preventDefault()
+            if (projeto_id === 'false') {
+                fetch('/' + controller + '/Edit', {
+                    method: 'post',
+                    body: new FormData(document.getElementById('form-edit'))
+                })
+                .then(res => res.text())
+                .then(_ => {
+                    $('#modal-edit').modal('hide');
+                    get.id('form-edit').reset();
+                    list({});
+                });
+            }
+        })
+    </script>
+}
