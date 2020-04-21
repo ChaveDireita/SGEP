@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity;
 @inject SignInManager<SGEPUser> signInManager;
+@inject UserManager<SGEPUser> userManager;
 
 <!DOCTYPE html>
 <html>
@@ -33,7 +34,15 @@
                             <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
                             <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
                             <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
-                            <li><a asp-area="" asp-controller="User" asp-action="Index"  class="nav-li-a">Usuários</a></li>
+                            @if((await userManager.GetRolesAsync(
+                                    await userManager.FindByEmailAsync(
+                                        userManager.GetUserName(User)
+                                        )
+                                    )
+                                )[0] == "Gerente")
+                            {
+                                <li><a asp-area="" asp-controller="User" asp-action="Index"  class="nav-li-a">Usuários</a></li>
+                            }
                         </ul>
                         <partial name="_LoginPartial" />
                     </div>

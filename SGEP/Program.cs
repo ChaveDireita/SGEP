@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -20,18 +21,19 @@ namespace SGEP
             var host = CreateWebHostBuilder (args).Build();//.Run();
             if (args.Length > 0)
             {
-                string mode = args[0];
-                if (mode == "--add-user" || mode == "-AU")
+                string option = args[0];
+                if (option == "--add-user" || option == "-AU")
                 {
                     using(var scope = host.Services.CreateScope())
-                        await CreateUser(scope.ServiceProvider.GetService<UserManager<SGEPUser>>());
+                        await CreateUser(scope.ServiceProvider.GetRequiredService<UserManager<SGEPUser>>(), 
+                                         scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
                 }
-                else if(mode == "--help" || mode == "-h")
+                else if(option == "--help" || option == "-h")
                 {
                     Help();
                 } 
                 else {
-                    Console.WriteLine($"Unknown argument \"{mode}\" provided\n\n");
+                    Console.WriteLine($"Argumento desconhecido, \"{option}\", inserido.\n\n");
                     Help();
                 }
             }
@@ -43,40 +45,77 @@ namespace SGEP
 
         private static void Help()
         {
-            Console.WriteLine("Usage: SGEP [--add-user | --help]\n");
-            Console.WriteLine("Arguments:");
-            Console.WriteLine("     --add-user adds a new user");
-            Console.WriteLine("     --help     show usage and command list");
+            Console.WriteLine("Uso: SGEP [--add-user | --help]\n");
+            Console.WriteLine("Argumentos:");
+            Console.WriteLine("     --add-user adiciona um novo usuário");
+            Console.WriteLine("     --help     exibe o uso e a lista de argumentos");
         }
 
-        private static async Task CreateUser(UserManager<SGEPUser> manager)
+        private static async Task CheckForRoles(RoleManager<IdentityRole> roleManager)
+        {
+            if (!(await roleManager.RoleExistsAsync("Almoxarixe")))
+                    await roleManager.CreateAsync(new IdentityRole("Almoxarife"));
+            if (!(await roleManager.RoleExistsAsync("Gerente")))
+                await roleManager.CreateAsync(new IdentityRole("Gerente"));
+        }
+        private static async Task CreateUser(UserManager<SGEPUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             SGEPUser user = new SGEPUser();
             Console.WriteLine("Creating user: \n");
             Console.WriteLine("Nome: ");
-            user.Nome = Console.ReadLine();
+            string _nome = Console.ReadLine();
+            while(string.IsNullOrWhiteSpace (_nome))
+            {
+                Console.WriteLine("Nome inválido.");
+                _nome = Console.ReadLine();
+            }
+            user.Nome = _nome; 
             Console.WriteLine("E-mail: ");
-            user.Email = Console.ReadLine();
+            string _email = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(_email) || !Regex.Match(_email, "[A-z0-9.\\-_]+@[a-z]+([.][a-z]+){1,2}").Success)
+            {
+                Console.WriteLine("E-mail inválido.");
+                _nome = Console.ReadLine();
+            }
+            user.Email = _email;
             Console.WriteLine("Telefone: ");
-            user.PhoneNumber = Console.ReadLine();
+            string _telefone = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(_telefone) || !Regex.Match(_telefone, "[0-9]{8,9}").Success)
+            {
+                Console.WriteLine("Telefone inválido.");
+                _telefone = Console.ReadLine();
+            }
+            user.PhoneNumber = _telefone;
+            
             user.UserName = user.Email;
-            Console.WriteLine("Role: ");
+            
+            Console.WriteLine("Tipo: ");
             Console.WriteLine("1 - Almoxarife ");
             Console.WriteLine("2 - Gerente ");
-            string role = Console.ReadLine() == "1" ? "Almoxarife" : "Gerente";
-            
-
-            var result = await manager.CreateAsync(user, "12345678");
+            string _role = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(_role) || _role != "1" && _role != "2")
+            {
+                Console.WriteLine("Insira 1 ou 2.");
+                _role = Console.ReadLine();
+            }
+            _role = _role == "1" ? "Almoxarife" : "Gerente";
+            var result = await userManager.CreateAsync(user, "12345678");
             if (result.Succeeded)
             {
-                await manager.AddToRoleAsync(user, role);
-                Console.WriteLine("User successfully created!");
-                Console.WriteLine("Login with these credentials: ");
-                Console.WriteLine("E-mail: " + user.Email);
-                Console.WriteLine("Password: 12345678");
+                await CheckForRoles(roleManager);
+                var roleResult = await userManager.AddToRoleAsync(user, _role);
+                if (roleResult.Succeeded)
+                {
+                    Console.WriteLine("Usuário criado com sucesso!");
+                    Console.WriteLine("Entre com as seguintes credenciais: ");
+                    Console.WriteLine("E-mail: " + user.Email);
+                    Console.WriteLine("Senha: 12345678");
+                } else {
+                    await userManager.DeleteAsync(user);
+                }
                 return;
             }
-            Console.WriteLine("There was an error on creating user: ");
+            Console.WriteLine("Ocorreu um erro ao criar um usuário: ");
             foreach (var error in result.Errors)
             {
                 Console.WriteLine(error.Code + ": " + error.Description);

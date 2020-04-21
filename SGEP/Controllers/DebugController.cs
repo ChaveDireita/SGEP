@@ -26,6 +26,12 @@ namespace SGEP.Controllers
         {
             return Json(new {_userManager.Users, count = _userManager.Users.Count()});
         }
+
+        [Route("Debug/Roles/{email}")]
+        public async Task<JsonResult> Roles(string email)
+        {
+            return Json(await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email)));
+        }
         
     }
 }
