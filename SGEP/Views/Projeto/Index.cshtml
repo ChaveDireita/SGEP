@@ -109,10 +109,13 @@
                     const nomeField = get.id('Nome-edit');
                     const inicioField = get.id('Inicio-edit');
                     const fimField = get.id('Fim-edit');
+                    const fimGroup = get.id('Fim-edit-group');
+                    console.log(proj.inicio)
                     idField.value = proj.id;
                     nomeField.value = proj.nome;
-                    inicioField.value = proj.inicio;
-                    fimField.value = proj.fim;
+                    inicioField.value = proj.inicio.slice(0, 10);
+                    fimGroup.hidden = proj.fim == null;
+                    fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
                     $('#modal-edit').modal('show');
                 });
             },
