@@ -113,12 +113,14 @@
                     const inicioField = get.id('Inicio-edit');
                     const fimField = get.id('Fim-edit');
                     const almoxarifado = get.id('Almoxarifado-edit');
-
+                    const fimGroup = get.id('Fim-edit-group');
+                    
                     idField.value = proj.id;
                     nomeField.value = proj.nome;
-                    inicioField.value = proj.inicio;
-                    fimField.value = proj.fim;
+                    inicioField.value = proj.inicio.slice(0, 10);
                     almoxarifado.value = proj.almoxarifadoId;
+                    fimGroup.hidden = proj.fim == null;
+                    fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
                     $('#modal-edit').modal('show');
                 });
             },
