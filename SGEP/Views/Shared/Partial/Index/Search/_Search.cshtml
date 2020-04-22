@@ -1,0 +1,19 @@
+<div class="collapse col-md-12" id="pesquisa">
+    <br/>
+    <div class="card card-body">
+        <form class="form">
+            <div class="row justify-content-center">
+                @await Html.PartialAsync("Partial/Index/Search/" + ViewData["search-fields"])
+            </div>
+        </form>
+        <br />
+        <div class="float-right">
+            <a id="search-search" 
+               href="#" 
+               class="float-right"
+               onclick="
+                    pagination.page = 1;
+                    list(_search());">Pesquisar</a>
+        </div>
+    </div>
+</div>

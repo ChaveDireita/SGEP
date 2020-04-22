@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "Index";
+}
+<br />
+<h2>Histograma</h2>
+<br />
+@await Html.PartialAsync("Partial/_Form.cshtml")
+<br />
+<br />
+<canvas id="graph" width="800" height="300"></canvas>
+
+@section Scripts
+{
+    <script>
+        function load (start, end, material, tipo)
+        {
+            fetch('/Histograma/GraphData?inicio=' + start.getUTCFullYear() + (start.getUTCMonth() + 1)+
+                                        '&fim=' + end.getUTCFullYear() + (end.getUTCMonth() + 1) +
+                                        '&material=' + material + '&tipo=' + tipo)
+            .then(res => res.json())
+            .then(json => 
+            {
+                if (json.almoxarifado == null)
+                    chart.data.datasets[0].label = json.tipo + ' total de ' + json.material;
+                else
+                    chart.data.datasets[0].label = json.tipo + ' de ' + json.material + "para" + json.almoxarifado;
+                
+                chart.data.datasets[0].data = new Array();
+                chart.data.datasets[0].backgroundColor = new Array();
+                chart.data.datasets[0].borderColor = new Array();
+                chart.data.labels = new Array();
+
+                for (const d in json.data)
+                {
+                    chart.data.labels.push(d);
+                    chart.data.datasets[0].data.push(json.data[d]);
+                    chart.data.datasets[0].backgroundColor.push('rgba(255, 99, 132, 0.2)');
+                    chart.data.datasets[0].borderColor.push('rgba(255, 99, 132, 1)');
+                }
+                chart.update();
+                $('#form-modal').modal('hide');
+            });
+        }
+
+        const ctx = get.id('graph').getContext('2d');
+        const chart = new Chart(ctx, 
+        {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '',
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        fetch('/Material/All')
+        .then(res => res.json())
+        .then(json => 
+        {
+            console.log(json);
+            for(const m of json)
+            {
+                get.name('material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
+            }
+        });
+
+        load(new Date(2018, 1), new Date(2020, 01), 1, 'Entrada');
+    </script>
+}

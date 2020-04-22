@@ -1,0 +1,29 @@
+@model SGEP.Models.Projeto
+
+<div class="modal fade" id="modal-end" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modal-end-title">Finalizar Projeto</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Create" id="form-end">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" id="Id-end">
+                    <input type="hidden" asp-for="Inicio" id="Inicio-end">
+                    <div class="form-group">
+                        <label asp-for="Fim" class="control-label">Data de término</label>
+                        <input asp-for="Fim" class="form-control" />
+                        <span asp-validation-for="Fim" class="text-danger" id="Fim-end"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-success squareborder" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

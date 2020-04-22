@@ -1,0 +1,34 @@
+@model SGEP.Models.Almoxarifado
+
+@{
+    ViewData["Title"] = "_Create";
+}
+
+<div class="modal fade" id="modal-edit" tabindex="-1" role="dialog" aria-labelledby="modal-eit-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modal-edit-title">Editar Almoxarifado</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="_Create" asp-controller="Create" id="form-edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input asp-for="Id" id="Id-edit" type="hidden" />
+                    <input asp-for="Projeto" id="Projeto-edit" hidden value="false" class="form-control" />
+                    <input asp-for="Ativo" id="Ativo-edit" hidden value="false" class="form-control" />
+                    <div class="form-group">
+                        <label asp-for="Nome" class="control-label">Nome</label>
+                        <input asp-for="Nome" id="Nome-edit" class="form-control squareborder" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-success squareborder" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

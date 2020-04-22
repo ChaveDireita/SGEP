@@ -1,0 +1,236 @@
+﻿@model IEnumerable<SGEP.Models.Funcionario>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["search-fields"] = "_Funcionario";
+}
+
+<br />
+<h2>Funcionários</h2>
+<br />
+@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+
+<div class="float-right d-inline">
+    @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
+    <button id="btn-del" 
+            class="btn btn-outline-danger squareborder" 
+            onclick="toggleDelete()"
+            title="Remover"><i class="fas fa-trash"></i></button>
+</div>
+<br/>
+<div class="container row justify-content-center">
+    @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
+</div>
+<br/>
+
+@await Html.PartialAsync("_Create")
+@await Html.PartialAsync("_Edit")
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cargo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="lista">
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_Details")
+
+@section Scripts
+{
+    <script>
+        const lista = document.getElementById('lista');
+        const checkDel = document.getElementById('checkDel');
+        const controller = 'Funcionario';
+
+        list({});
+
+        function list(searchParams)
+        {
+            refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
+            {
+                pagination.size = size;
+                entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
+            });
+        }
+
+        function remove(id)
+        {
+            http.POST('/' + controller + '/Delete/' + id, () => 
+            {
+                $('#edit').attr('disabled', true);
+                $('#edit').on('click', () => 
+                {
+                });
+                $('#details').attr('disabled', true);
+                $('#details').on('click', () => 
+                {
+                });
+                list({})
+            })
+        }
+        
+        function getAll(id, nome, cargo)
+        {
+            lista.innerHTML = '<tr><td colspan=4 class="reloading"><i class="fas fa-sync reloading"></i></td></tr>';
+            fetch('/' + controller + '/List/?id=' + id + '&nome=' + nome + '&cargo=' + cargo)
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                lista.innerHTML = '';
+                for(const f of json)
+                {
+                    var tr = document.createElement("tr");
+                    tr.id = f.id
+                    tr.className = "selectable loading";
+                    tr.onclick = function () { selectRow(f) };
+                    tr.innerHTML = '';
+                    tr.innerHTML = '<td>' +
+                        f.id +
+                        '</td>' +
+                        '<td>' +
+                        f.nome +
+                        '</td>' +
+                        '<td>' +
+                        f.cargo +
+                        '</td>' +
+                        '<td>' +
+                        '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>' +
+                        '</td>';
+                    lista.appendChild(tr);
+                }
+            });
+        }
+
+        function toggleDelete()
+        {
+            const btnDels = document.getElementsByClassName('delete');
+            const checkDel = document.getElementById('checkDel');
+            for(const btn of btnDels)
+                btn.hidden = !btn.hidden;
+        }
+
+        function onClickSelectRow (id)
+        {
+            selectRow(id, 
+            () => 
+            {
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(func => 
+                {
+                    const idField = get.id('Id-edit');
+                    const nomeField = get.id('Nome-edit');
+                    const cargoField = get.id('Cargo-edit');
+                    idField.value = func.id;
+                    nomeField.value = func.nome;
+                    cargoField.value = func.cargo;
+                    $('#modal-edit').modal('show');
+                });
+            },
+            () => 
+            {
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(func => 
+                {
+                    var idfield = document.getElementById('idfield');
+                    idfield.innerText = "FUN - " + func.id;
+                    var namefield = document.getElementById('namefield');
+                    namefield.textContent = func.nome;
+                    var cargofield = document.getElementById('cargofield');
+                    cargofield.textContent = func.cargo;
+                    gerarlista(id);
+                    $('#detailsmodal').modal('toggle');
+                });
+            });
+        }
+        function gerarlista(id)
+        {
+            fetch('/' + controller + '/ProjetosAssociados/?id=' + id).then((res) => res.json())
+                .then((json) => {
+                    var theadr = document.getElementById('theadr');
+                    theadr.innerHTML = '';
+                    theadr.innerHTML = '<th>' +
+                        json.id +
+                        '</th >' +
+                        '<th>' +
+                        json.nome +
+                        '</th>' +
+                        '<th>' +
+                        json.inicio +
+                        '</th>' +
+                        '<th>' +
+                        json.fim +
+                        '</th>';
+                    var tbody = document.getElementById('projlista');
+                    tbody.innerHTML = '';
+                    for (const p of json) {
+                        tbody.innerHTML += '<tr>' +
+                            '<td>' +
+                            p.id +
+                            '</td>' +
+                            '<td>' +
+                            p.nome +
+                            '</td>' +
+                            '<td>' +
+                            p.inicio +
+                            '</td>' +
+                            '<td>' +
+                            p.fim +
+                            '</td>' +
+                            '</tr>';
+                    }
+                });
+        }
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $('#form-create').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Create', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create').modal('hide');
+                    get.id ('form-create').reset();
+                    list({});
+                });
+            }
+        });
+        $('#form-edit').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/Edit', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-edit'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-edit').modal('hide');
+                    get.id ('form-edit').reset();
+                    list({});
+                });
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,48 @@
+<div class="btn-group" role="group">
+    <button class="btn btn-outline-primary squareborder" 
+            type="button" 
+            id="page-first" 
+            onclick="(() => 
+            { 
+                pagination.page = 1;
+                list(_search()); 
+            })()"><<</button>
+    <button class="btn btn-outline-primary squareborder" 
+            type="button" 
+            id="page-prev"
+            onclick="(() => 
+            {
+                pagination.prev();
+                list(_search());
+            })()"><</button>
+    <button class="btn btn-outline-primary squareborder" 
+            type="button" 
+            id="page-next"
+            onclick="(() => 
+            {
+                pagination.next();
+                list(_search());
+            })()">></button>
+    <button class="btn btn-outline-primary squareborder" 
+            type="button" 
+            id="page-last"
+            onclick="(() => 
+            {
+                pagination.page = Math.max(Math.ceil (pagination.size/pagination.itensPerPage), 1);
+                list(_search());
+            })()">>></button>
+</div>
+<button class="btn btn-outline-primary squareborder" 
+    data-toggle="collapse" 
+    data-target="#pesquisa" 
+    aria-expanded="false" 
+    aria-controls="pesquisa" 
+    title="Pesquisar"><i class="fas fa-search"></i></button>
+
+<button class="btn btn-outline-secondary squareborder" 
+    onclick="(() => 
+    {
+        pagination.page = 1;
+        list(_search());
+    })()"
+    title="Atualizar"><i class="fas fa-sync"></i></button>

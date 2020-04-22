@@ -1,0 +1,261 @@
+﻿@model IEnumerable<SGEP.Models.Movimentacao>
+
+@{
+    ViewData["Title"] = "Index";
+    ViewData["search-fields"] = "_Movimentacao";
+}
+<br />
+<h2>Movimentações</h2>
+<br />
+<div class="btn-group">
+  <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-plus"></i> Adicionar
+  </button>
+  <div class="dropdown-menu">
+    <a class="dropdown-item" 
+       href="#" 
+       data-toggle="modal" 
+       data-target="#modal-create-in" 
+       onclick="
+            const selectDest = get.id('Destino-in');
+            selectDest.innerHTML = '<option>Carregando dados...</option>';
+            selectDest.disabled = true;
+            fetch('/Almoxarifado/All')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
+                for(alm of json)
+                {
+                    if (alm.ativo)
+                    {
+                        const opt = document.createElement('option');
+                        opt.value = alm.id;
+                        opt.innerText = alm.nome;
+                        selectDest.appendChild(opt);
+                    }
+                }
+                selectDest.disabled = false;
+            });
+            const selectMat = get.id('Material-in');
+            selectMat.innerHTML = '<option>Carregando dados...</option>';
+            selectMat.disabled = true;
+            fetch('/Material/All')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                console.log (json);
+                for(mat of json)
+                {
+                    const opt = document.createElement('option');
+                    opt.value = mat.id;
+                    opt.innerText = mat.id;
+                    opt.title = mat.descricao;
+                    selectMat.appendChild(opt);
+                }
+                selectMat.disabled = false;
+            });
+            ">Entrada</a>
+    <a class="dropdown-item" 
+       href="#" 
+       data-toggle="modal" 
+       data-target="#modal-create-out"
+       onclick="
+            const selectOrig = get.id('Origem-out');
+            selectOrig.innerHTML = '<option>Carregando dados...</option>';
+            selectOrig.disabled = true;
+
+            fetch('/Almoxarifado/All')
+            .then((res) => res.json())
+            .then((json) => 
+            {
+                selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                console.log (json);
+                for(alm of json)
+                {
+                    if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+                    {
+                        const opt = document.createElement('option');
+                        opt.value = alm.id;
+                        opt.innerText = alm.nome;
+                        selectOrig.appendChild(opt);
+                    }
+                }
+                selectOrig.disabled = false;
+            });
+       ">Saída</a>
+    <a class="dropdown-item" 
+       href="#" 
+       data-toggle="modal" 
+       data-target="#modal-create-diff"
+       onclick="
+        const selectOrigin = get.id('Origem-diff');
+        const selectMat = get.id('Material-diff');
+        selectOrigin.innerHTML = '<option>Carregando dados...</option>';
+        selectOrigin.disabled = true;
+        selectMat.disabled = true;
+        selectMat.innerHTML = '<option>Selecione a origem</option>'
+
+        fetch('/Almoxarifado/All')
+        .then((res) => res.json())
+        .then((json) => 
+        {
+            selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
+            console.log (json);
+            for(alm of json)
+            {
+                if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+                {
+                    const opt = document.createElement('option');
+                    opt.value = alm.id;
+                    opt.innerText = alm.nome;
+                    selectOrigin.appendChild(opt);
+                }
+            }
+            selectOrigin.disabled = false;
+        });">Consumo (?)</a>
+  </div>
+</div>
+<button id="details" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled><i class="fas fa-info"></i> Detalhes</button>
+<div class="float-right d-inline">
+    @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
+</div>
+<br/>
+<div class="container row justify-content-center">
+    @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
+</div>
+@await Html.PartialAsync("_Create")
+<br/>
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Data)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaterialId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tipo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OrigemId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DestinoId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantidade)
+            </th>
+        </tr>
+    </thead>
+    <tbody id="lista">
+    </tbody>
+</table>
+
+@section Scripts
+{
+    <script>
+        const lista = document.getElementById('lista');
+        const controller = 'Movimentacao';
+
+        list({});
+
+        function list(searchParams)
+        {
+            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origem', 'destino', 'quantidade'], ({size, entities}) => 
+            {
+                pagination.size = size;
+                entities.forEach(e => 
+                {
+                    if (e.destino == null)
+                        e.destino = '--';
+                    if (e.origem == null)
+                        e.origem = '--';
+                    
+                    if (e.destino.projeto)
+                    {
+                        e.destino = `${e.destino.nome} <span class="badge badge-info">Projeto</span>`;
+                    } else if (e.destino != '--')
+                    {
+                        e.destino = e.destino.nome;
+                    }
+                    
+                    if (e.origem.projeto)
+                    {
+                        e.origem = `${e.origem.nome} <span class="badge badge-info">Projeto</span>`;
+                    } else if (e.origem != '--')
+                    {
+                        e.origem = e.origem.nome;
+                    }
+                });
+            });
+        }
+
+        function onClickSelectRow (id)
+        {
+            selectRow(id, () => 
+            {
+                //Código do modal
+            },
+            () => 
+            {
+                //Código do modal
+            });
+        }
+    </script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#form-create-in').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/CreateEntrada', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-in'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create-in').modal('hide');
+                    get.id ('form-create-in').reset();
+                    list({});
+                });
+            }
+        });
+        $('#form-create-out').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/CreateSaida', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-out'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create-out').modal('hide');
+                    get.id ('form-create-out').reset();
+                    list({});
+                });
+            }
+        });
+        $('#form-create-diff').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/' + controller + '/CreateConsumo', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-diff'))
+                })
+                .then(res => res.text())
+                .then(_ => 
+                {
+                    $('#modal-create-diff').modal('hide');
+                    get.id ('form-create-diff').reset();
+                    list({});
+                });
+            }
+        });
+    </script>
+}

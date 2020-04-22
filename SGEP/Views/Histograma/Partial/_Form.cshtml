@@ -1,0 +1,55 @@
+<button type="button" class="btn btn-primary squareborder" data-toggle="modal" data-target="#form-modal">
+    <i class="fas fa-clock"></i> Escolher período
+</button>
+<div class="modal fade" 
+     id="form-modal" 
+     tabindex="-1" 
+     role="dialog" 
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content squareborder">
+      <div class="modal-header">
+        <h5 class="modal-title">Escolher Período</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form" id="graph-query">
+            <div class="form-group">
+                <label for="inicio">Data inicial</label>
+                <input class="form-control squareborder" type="month" name="inicio"/>
+            </div>
+            <div class="form-group">
+                <label for="fim">Data final</label>
+                <input class="form-control squareborder" type="month" name="fim"/>
+            </div>
+            <div class="form-group">
+                <label for="material">Material</label>
+                <select class="form-control squareborder" name="material">
+                    <option value="0" selected disabled>Selecione um material</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select class="form-control squareborder" name="tipo">
+                    <option value="Entrada" selected disabled>Selecione um tipo</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Saída">Saída</option>
+                    <option value="Consumo">Consumo</option>
+                </select>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" 
+                id="graph-update" 
+                class="btn btn-primary squareborder"
+                onclick="load(new Date(get.name('inicio').value), 
+                              new Date(get.name('fim').value),
+                              get.name('material').value,
+                              get.name('tipo').value)">Atualizar</button>
+      </div>
+    </div>
+  </div>
+</div>
