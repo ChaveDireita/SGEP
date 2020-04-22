@@ -7,7 +7,7 @@ namespace SGEP.Models
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Cargo { get; set; }
-        public bool Demitido { get; set; } = false;
+        public bool Ativo { get; set; } = true;
         [RegularExpression("[0-9]{4}", ErrorMessage = "A matrícula deve possuir 4 números")]
         public string Matricula { get; set; }
     }

@@ -61,7 +61,11 @@
             refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
             {
                 pagination.size = size;
-                entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
+                entities.forEach(f => 
+                {
+                    f['delete-btn'] = f['ativo'] ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>'
+                                                 : 'Removido';
+                });
             });
         }
 
@@ -133,9 +137,11 @@
                     const idField = get.id('Id-edit');
                     const nomeField = get.id('Nome-edit');
                     const cargoField = get.id('Cargo-edit');
+                    const ativoField = get.id('Ativo-edit');
                     idField.value = func.id;
                     nomeField.value = func.nome;
                     cargoField.value = func.cargo;
+                    ativoField.value = func.ativo;
                     $('#modal-edit').modal('show');
                 });
             },

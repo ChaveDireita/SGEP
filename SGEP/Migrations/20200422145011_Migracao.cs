@@ -70,7 +70,9 @@ namespace SGEP.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: true),
-                    Cargo = table.Column<string>(nullable: true)
+                    Cargo = table.Column<string>(nullable: true),
+                    Ativo = table.Column<bool>(nullable: false),
+                    Matricula = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
