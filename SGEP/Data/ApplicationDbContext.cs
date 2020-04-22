@@ -14,6 +14,7 @@ namespace SGEP.Data
         {
             
         }
+        public DbSet<SGEPUser> User { get; set; }
         public DbSet<Funcionario> Funcionario { get; set; }
         public DbSet<Material> Material { get; set; }
         public DbSet<Projeto> Projeto { get; set; }

@@ -56,7 +56,10 @@ namespace SGEP.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    Nome = table.Column<string>(nullable: true),
+                    Ativo = table.Column<bool>(nullable: true)
                 },
                 constraints: table =>
                 {
