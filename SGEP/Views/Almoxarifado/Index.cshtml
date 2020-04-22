@@ -137,20 +137,24 @@
                     const nomeField = get.id('Nome-edit');
                     const projetoField = get.id('Projeto-edit');
                     const ativoField = get.id('Ativo-edit');
+                    const btnDisable = get.id('btn_save_edit')
                     idField.value = a.id;
                     nomeField.value = a.nome;
                     projetoField.value = a.projeto;
                     ativoField.value = a.ativo;
+                    
                     if (a.projeto)
                     {
                         nomeField.disabled = true;
                         nomeField.title = 'Projetos podem ser alterados na página "Projetos".';
+                        btnDisable.disabled = true
                     } else 
                     {
                         nomeField.disabled = false;
                         nomeField.title = '';
+                        btnDisable.disabled = false;
                     }
-                    $('#modal-edit').modal('show');
+                    $('#modal-edit').modal('show'); 
                 });
             },
             () => 
@@ -167,6 +171,7 @@
                     cargofield.textContent = func.cargo;
                     gerarlista(id);
                     $('#detailsmodal').modal('toggle');
+
                 });
             });
         }
