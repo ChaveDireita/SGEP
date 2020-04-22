@@ -142,18 +142,17 @@
                     nomeField.value = a.nome;
                     projetoField.value = a.projeto;
                     ativoField.value = a.ativo;
-                    btnDisable.value = a.projeto
+                    
                     if (a.projeto)
                     {
                         nomeField.disabled = true;
                         nomeField.title = 'Projetos podem ser alterados na página "Projetos".';
                         btnDisable.disabled = true
-                        btnDisable.value = 'Salvar'
                     } else 
                     {
                         nomeField.disabled = false;
                         nomeField.title = '';
-                        btnDisable.value = 'Salvar' 
+                        btnDisable.disabled = false;
                     }
                     $('#modal-edit').modal('show'); 
                 });
