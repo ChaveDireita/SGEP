@@ -1,5 +1,10 @@
-﻿<!DOCTYPE html>
-<html lang="pt-BR">
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<SGEPUser> signInManager;
+@inject UserManager<SGEPUser> userManager;
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,24 +19,35 @@
 <body>
     <header class="position-sticky">
         <nav class="navbar navbar-expand-lg">
-            <div class="container">
+            <div class="container justify-content-center">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target=".navbar-collapse">
                         <i class="fas fa-bars" style="color: white;"></i>
                     </button>
                     <a asp-action="Index" asp-controller="Inicio" class="nav-a navbar-brand"><h1 style="color:white; padding-left:20px">SGEP</h1></a>
                 </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
-                        <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
-                        <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
-                        <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
-                        <li><a asp-area="" asp-controller="Almoxarifado" asp-action="Index"  class="nav-li-a">Almoxarifados</a></li>
-                        <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
+                @if (signInManager.IsSignedIn(User))
+                {
+                    <div class="collapse navbar-collapse">
+                        <ul class="navbar-nav mr-auto mt-1 mt-lg-0">
+                            <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
+                            <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
+                            <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
+                            <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
+                            <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
+                            @if((await userManager.GetRolesAsync(
+                                    await userManager.FindByEmailAsync(
+                                        userManager.GetUserName(User)
+                                        )
+                                    )
+                                )[0] == "Gerente")
+                            {
+                                <li><a asp-area="" asp-controller="User" asp-action="Index"  class="nav-li-a">Usuários</a></li>
+                            }
+                        </ul>
+                        <partial name="_LoginPartial" />
+                    </div>
+                }
             </div>
         </nav>
     </header>

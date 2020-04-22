@@ -9,7 +9,7 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
+    //[Authorize(Roles = "Almoxarife,Gerente")]
     public class HomeController : Controller
     {
         public IActionResult Index ()

@@ -10,7 +10,7 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "Almoxarife,Gerente")]
     public class HistogramaController : Controller
     {
         private readonly ApplicationDbContext _context;

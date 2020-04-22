@@ -1,0 +1,54 @@
+@model SGEPUser
+
+@{
+    ViewData["Id"] = Model.Id;
+}
+
+<br />
+<h2>Meu Perfil</h2>
+<br />
+<div class="container row">
+    <table class="table table-bordered shadow-regular col-md-8">
+        <tr>
+            <td class="table-dark alert-link" style="width:250px">Nome</td>
+            <td>@Model.Nome</td>
+        </tr>
+        <tr>
+            <td class="table-dark alert-link" style="width:250px">E-mail</td>
+            <td>@Model.Email</td>
+        </tr>
+        <tr>
+            <td class="table-dark alert-link" style="width:250px">Telefone</td>
+            <td>@Model.PhoneNumber</td>
+        </tr>
+    </table>
+    <br/>
+</div>
+<button class="btn btn-secondary squareborder" data-toggle="modal" data-target="#modal-password">Alterar Senha</button>
+
+@await Html.PartialAsync("_ChangePassword", ViewData)
+
+@section Scripts
+{
+
+@{await Html.RenderPartialAsync ("_ValidationScriptsPartial");}
+
+    <script>
+        $('#form-password').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                fetch('/User/ChangePassword', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-password'))
+                })
+                .then(res => res.text())
+                .then(_ =>
+                {
+                    $('#modal-password').modal('hide');
+                    document.querySelector('#form-password').reset();
+                    window.location.replace("/");
+                });
+            }
+        });
+    </script>
+}

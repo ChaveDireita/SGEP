@@ -79,7 +79,7 @@ function refreshTable(controller, searchParams, columnList, callback)
         lista.innerHTML = '';
         for(const e of json.entities)
         {
-            let line = '<tr id="' + e.id + '" class="selectable loading" onclick="onClickSelectRow(' + e.id + ')">';
+            let line = '<tr id="' + e.id + '" class="selectable loading" onclick="onClickSelectRow(\'' + e.id + '\')">';
             for (const col of columnList) {
                 line += '<td>' + e[col] + '</td>';
             }

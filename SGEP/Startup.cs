@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using SGEP.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using SGEP.Areas.Identity.Services;
 
 namespace SGEP
 {
@@ -28,7 +31,6 @@ namespace SGEP
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions> (options =>
@@ -44,9 +46,21 @@ namespace SGEP
                 //options.UseMySql (Configuration.GetConnectionString ("mysql"));
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
-            services.AddDefaultIdentity<IdentityUser> ()
-                    .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext> ();
+
+            services.AddScoped<IEmailSender, GmailEmailSender>();
+
+            services.AddDefaultIdentity<SGEPUser> (o => 
+            {
+                o.SignIn.RequireConfirmedEmail = false;
+                o.SignIn.RequireConfirmedPhoneNumber = false;
+                o.User.RequireUniqueEmail = true;
+                o.Password.RequireDigit = false;
+                o.Password.RequiredLength = 3;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireLowercase = false;
+            }).AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<ApplicationDbContext> ();
 
             services.AddMvc (config => 
             {
@@ -54,10 +68,12 @@ namespace SGEP
                     new AuthorizationPolicyBuilder ().RequireAuthenticatedUser ()
                                                      .Build ()));
             }).SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
+            
+            services.AddScoped<UserAndRolesSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure (IApplicationBuilder app, IHostingEnvironment env, UserAndRolesSeeder seeder)
         {
             CultureInfo culturaPT_BR = new CultureInfo("pt-BR");
             culturaPT_BR.NumberFormat.NumberDecimalSeparator = ".";
@@ -99,11 +115,14 @@ namespace SGEP
             app.UseAuthentication ();
 
             app.UseMvc (routes =>
-             {
-                 routes.MapRoute (
-                     name: "default",
-                     template: "{controller=Home}/{action=Index}/{id?}");
-             });
+            {
+                routes.MapRoute (
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            seeder.Seed().Wait();
+            
         }
     }
 }

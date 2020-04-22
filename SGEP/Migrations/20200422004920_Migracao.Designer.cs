@@ -10,14 +10,14 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200318142213_Migracao")]
+    [Migration("20200422004920_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
+                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

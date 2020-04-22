@@ -1,0 +1,45 @@
+﻿@model SGEP.Models.UserForm
+
+<div class="modal fade" id="modal-create" tabindex="-1" role="dialog" aria-labelledby="modal-create-label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modal-create-title">Cadastrar Usuário</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               <form asp-action="_Create" asp-controller="Create" id="form-create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Nome" class="control-label">Nome completo</label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label">E-mail</label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Telefone" class="control-label">Telefone</label>
+                        <input asp-for="Telefone" class="form-control" />
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Role" class="control-label">Tipo</label>
+                        <select asp-for="Role" class="form-control squareborder">
+                            <option value="Almoxarife">Almoxarife</option>
+                            <option value="Gerente">Gerente</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Salvar" class="btn btn-success squareborder" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
