@@ -147,14 +147,15 @@
                     {
                         nomeField.disabled = true;
                         nomeField.title = 'Projetos podem ser alterados na página "Projetos".';
+                        btnDisable.disabled = true
+                        btnDisable.value = 'Salvar'
                     } else 
                     {
                         nomeField.disabled = false;
                         nomeField.title = '';
+                        btnDisable.value = 'Salvar' 
                     }
-                    $('#modal-edit').modal('show');
-                    btnDisable.disabled = true
-                    btnDisable.value = 'Salvar'
+                    $('#modal-edit').modal('show'); 
                 });
             },
             () => 
