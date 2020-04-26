@@ -132,9 +132,11 @@ function verificarsemacentoecaixa(lista, palavra) {
 
 function gerarlist(nomes, lista,acao,relevanteid) {
     var html = '';
-    html += '<thead class="thead-dark">';
-    for (n of nomes) html += '<th>' + n + '</th>';
-    html += '</thead> <tbody>';
+    if (!nomes === undefined) {
+        html += '<thead class="thead-dark">';
+        for (n of nomes) html += '<th>' + n + '</th>';
+        html += '</thead> <tbody>';
+    }
     for (item of lista) {
         if (!(acao === undefined || relevanteid === undefined)) html += '<tr onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
         else html += '<tr>';
@@ -145,6 +147,6 @@ function gerarlist(nomes, lista,acao,relevanteid) {
         }
         html += '</tr>';
     }
-    html += '</tbody>';
+    if (!nomes === undefined) html += '</tbody>';
     return html;
 }

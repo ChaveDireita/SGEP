@@ -12,11 +12,11 @@
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
-<br/>
+<br />
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
-<br/>
+<br />
 @await Html.PartialAsync("_Create")
 @await Html.PartialAsync("_Edit")
 <table class="table">
@@ -33,46 +33,42 @@
             </th>
         </tr>
     </thead>
-    <tbody id="lista">
-    </tbody>
+    <tbody id="lista"></tbody>
 </table>
 
+<partial name="_Unidade" />
+<button type="button" class="btn btn-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button>
 @section Scripts
-{
+    {
     <script>
-        
+
         const lista = document.getElementById('lista');
         const controller = 'Material';
 
         list({});
 
-        function list(searchParams)
-        {
-            refreshTable(controller, searchParams, ['id', 'descricao', 'preco'], ({size}) => pagination.size = size);
+        function list(searchParams) {
+            refreshTable(controller, searchParams, ['id', 'descricao', 'preco'], ({ size }) => pagination.size = size);
         }
 
-        function onClickSelectRow (id)
-        {
-            selectRow(id, 
-            () => 
-            {
-                fetch('/' + controller + '/Get/' + id)
-                .then(res => res.json())
-                .then(mat => 
-                {
-                    const idField = get.id('Id-edit');
-                    const descricaoField = get.id('Descricao-edit');
-                    const precoField = get.id('Preco-edit');
-                    idField.value = mat.id;
-                    descricaoField.value = mat.descricao;
-                    precoField.value = mat.preco;
-                    $('#modal-edit').modal('show');
+        function onClickSelectRow(id) {
+            selectRow(id,
+                () => {
+                    fetch('/' + controller + '/Get/' + id)
+                        .then(res => res.json())
+                        .then(mat => {
+                            const idField = get.id('Id-edit');
+                            const descricaoField = get.id('Descricao-edit');
+                            const precoField = get.id('Preco-edit');
+                            idField.value = mat.id;
+                            descricaoField.value = mat.descricao;
+                            precoField.value = mat.preco;
+                            $('#modal-edit').modal('show');
+                        });
+                },
+                () => {
+                    //Código do modal
                 });
-            },
-            () => 
-            {
-                //Código do modal
-            });
         }
     </script>
 
@@ -87,7 +83,7 @@
                     body: new FormData(document.querySelector('#form-create'))
                 }).then(function (response) {
                     $('#modal-create').modal('hide');
-                    get.id ('form-create').reset();
+                    get.id('form-create').reset();
                     list({});
                 });
             }
@@ -99,13 +95,12 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-edit'))
                 })
-                .then(res => res.text())
-                .then(_ => 
-                {
-                    $('#modal-edit').modal('hide');
-                    get.id ('form-edit').reset();
-                    list({});
-                });
+                    .then(res => res.text())
+                    .then(_ => {
+                        $('#modal-edit').modal('hide');
+                        get.id('form-edit').reset();
+                        list({});
+                    });
             }
         });
     </script>

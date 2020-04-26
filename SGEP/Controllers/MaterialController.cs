@@ -31,6 +31,31 @@ namespace SGEP.Controllers
             
             return Json(new {size = _context.Material.Count(), entities = result});
         }
+        public JsonResult Unidades () => Json(_context.Unidade.ToList());
+        [HttpPost]
+        public async Task<IActionResult> AdicionarUnidade([Bind("Id,Nome,Abreviacao")] Unidade unidade) {
+            if (ModelState.IsValid)
+            {
+                _context.Add(unidade);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditarUnidade(int id, [Bind("Id,Nome,Alocacao")] Unidade unidade)
+        {
+            if (id != unidade.Id)
+                return NotFound();
+            if (ModelState.IsValid)
+            {
+                _context.Update(unidade);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            return BadRequest();
+        }
+        
         public async Task<JsonResult> All () => Json(await _context.Material.ToListAsync());
         [HttpGet("/Material/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
