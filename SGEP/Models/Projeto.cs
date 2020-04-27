@@ -8,6 +8,7 @@ namespace SGEP.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
+        [Display(Name = "Início")]
         [DataType(DataType.Date)]
         public DateTime Inicio { get; set; }
         [DataType(DataType.Date)]

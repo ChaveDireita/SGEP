@@ -72,13 +72,11 @@
                 const title = get.id('modal-end-title');
                 const inicio = get.id('Inicio-end');
                 const fim = get.id('Fim-end');
-                const almoxarifado = get.id('Almoxarifado-end');
 
                 title.innerText = 'Finalizar ' + json.nome;
                 id.value = json.id;
                 inicio.value = json.inicio;
                 fim.value = json.end;
-                almoxarifado.value = json.almoxarifadoId;
                 $('#modal-end').modal('show');
             });
         }
@@ -90,10 +88,12 @@
                 pagination.size = size;
                 entities.forEach(p => 
                 {
-                    console.log(p);
-                    const condition = p.fim == '--' && p.almoxarifado.almoxarifadosxMateriais.length == 0;
-                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>'
-                                             : '';
+                    const condition1 = p.fim == '--';
+                    const condition2 = p.almoxarifado.almoxarifadosxMateriais.length == 0;
+                    const condition = condition1 && condition2;
+                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>' : 
+                                   condition2 ?  ''
+                                              : '<i class="delete text-secondary fas fa-check-circle float-right" title="Consuma ou transfira todos os materiais deste projeto antes de finalizá-lo" hidden="true" style="font-size: 18px"></i>';
                     p.fim = condition ? '--'
                                       : p.fim;
                 })
