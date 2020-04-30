@@ -4,7 +4,10 @@
     ViewData["Title"] = "Index";
     ViewData["search-fields"] = "_Funcionario";
 }
-
+<br />
+<div id="alert-container">
+    
+</div>
 <br />
 <h2>Funcionários</h2>
 <br />
@@ -30,7 +33,7 @@
     <thead class="thead-dark">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Matricula)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nome)
@@ -58,7 +61,7 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
+            refreshTable(controller, searchParams, ['matricula', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
             {
                 pagination.size = size;
                 entities.forEach(f => 
@@ -202,6 +205,18 @@
                     }
                 });
         }
+
+        function willFail()
+        {
+            var color = 'success';
+            fetch('/Funcionario/WillFail')
+            .then(res => {
+                color = res.ok ? 'success' : 'danger';
+                return res.text();
+            })
+            .then(text => showAlert(text, color))
+        }
+
     </script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

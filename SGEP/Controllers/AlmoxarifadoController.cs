@@ -57,9 +57,9 @@ namespace SGEP.Controllers
             {
                 _context.Add(almoxarifado);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok("Almoxarifado criado com sucesso!");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao criar o almoxarifado.");
         }
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Projeto,Ativo")] Almoxarifado almoxarifado)

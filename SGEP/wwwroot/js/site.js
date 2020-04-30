@@ -148,3 +148,16 @@ function gerarlist(nomes, lista,acao,relevanteid) {
     html += '</tbody>';
     return html;
 }
+
+function showAlert(msg, cls)
+{
+    const alertContainer = get.id('alert-container');
+    alertContainer.innerHTML += `
+        <div class="alert alert-${cls} alert-dismissible fade show" role="alert">
+            ${msg}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        `;
+}

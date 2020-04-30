@@ -1,0 +1,45 @@
+<script>
+    $('#form-create').submit(function (e) {
+        e.preventDefault()
+        if ($(this).valid()) {
+            var color = 'success';
+            fetch('/' + controller + '/Create', {
+                method: 'post',
+                body: new FormData(document.querySelector('#form-create'))
+            })
+            .then(res => {
+                color = res.ok ? 'success' : 'danger';
+                return res.text()
+            })
+            .then(text => 
+            {
+                $('#modal-create').modal('hide');
+                get.id ('form-create').reset();
+                list({});
+                showAlert(text, color);
+            });
+        }
+    });
+
+    $('#form-edit').submit(function (e) {
+        e.preventDefault()
+        if ($(this).valid()) {
+            var color = 'success';
+            fetch('/' + controller + '/Edit', {
+                method: 'post',
+                body: new FormData(document.querySelector('#form-edit'))
+            })
+            .then(res => {
+                color = res.ok ? 'success' : 'danger';
+                return res.text()
+            })
+            .then(text => 
+            {
+                $('#modal-create').modal('hide');
+                get.id ('form-create').reset();
+                list({});
+                showAlert(text, color);
+            });
+        }
+    });
+</script>

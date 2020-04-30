@@ -88,6 +88,7 @@ namespace SGEP.Controllers
                                                            .ToListAsync();
             return Json(projetos);
         }
+        public IActionResult WillFail() => Ok("Dummy Response");
         private bool FuncionarioExists(int id) =>  _context.Funcionario.Any(e => e.Id == id);
     }
 }
