@@ -2,7 +2,7 @@
 
 <!--MODAL DE UNIDADES-->
 <div class="modal fade" id="unidadesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content squareborder">
             <div class="modal-header header-dark squareborder">
                 <h5 class="modal-title" id="modaltitle">Unidades de medida</h5>
@@ -14,24 +14,13 @@
                 <p>
                     <button type="button" class="btn btn-primary squareborder" id="adduni">Editar Unidade</button>
                 </p>
-                <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Nome)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Abreviacao)
-                            </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="unilistbody"></tbody>
+                <table class="table" id="unidadestable">
+                    
                 </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary squareborder" id="adduni">Adicionar Unidade</button>
+                <button type="button" class="btn btn-primary squareborder" id="openuniadd">Adicionar Unidade</button>
             </div>
         </div>
     </div>
@@ -39,10 +28,10 @@
 
 <!--MODAL DE ADICIONAR/EDITAR UNIDADE-->
 <div class="modal fade" id="unidademanagementmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content squareborder">
             <div class="modal-header header-dark squareborder">
-                <h5 class="modal-title" id="modaltitle">Adicionar Unidade</h5>
+                <h5 class="modal-title" id="addunimodaltitle">Adicionar Unidade</h5>
                 <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -50,22 +39,22 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="control-label">Nome da Unidade:</label>
-                    <input class="form-control" id="uninome" />
+                    <input class="form-control" id="unidadenomeinput" />
                 </div>
                 <div class="form-group">
                     <label class="control-label">Abreviação:</label>
-                    <input  class="form-control" id="uniabv" />
+                    <input  class="form-control" id="unidadeabvinput" />
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary squareborder" id="adduni">Adicionar Unidade</button>
+                <button type="button" class="btn btn-primary squareborder" id="adicionarunidade">Adicionar Unidade</button>
             </div>
         </div>
     </div>
 </div>
 
-
+<!--
 <script>
     var nome = document.getElementById("uninome").value;
     var abv = document.getElementById("uniabv").value;
@@ -89,3 +78,4 @@
         $('#unidademanagementmodal').modal('toggle');
     }
 </script>
+    -->

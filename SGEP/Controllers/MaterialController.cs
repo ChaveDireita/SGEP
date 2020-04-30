@@ -32,6 +32,9 @@ namespace SGEP.Controllers
             return Json(new {size = _context.Material.Count(), entities = result});
         }
         public JsonResult Unidades () => Json(_context.Unidade.ToList());
+        public JsonResult UnidadePorIdJSON(int id) => Json(_context.Unidade.FirstOrDefault(u => u.Id == id));
+        public Unidade UnidadePorId(int id) => _context.Unidade.FirstOrDefault(u => u.Id == id);
+
         [HttpPost]
         public async Task<IActionResult> AdicionarUnidade([Bind("Id,Nome,Abreviacao")] Unidade unidade) {
             if (ModelState.IsValid)
@@ -60,11 +63,19 @@ namespace SGEP.Controllers
         [HttpGet("/Material/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Descricao,Preco")] Material material)
+        public async Task<IActionResult> Create([Bind("Id,Descricao,Preco,Categoria,IdUnidade")] Material material)
         {
             if (ModelState.IsValid)
             {
+                Unidade unidade = UnidadePorId(material.IdUnidade);
+                material.Precounidade = "R$" + material.Preco + "/" + unidade.Abreviacao;
                 _context.Add(material);
+                await _context.SaveChangesAsync();
+                int qtdzero = 7 - material.Id.ToString().Length;
+                string zeros = "";
+                for (int i = 0; i < qtdzero; i++) zeros += "0";
+                material.Showid = material.Categoria + "." + zeros + material.Id.ToString();
+                _context.Update(material);
                 await _context.SaveChangesAsync();
                 return Ok();
             }

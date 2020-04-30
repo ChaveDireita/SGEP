@@ -29,7 +29,7 @@
                 @Html.DisplayNameFor(model => model.Descricao)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Preco)
+                @Html.DisplayNameFor(model => model.Precounidade)
             </th>
         </tr>
     </thead>
@@ -37,6 +37,7 @@
 </table>
 
 <partial name="_Unidade" />
+<partial name="_Details" />
 <button type="button" class="btn btn-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button>
 @section Scripts
     {
@@ -48,7 +49,7 @@
         list({});
 
         function list(searchParams) {
-            refreshTable(controller, searchParams, ['id', 'descricao', 'preco'], ({ size }) => pagination.size = size);
+            refreshTable(controller, searchParams, ['showid', 'descricao', 'precounidade'], ({ size }) => pagination.size = size);
         }
 
         function onClickSelectRow(id) {
@@ -67,7 +68,18 @@
                         });
                 },
                 () => {
-                    //Código do modal
+                    var nomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                    fetch('/' + controller + '/Get/' + id)
+                        .then(res => res.json())
+                        .then(mat => {
+                            fetch('/' + controller + '/UnidadePorIdJSON/' + mat.idUnidade)
+                                .then(res => res.json())
+                                .then(unidade => {
+                                    var content = [mat.showid, mat.descricao, mat.categoria, mat.precounidade, unidade.nome];
+                                    document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
+                                    $('#detailsmodal').modal('toggle');
+                                });
+                        });
                 });
         }
     </script>
@@ -82,7 +94,7 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create'))
                 }).then(function (response) {
-                    $('#modal-create').modal('hide');
+                    $('#modal-create').modal('toggle');
                     get.id('form-create').reset();
                     list({});
                 });
@@ -103,6 +115,42 @@
                     });
             }
         });
+        document.getElementById("modal-create-ativador").onclick = () => {
+            unidadesparaselecao();
+            $('#modal-create').modal('toggle');
+        }
     </script>
 
+    <!--TAG DE UNIDADES-->
+    <script>
+        
+        document.getElementById("openuniadd").onclick = () => {
+            $('#unidadesmodal').modal('toggle');
+            $('#unidademanagementmodal').modal('toggle');
+        }
+        document.getElementById("adicionarunidade").onclick = () => {
+            var nome = document.getElementById("unidadenomeinput").value;
+            var abv = document.getElementById("unidadeabvinput").value;
+            adicionarunidade(nome, abv);
+        }
+
+
+        function listarunidades() {
+            fetch('/Material/Unidades').then((res) => res.json()).then(unidades => {
+                var nomes = ["Nome", "Abreviação"];
+                var lista = gerarlist(nomes,unidades);
+                document.getElementById("unidadestable").innerHTML = lista;
+            });
+            $('#unidadesmodal').modal('toggle');
+        }
+        function adicionarunidade(nome, abv) {
+            const data = new FormData();
+            data.append('Nome', nome);
+            data.append('Abreviacao', abv);
+            fetch('/Material/AdicionarUnidade', { method: 'POST', body: data }).then(retorno => {
+                listarunidades();
+            });
+            $('#unidademanagementmodal').modal('toggle');
+        }
+    </script>
 }

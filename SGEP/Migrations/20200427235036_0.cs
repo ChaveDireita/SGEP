@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SGEP.Migrations
 {
-    public partial class Migracao : Migration
+    public partial class _0 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -110,6 +110,20 @@ namespace SGEP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProjetosxFuncionarios", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Unidade",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    Abreviacao = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Unidade", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -268,6 +282,9 @@ namespace SGEP.Migrations
                     Descricao = table.Column<string>(nullable: true),
                     Preco = table.Column<decimal>(nullable: false),
                     Categoria = table.Column<int>(nullable: false),
+                    IdUnidade = table.Column<int>(nullable: false),
+                    Precounidade = table.Column<string>(nullable: true),
+                    Showid = table.Column<string>(nullable: true),
                     AlmoxarifadosxMateriaisAlmoxarifadoId = table.Column<int>(nullable: true),
                     AlmoxarifadosxMateriaisMaterialId = table.Column<int>(nullable: true)
                 },
@@ -363,6 +380,9 @@ namespace SGEP.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProjetosxFuncionarios");
+
+            migrationBuilder.DropTable(
+                name: "Unidade");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

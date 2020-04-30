@@ -10,8 +10,8 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200426005202_migracaocomunidades")]
-    partial class migracaocomunidades
+    [Migration("20200427235036_0")]
+    partial class _0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -251,7 +251,13 @@ namespace SGEP.Migrations
 
                     b.Property<string>("Descricao");
 
+                    b.Property<int>("IdUnidade");
+
                     b.Property<decimal>("Preco");
+
+                    b.Property<string>("Precounidade");
+
+                    b.Property<string>("Showid");
 
                     b.HasKey("Id");
 

@@ -249,7 +249,13 @@ namespace SGEP.Migrations
 
                     b.Property<string>("Descricao");
 
+                    b.Property<int>("IdUnidade");
+
                     b.Property<decimal>("Preco");
+
+                    b.Property<string>("Precounidade");
+
+                    b.Property<string>("Showid");
 
                     b.HasKey("Id");
 
