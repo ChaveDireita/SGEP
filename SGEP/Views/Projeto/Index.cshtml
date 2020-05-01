@@ -189,50 +189,26 @@
     </script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
+    @{await Html.RenderPartialAsync("Partial/Index/_Forms");}
     <script>
-        $('#form-create').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Create', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-create'))
-                }).then(function (response) {
-                    $('#modal-create').modal('hide');
-                    get.id ('form-create').reset();
-                    list({});
-                });
-            }
-        });
-        $('#form-edit').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Edit', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-edit'))
-                })
-                .then(res => res.text())
-                .then(_ => 
-                {
-                    $('#modal-edit').modal('hide');
-                    get.id ('form-edit').reset();
-                    list({});
-                });
-            }
-        });
         $('#form-end').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                var color = 'success';
                 fetch('/' + controller + '/Finalizar', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-end'))
                 })
-                .then(res => res.text())
-                .then(_ => 
+                .then(res => {
+                    color = res.ok ? 'success' : 'danger';
+                    return res.text()
+                })
+                .then(text => 
                 {
                     $('#modal-end').modal('hide');
                     get.id ('form-end').reset();
                     list({});
+                    showAlert(text, color);
                 });
             }
         });

@@ -61,7 +61,7 @@ namespace SGEP.Controllers
                 almoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
             _context.Update(destino);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("Movimentação adicionada com sucesso.");
         }
         [HttpPost]
         public async Task<IActionResult> CreateSaida([Bind("Data", "MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo")] Movimentacao movimentacao)
@@ -89,7 +89,7 @@ namespace SGEP.Controllers
                 destinoAlmoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
             _context.UpdateRange(origem, destino);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("Movimentação adicionada com sucesso.");
         }
 
         [HttpPost]
@@ -109,7 +109,7 @@ namespace SGEP.Controllers
                 origem.AlmoxarifadosxMateriais.Remove(almoxarifadoMaterial);
             _context.Update(origem);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("Movimentação adicionada com sucesso.");
         }
     }
 }

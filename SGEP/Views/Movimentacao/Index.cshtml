@@ -216,48 +216,63 @@
         $('#form-create-in').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                var color = 'success';
                 fetch('/' + controller + '/CreateEntrada', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-in'))
                 })
-                .then(res => res.text())
-                .then(_ => 
+                .then(res => {
+                    color = res.ok ? 'success' : 'danger';
+                    return res.text()
+                })
+                .then(text => 
                 {
                     $('#modal-create-in').modal('hide');
                     get.id ('form-create-in').reset();
                     list({});
+                    showAlert(text, color);
                 });
             }
         });
         $('#form-create-out').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                var color = 'success';
                 fetch('/' + controller + '/CreateSaida', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-out'))
                 })
-                .then(res => res.text())
-                .then(_ => 
+                .then(res => {
+                    color = res.ok ? 'success' : 'danger';
+                    return res.text()
+                })
+                .then(text => 
                 {
                     $('#modal-create-out').modal('hide');
                     get.id ('form-create-out').reset();
                     list({});
+                    showAlert(text, color);
                 });
             }
         });
         $('#form-create-diff').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                var color = 'success';
                 fetch('/' + controller + '/CreateConsumo', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-diff'))
                 })
-                .then(res => res.text())
-                .then(_ => 
+                .then(res => {
+                    color = res.ok ? 'success' : 'danger';
+                    return res.text()
+                })
+                .then(text => 
                 {
                     $('#modal-create-diff').modal('hide');
                     get.id ('form-create-diff').reset();
                     list({});
+                    showAlert(text, color);
                 });
             }
         });

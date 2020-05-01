@@ -40,15 +40,15 @@ namespace SGEP.Controllers
             {
                 _context.Add(funcionario);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok("Funcionário adicionado com sucesso!");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao adicionar o funcionário.");
         }
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo,Ativo,Matricula")] Funcionario funcionario)
         {
             if (id != funcionario.Id)
-                return NotFound();
+                return NotFound("O funcionário não existe.");
             if (ModelState.IsValid)
             {
                 try
@@ -59,13 +59,13 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!FuncionarioExists(funcionario.Id))
-                        return NotFound();
+                        return NotFound("O funcionário não existe.");
                     else
                         throw;
                 }
-                return Ok();
+                return Ok("As alterações foram salvas com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -49,15 +49,15 @@ namespace SGEP.Controllers
                 projeto.Almoxarifado = a;
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok("Projeto adicionado com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao adicionar o projeto.");
         }
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim,AlmoxarifadoId")] Projeto projeto)
         {
             if (id != projeto.Id)
-                return NotFound();
+                return NotFound("O projeto não existe.");
             if (ModelState.IsValid)
             {
                 try
@@ -70,13 +70,13 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProjetoExists(projeto.Id))
-                        return NotFound();
+                        return NotFound("O projeto não existe.");
                     else
                         throw;
                 }
-                return Ok();
+                return Ok("As alterações foram salvas com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
         private bool ProjetoExists(int id) =>  _context.Projeto.Any(e => e.Id == id);
         public JsonResult ProjetoSelecionado(int? id) {

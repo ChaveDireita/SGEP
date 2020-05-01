@@ -57,17 +57,17 @@ namespace SGEP.Controllers
             {
                 _context.Add(almoxarifado);
                 await _context.SaveChangesAsync();
-                return Ok("Almoxarifado criado com sucesso!");
+                return Ok("Almoxarifado adicionado com sucesso!");
             }
-            return BadRequest("Ocorreu um erro ao criar o almoxarifado.");
+            return BadRequest("Ocorreu um erro ao adicionar o almoxarifado.");
         }
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Projeto,Ativo")] Almoxarifado almoxarifado)
         {
             if (id != almoxarifado.Id)
-                return NotFound();
+                return NotFound("O almoxarifado não existe.");
             if (almoxarifado.Projeto)
-                return BadRequest("Projects can only be edited from 'Projects' page");
+                return BadRequest("Projetos apenas podem ser editados na página \"Projetos\".");
             if (ModelState.IsValid)
             {
                 try
@@ -78,13 +78,13 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!AlmoxarifadoExists(almoxarifado.Id))
-                        return NotFound();
+                        return NotFound("O almoxarifado não existe.");
                     else
                         throw;
                 }
-                return Ok();
+                return Ok("As alterações foram salvas com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
         [HttpPost]
         public async Task<IActionResult> Toggle(int id)
