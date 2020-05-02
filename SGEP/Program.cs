@@ -16,6 +16,12 @@ namespace SGEP
 {
     public class Program
     {
+        // Precisa eventualmente para scaffold
+        /*public static void Main (string[] args)
+        {
+             CreateWebHostBuilder (args).Build ().Run();
+        }*/
+        
         public static async Task Main (string[] args)
         {
             var host = CreateWebHostBuilder (args).Build();//.Run();
@@ -53,7 +59,7 @@ namespace SGEP
 
         private static async Task CheckForRoles(RoleManager<IdentityRole> roleManager)
         {
-            if (!(await roleManager.RoleExistsAsync("Almoxarixe")))
+            if (!(await roleManager.RoleExistsAsync("Almoxarife")))
                     await roleManager.CreateAsync(new IdentityRole("Almoxarife"));
             if (!(await roleManager.RoleExistsAsync("Gerente")))
                 await roleManager.CreateAsync(new IdentityRole("Gerente"));

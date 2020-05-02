@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using SGEP.Data;
 using SGEP.Models;
@@ -14,14 +17,14 @@ namespace SGEP.Controllers
     {
         private readonly UserManager<SGEPUser> _userManager;
         private readonly SignInManager<SGEPUser> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationDbContext _context;
-        public UserController(UserManager<SGEPUser> userManager, SignInManager<SGEPUser> signInManager, ApplicationDbContext context, RoleManager<IdentityRole> roleManager) 
+        private readonly IEmailSender _emailSender;
+        public UserController(UserManager<SGEPUser> userManager, SignInManager<SGEPUser> signInManager, ApplicationDbContext context, IEmailSender emailSender) 
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
-            _roleManager = roleManager;
+            _emailSender = emailSender;
         }
         public IActionResult Index()
         {
@@ -111,6 +114,30 @@ namespace SGEP.Controllers
                 return View(user);
             }
             return BadRequest("User is not signed in");
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return BadRequest("O e-mail inserido é inválido.");
+                
+            SGEPUser user = await _userManager.FindByEmailAsync(email);
+            if (user != null)
+            {
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var callbackUrl = Url.Page(
+                    "/Account/ResetPassword",
+                    pageHandler: null,
+                    values: new { code },
+                    protocol: Request.Scheme);
+                    
+                string url = "/Account/ResetPassword/?code=" + HttpUtility.HtmlEncode(code);
+                await _emailSender.SendEmailAsync(
+                    email,
+                    "SGEP - Recuperação de senha",
+                    $"Por favor, altere sua senha <a href='{url}'>clicando aqui</a>.");
+            }
+            return Ok("Link enviado com sucesso. Verifique a caixa de entrada de seu e-mail.");
         }
     }
 }
