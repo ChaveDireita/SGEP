@@ -49,7 +49,7 @@ namespace SGEP
 
             services.AddScoped<IEmailSender, GmailEmailSender>();
 
-            services.AddDefaultIdentity<SGEPUser> (o => 
+            services.AddIdentity<SGEPUser, IdentityRole> (o => 
             {
                 o.SignIn.RequireConfirmedEmail = false;
                 o.SignIn.RequireConfirmedPhoneNumber = false;
@@ -59,7 +59,7 @@ namespace SGEP
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireLowercase = false;
-            }).AddRoles<IdentityRole>()
+            }).AddRoleManager<RoleManager<IdentityRole>>()
               .AddEntityFrameworkStores<ApplicationDbContext> ();
 
             services.AddMvc (config => 
@@ -69,11 +69,18 @@ namespace SGEP
                                                      .Build ()));
             }).SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
             
-            services.AddScoped<UserAndRolesSeeder>();
+            services.AddScoped<RolesSeeder>();
+
+            services.ConfigureApplicationCookie(o => 
+            {
+                o.LoginPath = "/Identity/Account/Login";
+                o.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                o.LogoutPath="/Identity/Account/Logout";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env, UserAndRolesSeeder seeder)
+        public void Configure (IApplicationBuilder app, IHostingEnvironment env, RolesSeeder seeder)
         {
             CultureInfo culturaPT_BR = new CultureInfo("pt-BR");
             culturaPT_BR.NumberFormat.NumberDecimalSeparator = ".";
@@ -113,7 +120,7 @@ namespace SGEP
 
             app.UseCookiePolicy ();
             app.UseAuthentication ();
-
+            
             app.UseMvc (routes =>
             {
                 routes.MapRoute (

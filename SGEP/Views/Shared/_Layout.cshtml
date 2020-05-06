@@ -35,7 +35,7 @@
                             <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
                             <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
                             <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
-                            @if((await userManager.GetRolesAsync(
+                            @if(User != null && (await userManager.GetRolesAsync(
                                     await userManager.FindByEmailAsync(
                                         userManager.GetUserName(User)
                                         )

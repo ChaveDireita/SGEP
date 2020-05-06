@@ -3,11 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     ViewData["search-fields"] = "_Material";
+    ViewData["role-allowed-to-modify"] = "Almoxarife";
 }
+<br />
+<div id="alert-container">
+    
+</div>
 <br />
 <h2>Materiais</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+@await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
 
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")

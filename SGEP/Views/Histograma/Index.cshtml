@@ -2,6 +2,10 @@
     ViewData["Title"] = "Index";
 }
 <br />
+<div id="alert-container">
+    
+</div>
+<br />
 <h2>Histograma</h2>
 <br />
 @await Html.PartialAsync("Partial/_Form.cshtml")
@@ -77,7 +81,12 @@
                 get.name('material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
             }
         });
-
-        load(new Date(2018, 1), new Date(2020, 01), 1, 'Entrada');
+        (() => 
+        {
+            const sixMonthSpan = 13132800000;
+            const currentDate = new Date();
+            const pastDate = new Date(currentDate - sixMonthSpan);
+            load(pastDate, currentDate, 1, 'Entrada');
+        })();
     </script>
 }

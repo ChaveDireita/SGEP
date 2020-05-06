@@ -3,12 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     ViewData["search-fields"] = "_Projeto";
+    ViewData["role-allowed-to-modify"] = "Almoxarife";
 }
-
+<br />
+<div id="alert-container">
+    
+</div>
 <br />
 <h2>Projetos</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+@await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
     <button id="btn-del" 
@@ -72,13 +76,11 @@
                 const title = get.id('modal-end-title');
                 const inicio = get.id('Inicio-end');
                 const fim = get.id('Fim-end');
-                const almoxarifado = get.id('Almoxarifado-end');
 
                 title.innerText = 'Finalizar ' + json.nome;
                 id.value = json.id;
                 inicio.value = json.inicio;
                 fim.value = json.end;
-                almoxarifado.value = json.almoxarifadoId;
                 $('#modal-end').modal('show');
             });
         }
@@ -90,10 +92,12 @@
                 pagination.size = size;
                 entities.forEach(p => 
                 {
-                    console.log(p);
-                    const condition = p.fim == '--' && p.almoxarifado.almoxarifadosxMateriais.length == 0;
-                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>'
-                                             : '';
+                    const condition1 = p.fim == '--';
+                    const condition2 = p.almoxarifado.almoxarifadosxMateriais.length == 0;
+                    const condition = condition1 && condition2;
+                    p['end-btn'] = condition ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="finalize(' + p.id + ')" hidden="true"><i class="fas fa-check-circle" style="font-size: 18px"></i></a>' : 
+                                   condition2 ?  ''
+                                              : '<i class="delete text-secondary fas fa-check-circle float-right" title="Consuma ou transfira todos os materiais deste projeto antes de finalizá-lo" hidden="true" style="font-size: 18px"></i>';
                     p.fim = condition ? '--'
                                       : p.fim;
                 })
@@ -113,12 +117,14 @@
                     const inicioField = get.id('Inicio-edit');
                     const fimField = get.id('Fim-edit');
                     const almoxarifado = get.id('Almoxarifado-edit');
-
+                    const fimGroup = get.id('Fim-edit-group');
+                    
                     idField.value = proj.id;
                     nomeField.value = proj.nome;
-                    inicioField.value = proj.inicio;
-                    fimField.value = proj.fim;
+                    inicioField.value = proj.inicio.slice(0, 10);
                     almoxarifado.value = proj.almoxarifadoId;
+                    fimGroup.hidden = proj.fim == null;
+                    fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
                     $('#modal-edit').modal('show');
                 });
             },
@@ -184,50 +190,26 @@
     </script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
+    @{await Html.RenderPartialAsync("Partial/Index/_Forms");}
     <script>
-        $('#form-create').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Create', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-create'))
-                }).then(function (response) {
-                    $('#modal-create').modal('hide');
-                    get.id ('form-create').reset();
-                    list({});
-                });
-            }
-        });
-        $('#form-edit').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Edit', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-edit'))
-                })
-                .then(res => res.text())
-                .then(_ => 
-                {
-                    $('#modal-edit').modal('hide');
-                    get.id ('form-edit').reset();
-                    list({});
-                });
-            }
-        });
         $('#form-end').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                var color = 'success';
                 fetch('/' + controller + '/Finalizar', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-end'))
                 })
-                .then(res => res.text())
-                .then(_ => 
+                .then(res => {
+                    color = res.ok ? 'success' : 'danger';
+                    return res.text()
+                })
+                .then(text => 
                 {
                     $('#modal-end').modal('hide');
                     get.id ('form-end').reset();
                     list({});
+                    showAlert(text, color);
                 });
             }
         });

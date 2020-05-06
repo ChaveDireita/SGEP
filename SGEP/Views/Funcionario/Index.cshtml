@@ -3,12 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     ViewData["search-fields"] = "_Funcionario";
+    ViewData["role-allowed-to-modify"] = "Almoxarife";
 }
-
+<br />
+<div id="alert-container">
+    
+</div>
 <br />
 <h2>Funcionários</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+@await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
 
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
@@ -30,7 +34,7 @@
     <thead class="thead-dark">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                @Html.DisplayNameFor(model => model.Matricula)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Nome)
@@ -58,10 +62,14 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['id', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
+            refreshTable(controller, searchParams, ['matricula', 'nome', 'cargo', 'delete-btn'], ({size, entities}) => 
             {
                 pagination.size = size;
-                entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
+                entities.forEach(f => 
+                {
+                    f['delete-btn'] = f['ativo'] ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>'
+                                                 : 'Removido';
+                });
             });
         }
 
@@ -133,9 +141,13 @@
                     const idField = get.id('Id-edit');
                     const nomeField = get.id('Nome-edit');
                     const cargoField = get.id('Cargo-edit');
+                    const ativoField = get.id('Ativo-edit');
+                    const matField = get.id('Matricula-edit');
                     idField.value = func.id;
                     nomeField.value = func.nome;
                     cargoField.value = func.cargo;
+                    ativoField.value = func.ativo;
+                    matField.value = func.matricula;
                     $('#modal-edit').modal('show');
                 });
             },
@@ -194,43 +206,22 @@
                     }
                 });
         }
+
+        function willFail()
+        {
+            var color = 'success';
+            fetch('/Funcionario/WillFail')
+            .then(res => {
+                color = res.ok ? 'success' : 'danger';
+                return res.text();
+            })
+            .then(text => showAlert(text, color))
+        }
+
     </script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script>
-        $('#form-create').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Create', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-create'))
-                })
-                .then(res => res.text())
-                .then(_ => 
-                {
-                    $('#modal-create').modal('hide');
-                    get.id ('form-create').reset();
-                    list({});
-                });
-            }
-        });
-        $('#form-edit').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Edit', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-edit'))
-                })
-                .then(res => res.text())
-                .then(_ => 
-                {
-                    $('#modal-edit').modal('hide');
-                    get.id ('form-edit').reset();
-                    list({});
-                });
-            }
-        });
-    </script>
+    @{await Html.RenderPartialAsync("Partial/Index/_Forms");}
 }
 

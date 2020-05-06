@@ -35,11 +35,14 @@ namespace SGEP.Controllers
             SGEPUser user = await _userManager.FindByIdAsync(id);
             return Json(await UserForm.FromIdentity(user, _userManager));
         }
-        public JsonResult List (string id, string email, string nome, string telefone, int? itensPorPagina, int? pagina)
+        public async Task<JsonResult> List (string id, string email, string nome, string telefone, int? itensPorPagina, int? pagina)
         {
             List<SGEPUser> users = _userManager.Users.ToList();
-            IEnumerable<UserForm> result = new List<UserForm>();
-            users.ForEach(async u => result.Append(await UserForm.FromIdentity(u, _userManager)));
+            List<UserForm> result = new List<UserForm>();
+            foreach (var u in users)
+            {
+                result.Add(await UserForm.FromIdentity(u, _userManager));
+            }
             /*if (id != null && id.Trim () != "")
                 result = result.Where (f => f.Id.ToString ().Contains (id));
             if (nome != null && nome?.Trim () != "")
@@ -58,14 +61,20 @@ namespace SGEP.Controllers
                 var result = await _userManager.CreateAsync(new SGEPUser { Email = user.Email, Nome = user.Nome, UserName = user.Email, PhoneNumber = user.Telefone }, "12345678");
                 if (result.Succeeded)
                 {
-                    SGEPUser savedUser = await _userManager.FindByIdAsync(user.Email);
-                    await _userManager.AddToRoleAsync(savedUser, user.Role);
-                    return Ok();
+                    SGEPUser savedUser = await _userManager.FindByEmailAsync(user.Email);
+                    var roleResult = await _userManager.AddToRoleAsync(savedUser, user.Role);
+                    if (roleResult.Succeeded)
+                        return Ok("O usuário foi criado com sucesso.");
+                    else
+                    {
+                        await _userManager.DeleteAsync(savedUser);
+                        return BadRequest(result.Errors);
+                    }
                 }
                 else
                     return BadRequest(result.Errors);
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao criar o usuário. Verifique a validade dos dados inseridos.");
         }
         public async Task<IActionResult> Edit([Bind("Id,Nome,Email,Telefone,Role")] UserForm user)
         {

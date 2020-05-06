@@ -9,7 +9,7 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    //[Authorize(Roles = "Almoxarife,Gerente")]
+    [Authorize(Roles = "Almoxarife,Gerente")]
     public class HomeController : Controller
     {
         public IActionResult Index ()

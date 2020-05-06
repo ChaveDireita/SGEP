@@ -10,7 +10,7 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "Almoxarife,Gerente")]
     public class ProjetoController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -36,6 +36,7 @@ namespace SGEP.Controllers
             return Json(new {size = _context.Projeto.Count(), entities = result.ToList().ConvertAll(p => new {p.Id, Inicio = p.Inicio.ToShortDateString(), Fim = (p.Fim == null) ? "--" : p.Fim.GetValueOrDefault().ToShortDateString(), p.Almoxarifado, p.Nome})});
         }
         public async Task<JsonResult> Get (int id) => Json(await _context.Projeto.FindAsync(id));
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
         {
@@ -49,15 +50,16 @@ namespace SGEP.Controllers
                 projeto.Almoxarifado = a;
                 _context.Add(projeto);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok("Projeto adicionado com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao adicionar o projeto.");
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Inicio,Fim,AlmoxarifadoId")] Projeto projeto)
         {
             if (id != projeto.Id)
-                return NotFound();
+                return NotFound("O projeto não existe.");
             if (ModelState.IsValid)
             {
                 try
@@ -70,13 +72,13 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProjetoExists(projeto.Id))
-                        return NotFound();
+                        return NotFound("O projeto não existe.");
                     else
                         throw;
                 }
-                return Ok();
+                return Ok("As alterações foram salvas com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
         private bool ProjetoExists(int id) =>  _context.Projeto.Any(e => e.Id == id);
         public JsonResult ProjetoSelecionado(int? id) {
@@ -87,7 +89,7 @@ namespace SGEP.Controllers
             List<Funcionario> funcnaoalocados;
             List<int> funcalocados;
             funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
-            funcnaoalocados = _context.Funcionario.Where(f => !funcalocados.Contains(f.Id)).ToList();
+            funcnaoalocados = _context.Funcionario.Where(f => f.Ativo && !funcalocados.Contains(f.Id)).ToList();
             return Json(funcnaoalocados);
         }
         public JsonResult FuncionariosAlocados(int? id)
@@ -96,6 +98,7 @@ namespace SGEP.Controllers
             funcalocados = _context.ProjetosxFuncionarios.Where(p => p.IdProjeto == id).Select(f => f.IdFuncionario).ToList();
             return Json(_context.Funcionario.Where(f => funcalocados.Contains(f.Id)).ToList());
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> AlocarFuncionario([Bind("Id,IdFuncionario,IdProjeto")] ProjetosxFuncionarios pxf)
         {
@@ -119,6 +122,7 @@ namespace SGEP.Controllers
         public JsonResult Funcionario(int? id) {
             return Json(_context.Funcionario.Find(id));
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> DesalocarProjeto(int? idfunc,int idproj)
         {
@@ -128,6 +132,7 @@ namespace SGEP.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Finalizar (int? id, DateTime? inicio, DateTime? fim)
         {

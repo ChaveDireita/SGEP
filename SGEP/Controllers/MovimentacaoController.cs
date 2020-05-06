@@ -9,7 +9,7 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Roles = "Almoxarife,Gerente")]
     public class MovimentacaoController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -43,6 +43,7 @@ namespace SGEP.Controllers
                 });
             return Json(new {size = _context.Movimentacao.Count(), entities = result2});
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
         {
@@ -61,8 +62,9 @@ namespace SGEP.Controllers
                 almoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
             _context.Update(destino);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("Movimentação adicionada com sucesso.");
         }
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> CreateSaida([Bind("Data", "MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo")] Movimentacao movimentacao)
         {
@@ -89,9 +91,9 @@ namespace SGEP.Controllers
                 destinoAlmoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
             _context.UpdateRange(origem, destino);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("Movimentação adicionada com sucesso.");
         }
-
+        [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> CreateConsumo([Bind("Data", "MaterialId", "Quantidade", "OrigemId", "Tipo")] Movimentacao movimentacao)
         {
@@ -109,7 +111,7 @@ namespace SGEP.Controllers
                 origem.AlmoxarifadosxMateriais.Remove(almoxarifadoMaterial);
             _context.Update(origem);
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("Movimentação adicionada com sucesso.");
         }
     }
 }

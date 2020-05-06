@@ -3,12 +3,16 @@
 @{
     ViewData["Title"] = "Index";
     ViewData["search-fields"] = "_User";
+    ViewData["role-allowed-to-modify"] = "Gerente";
 }
 
+<div id="alert-container">
+    
+</div>
 <br />
 <h2>Usuários</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+@await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
 
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
@@ -134,38 +138,6 @@
     </script>
 
     @{await Html.RenderPartialAsync ("_ValidationScriptsPartial");}
-
-    <script>
-        $('#form-create').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Create', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-create'))
-                })
-                .then(res => res.text())
-                .then(_ =>
-                {
-                    $('#modal-create').modal('hide');
-                    list({});
-                });
-            }
-        });
-        $('#form-edit').submit(function (e) {
-            e.preventDefault()
-            if ($(this).valid()) {
-                fetch('/' + controller + '/Edit', {
-                    method: 'post',
-                    body: new FormData(document.querySelector('#form-edit'))
-                })
-                .then(res => res.text())
-                .then(_ =>
-                {
-                    $('#modal-edit').modal('hide');
-                    list({});
-                });
-            }
-        });
-    </script>
+    @{await Html.RenderPartialAsync("Partial/Index/_Forms");}
 }
 

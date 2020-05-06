@@ -10,18 +10,16 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
+    [Authorize(Roles = "Almoxarife,Gerente")]
     public class FuncionarioController : Controller
     {
         private readonly ApplicationDbContext _context;
         public FuncionarioController(ApplicationDbContext context) => _context = context;
-        [Authorize(Roles = "Almoxarife,Gerente")]
         public IActionResult Index() => View();
 
-        [Authorize(Roles = "Almoxarife,Gerente")]
         [HttpGet("/Funcionario/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Funcionario.FindAsync(id));
 
-        [Authorize(Roles = "Almoxarife,Gerente")]
         public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Funcionario> result = _context.Funcionario;
@@ -39,22 +37,22 @@ namespace SGEP.Controllers
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Nome,Cargo")] Funcionario funcionario)
+        public async Task<IActionResult> Create([Bind("Id,Nome,Cargo,Matricula")] Funcionario funcionario)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(funcionario);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Ok("Funcionário adicionado com sucesso!");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao adicionar o funcionário.");
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo")] Funcionario funcionario)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,Cargo,Ativo,Matricula")] Funcionario funcionario)
         {
             if (id != funcionario.Id)
-                return NotFound();
+                return NotFound("O funcionário não existe.");
             if (ModelState.IsValid)
             {
                 try
@@ -65,13 +63,13 @@ namespace SGEP.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!FuncionarioExists(funcionario.Id))
-                        return NotFound();
+                        return NotFound("O funcionário não existe.");
                     else
                         throw;
                 }
-                return Ok();
+                return Ok("As alterações foram salvas com sucesso.");
             }
-            return BadRequest();
+            return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost, ActionName("Delete")]
@@ -80,12 +78,12 @@ namespace SGEP.Controllers
             var funcionario = await _context.Funcionario.FirstAsync(f => f.Id == id);
             if (funcionario == null)
                 return NotFound();
-            
-            _context.Funcionario.Remove(funcionario);
+            funcionario.Ativo = false;
+            _context.Update(funcionario);
+            _context.RemoveRange(_context.ProjetosxFuncionarios.Where(pf => pf.IdFuncionario == funcionario.Id));
             await _context.SaveChangesAsync();
             return Ok();
         }
-        [Authorize(Roles = "Almoxarife,Gerente")]
         public async Task<JsonResult> ProjetosAssociados(int? id)
         {
             IEnumerable<int> Ids = (await _context.ProjetosxFuncionarios.ToListAsync())
@@ -95,6 +93,7 @@ namespace SGEP.Controllers
                                                            .ToListAsync();
             return Json(projetos);
         }
+        public IActionResult WillFail() => Ok("Dummy Response");
         private bool FuncionarioExists(int id) =>  _context.Funcionario.Any(e => e.Id == id);
     }
 }

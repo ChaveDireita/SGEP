@@ -17,10 +17,10 @@ namespace SGEP
     public class Program
     {
         // Precisa eventualmente para scaffold
-        /*public static void Main (string[] args)
-        {
-             CreateWebHostBuilder (args).Build ().Run();
-        }*/
+        // public static void Main (string[] args)
+        // {
+        //      CreateWebHostBuilder (args).Build ().Run();
+        // }
         
         public static async Task Main (string[] args)
         {
@@ -105,24 +105,30 @@ namespace SGEP
                 _role = Console.ReadLine();
             }
             _role = _role == "1" ? "Almoxarife" : "Gerente";
-            var result = await userManager.CreateAsync(user, "12345678");
-            if (result.Succeeded)
+            var userResult = await userManager.CreateAsync(user, "12345678");
+            if (userResult.Succeeded)
             {
                 await CheckForRoles(roleManager);
                 var roleResult = await userManager.AddToRoleAsync(user, _role);
                 if (roleResult.Succeeded)
                 {
+                    Console.Clear();
                     Console.WriteLine("Usuário criado com sucesso!");
                     Console.WriteLine("Entre com as seguintes credenciais: ");
                     Console.WriteLine("E-mail: " + user.Email);
                     Console.WriteLine("Senha: 12345678");
                 } else {
                     await userManager.DeleteAsync(user);
+                    Console.WriteLine("Ocorreu um erro ao criar um usuário: ");
+                    foreach (var error in roleResult.Errors)
+                    {
+                        Console.WriteLine(error.Code + ": " + error.Description);
+                    }
                 }
                 return;
             }
             Console.WriteLine("Ocorreu um erro ao criar um usuário: ");
-            foreach (var error in result.Errors)
+            foreach (var error in userResult.Errors)
             {
                 Console.WriteLine(error.Code + ": " + error.Description);
             }
