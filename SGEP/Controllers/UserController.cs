@@ -113,14 +113,14 @@ namespace SGEP.Controllers
         }
         [Authorize(Roles="Gerente")]
         [HttpPost]
-        public async Task<IActionResult> Disable(string id)
+        public async Task<IActionResult> Toggle(string id)
         {
             SGEPUser user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 return BadRequest("O usuário não existe.");
-            user.Ativo = false;
+            user.Ativo = !user.Ativo;
             await _userManager.UpdateAsync(user);
-            return BadRequest("O usuário foi removido com sucesso.");
+            return Ok("O usuário foi removido com sucesso.");
         }
         public async Task<IActionResult> ChangePassword(string id, string old, string pass, string confirm)
         {

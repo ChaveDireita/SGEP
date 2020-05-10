@@ -20,7 +20,7 @@
             class="btn btn-outline-danger squareborder"
             onclick="toggleDelete()"
             title="Ativar/Desativar">
-        <i class="fas fa-trash"></i>
+        <i class="fas fa-power-off"></i>
     </button>
 </div>
 <br />
@@ -45,7 +45,12 @@
                 @Html.DisplayNameFor(model => model.Telefone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Role)
+                Tipo
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ativo)
+            </th>
+            <th>
             </th>
         </tr>
     </thead>
@@ -66,18 +71,21 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['nome', 'email', 'telefone', 'role'], ({size, entities}) =>
+            refreshTable(controller, searchParams, ['nome', 'email', 'telefone', 'role', 'ativo', 'delete-btn'], ({size, entities}) =>
             {
                 pagination.size = size;
-                entities.forEach(f => {
-                    f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>';
+                entities.forEach(u => {
+                    u.ativo = u.ativo ? 'Ativo' : 'Desativado';
+                    
+                    u['delete-btn'] = (u.ativo) ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(\'' + u.id + '\')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>' 
+                                                : '<a class="txt-danger float-right delete text-success" href="#" + onclick="remove(\'' + u.id + '\')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>'; 
                 });
             });
         }
 
         function remove(id)
         {
-            http.POST('/' + controller + '/Delete/' + id, () =>
+            http.POST('/' + controller + '/Toggle/' + id, () =>
             {
                 $('#edit').attr('disabled', true);
                 $('#edit').on('click', () =>
@@ -87,7 +95,8 @@
                 $('#details').on('click', () =>
                 {
                 });
-                list({})
+
+                list({});
             })
         }
 
@@ -112,11 +121,13 @@
                     const nomeField = get.id('Nome-edit');
                     const emailField = get.id('Email-edit');
                     const telefoneField = get.id('Telefone-edit');
+                    const roleField = get.id('Role-edit');
 
                     idField.value = user.id;
                     nomeField.value = user.nome;
                     emailField.value = user.email;
                     telefoneField.value = user.telefone;
+                    roleField.value = user.role;
                     $('#modal-edit').modal('show');
                 });
             },
