@@ -20,20 +20,23 @@ namespace SGEP.Controllers
         [HttpGet("/Funcionario/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Funcionario.FindAsync(id));
 
-        public JsonResult List(string id, string nome, string cargo, int? itensPorPagina, int? pagina)
+        public JsonResult List(string matricula, string nome, string cargo, string ativo, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Funcionario> result = _context.Funcionario;
-            if (id != null && id.Trim() != "")
-                result = result.Where(f => f.Id.ToString().Contains(id));
+            if (matricula != null && matricula.Trim() != "")
+                result = result.Where(f => f.Matricula.ToString().Contains(matricula));
             if (nome != null && nome?.Trim() != "")
                 result = result.Where(f => f.Nome.Contains(nome));
             if (cargo != null && cargo?.Trim() != "")
                 result = result.Where(f => f.Cargo.Contains(cargo));
+            if (ativo != null && ativo?.Trim() != "")
+                result = result.Where(f => f.Ativo == bool.Parse(ativo));
             int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
+            int _size = result.Count();
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(new {size = _context.Funcionario.Count(), entities = result});
+            return Json(new {size = _size, entities = result});
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
@@ -82,7 +85,7 @@ namespace SGEP.Controllers
             _context.Update(funcionario);
             _context.RemoveRange(_context.ProjetosxFuncionarios.Where(pf => pf.IdFuncionario == funcionario.Id));
             await _context.SaveChangesAsync();
-            return Ok();
+            return Ok("O funcionário foi removido com sucesso.");
         }
         public async Task<JsonResult> ProjetosAssociados(int? id)
         {
@@ -95,5 +98,14 @@ namespace SGEP.Controllers
         }
         public IActionResult WillFail() => Ok("Dummy Response");
         private bool FuncionarioExists(int id) =>  _context.Funcionario.Any(e => e.Id == id);
+
+        [AllowAnonymous]
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult VerificarMatricula(string matricula)
+        {
+            if (_context.Funcionario.Where(f => f.Ativo && f.Matricula == matricula).Count() > 0)
+                return Json("Já existe um funcionário cadastrado com essa matrícula");
+            return Json(true);
+        }
     }
 }

@@ -59,8 +59,9 @@ namespace SGEP
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireLowercase = false;
-            }).AddRoleManager<RoleManager<IdentityRole>>()
-              .AddEntityFrameworkStores<ApplicationDbContext> ();
+            }).AddDefaultTokenProviders()
+            .AddRoleManager<RoleManager<IdentityRole>>()
+            .AddEntityFrameworkStores<ApplicationDbContext> ();
 
             services.AddMvc (config => 
             {

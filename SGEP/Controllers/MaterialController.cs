@@ -18,20 +18,19 @@ namespace SGEP.Controllers
 
         public IActionResult Index() => View();
 
-        public async Task<JsonResult> List(string id, string descricao, string preco, string categoria, int? itensPorPagina, int? pagina)
+        public async Task<JsonResult> List(string codigo, string descricao, string preco, string unidade, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Material> result = await _context.Material.ToListAsync();
-            if (id != null && id.Trim() != "")
-                result = result.Where(m => m.Id.ToString().Contains(id));
             if (descricao != null && descricao?.Trim() != "")
                 result = result.Where(m => m.Descricao.Contains(descricao));
             if (preco != null && preco?.Trim() != "")
                 result = result.Where(m => m.Preco.ToString().Contains(preco));
             int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
+            int _size = result.Count();
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(new {size = _context.Material.Count(), entities = result});
+            return Json(new {size = _size, entities = result});
         }
         public async Task<JsonResult> All () => Json(await _context.Material.ToListAsync());
 

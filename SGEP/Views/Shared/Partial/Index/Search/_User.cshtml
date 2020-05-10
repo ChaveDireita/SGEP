@@ -1,40 +1,48 @@
 ﻿<div class="col-4">
-    <input class="form-control squareborder search-field"
-           type="number"
-           placeholder="Código"
-           aria-label="Search"
-           id="search-codigo"
-           name="codigo">
-</div>
-<div class="col-4">
+    <label for="email">E-mail</label>
     <input class="form-control squareborder search-field"
            type="text"
-           placeholder="Nome"
+           aria-label="Search"
+           id="search-email"
+           name="email">
+</div>
+<div class="col-4">
+    <label for="nome">Nome</label>
+    <input class="form-control squareborder search-field"
+           type="text"
            aria-label="Search"
            id="search-nome"
            name="nome">
 </div>
 <div class="col-4">
+    <label for="telefone">Telefone</label>
     <input class="form-control squareborder search-field"
            type="text"
-           placeholder="Cargo"
            aria-label="Search"
-           id="search-cargo"
-           name="cargo">
+           id="search-telefone"
+           name="telefone">
 </div>
 <br />
 <br />
 <br />
 <div class="col-4">
-    <select class="form-control custon-select squareborder search-field" id="search-item-pagina" name="itensPorPagina">
-        <option value="10" disabled selected>Itens por página</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
+    <label for="tipo">Tipo</label>
+    <select class="form-control custon-select squareborder search-field" 
+            id="search-item-pagina" 
+            name="tipo">
+        <option value="" selected>Todos</option>
+        <option value="Almoxarife">Almoxarife</option>
+        <option value="Gerente">Gerente</option>
     </select>
 </div>
 <div class="col-4">
+    <label for="itensPorPagina">Itens por Página</label>
+    <select class="form-control custon-select squareborder search-field" id="search-item-pagina" name="itensPorPagina">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+    </select>
 </div>
 <div class="col-4">
 </div>

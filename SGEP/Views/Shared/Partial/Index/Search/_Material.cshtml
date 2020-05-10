@@ -1,25 +1,25 @@
 <div class="col-4">
+    <label for="codigo">Código</label>
     <input class="form-control squareborder search-field" 
            type="number" 
-           placeholder="Código" 
            aria-label="Search" 
            id="search-codigo"
            name="codigo">
 </div>
 <div class="col-4">
+    <label for="descricao">Descrição</label>
     <input class="form-control squareborder search-field"
            type="text" 
-           placeholder="Descrição" 
            aria-label="Search" 
            id="search-descricao"
            name="descricao">
 </div>
 <div class="col-4">
+    <label for="preco">Preço</label>
     <input class="form-control squareborder search-field"
            type="number" 
            min="0" 
            step="0.01" 
-           placeholder="Preço" 
            aria-label="Search" 
            id="search-preco"
            name="preco">
@@ -27,25 +27,23 @@
 <br/>
 <br/>
 <br/>
+<br/>
 <div class="col-4">
-    <input class="form-control squareborder search-field" 
-           type="number" 
-           min="0" 
-           placeholder="Categoria" 
+    <label for="unidade">Unidade</label>
+    <input class="form-control squareborder search-field"
+           type="text" 
            aria-label="Search" 
-           id="search-categoria"
-           name="categoria">
+           id="search-unidade"
+           name="unidade">
 </div>
 <div class="col-4">
+    <label for="itensPorPagina">Itens por Página</label>
     <select class="form-control custon-select squareborder search-field" id="search-item-pagina" name="itensPorPagina">
-        <option value="10" disabled selected>Itens por página</option>
         <option value="5">5</option>
-        <option value="10">10</option>
+        <option value="10" selected>10</option>
         <option value="25">25</option>
         <option value="50">50</option>
     </select>
-</div>
-<div class="col-4">
 </div>
 <div class="col-4">
 </div>

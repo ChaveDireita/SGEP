@@ -11,7 +11,7 @@ namespace SGEP.Models
         public static MonthPeriod operator +(MonthPeriod m, int months)
         {
             m.Year = (m.Year*12 + m.Month + months)/12;
-            m.Month = (m.Month + months)%12 + 1;
+            m.Month = (m.Month + months)%12;
             return m;
         }
 
@@ -28,7 +28,7 @@ namespace SGEP.Models
 
         public static implicit operator MonthPeriod (DateTime date) => new MonthPeriod
         {
-            Month = date.Month,
+            Month = date.Month - 1,
             Year = date.Year
         };
 
@@ -55,7 +55,7 @@ namespace SGEP.Models
             "mai", "jun", "jul", "ago", 
             "set", "out", "nov", "dez"
         };
-        public override string ToString() => $"{Months[Month-1]}/{Year}";
+        public override string ToString() => $"{Months[Month]}/{Year}";
 
         public override bool Equals(object obj)
         {
@@ -73,7 +73,7 @@ namespace SGEP.Models
             MonthPeriod mp = new MonthPeriod
             {
                 Year = int.Parse(s.Substring(0, 4)),
-                Month = int.Parse(s.Substring(4))
+                Month = int.Parse(s.Substring(4)) - 1
             };
             return mp;
         }

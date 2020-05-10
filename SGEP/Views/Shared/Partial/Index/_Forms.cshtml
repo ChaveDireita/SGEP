@@ -15,7 +15,7 @@
             {
                 $('#modal-create').modal('hide');
                 get.id ('form-create').reset();
-                list({});
+                list(_search());
                 showAlert(text, color);
             });
         }
@@ -37,7 +37,7 @@
             {
                 $('#modal-edit').modal('hide');
                 get.id ('form-edit').reset();
-                list({});
+                list(_search());
                 showAlert(text, color);
             });
         }

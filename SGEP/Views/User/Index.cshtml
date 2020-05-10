@@ -62,14 +62,16 @@
         const checkDel = document.getElementById('checkDel');
         const controller = 'User';
 
-        list({});
+        list(_search());
 
         function list(searchParams)
         {
             refreshTable(controller, searchParams, ['nome', 'email', 'telefone', 'role'], ({size, entities}) =>
             {
                 pagination.size = size;
-                //entities.forEach(f => f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>');
+                entities.forEach(f => {
+                    f['delete-btn'] = '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>';
+                });
             });
         }
 

@@ -17,11 +17,11 @@
       <div class="modal-body">
         <form class="form" id="graph-query">
             <div class="form-group">
-                <label for="inicio">Data inicial</label>
+                <label for="inicio">Mês inicial</label>
                 <input class="form-control squareborder" type="month" name="inicio"/>
             </div>
             <div class="form-group">
-                <label for="fim">Data final</label>
+                <label for="fim">Mês final</label>
                 <input class="form-control squareborder" type="month" name="fim"/>
             </div>
             <div class="form-group">
@@ -31,12 +31,18 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="tipo">Tipo</label>
+                <label for="material">Almoxarifado/Projeto</label>
+                <select class="form-control squareborder" name="almoxarifado">
+                    <option value="" selected>Todos</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tipo">Tipo de movimentação</label>
                 <select class="form-control squareborder" name="tipo">
-                    <option value="Entrada" selected disabled>Selecione um tipo</option>
+                    <option value="" selected disabled>Selecione um tipo</option>
                     <option value="Entrada">Entrada</option>
-                    <option value="Saída">Saída</option>
                     <option value="Consumo">Consumo</option>
+                    <option value="Saida">Saída</option>
                 </select>
             </div>
         </form>
@@ -45,10 +51,37 @@
         <button type="button" 
                 id="graph-update" 
                 class="btn btn-primary squareborder"
-                onclick="load(new Date(get.name('inicio').value), 
+                onclick="
+                const startDate = get.name('inicio');
+                const endDate = get.name('fim');
+                const selectMat = get.name('material');
+                const selectTipo = get.name('tipo');
+
+                if (startDate.value == '')
+                {
+                  startDate.focus();
+                  return;
+                }
+                if (endDate.value == '')
+                {
+                  endDate.focus();
+                  return;
+                }
+                if (selectMat.value == 0)
+                {
+                  selectMat.focus();
+                  return;
+                }
+                if (selectTipo.value == '')
+                {
+                  selectTipo.focus();
+                  return;
+                }
+                load(new Date(get.name('inicio').value), 
                               new Date(get.name('fim').value),
                               get.name('material').value,
-                              get.name('tipo').value)">Atualizar</button>
+                              get.name('tipo').value,
+                              get.name('almoxarifado').value)">Atualizar</button>
       </div>
     </div>
   </div>

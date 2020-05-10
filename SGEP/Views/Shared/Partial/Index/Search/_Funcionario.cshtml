@@ -1,23 +1,24 @@
 <div class="col-4">
+    <label for="matricula">Matricula</label>
     <input class="form-control squareborder search-field" 
            type="number" 
-           placeholder="Código" 
            aria-label="Search" 
-           id="search-codigo" 
-           name="codigo">
+           id="search-matricula" 
+           name="matricula"
+           >
 </div>
 <div class="col-4">
+    <label for="nome">Nome</label>
     <input class="form-control squareborder search-field" 
            type="text" 
-           placeholder="Nome" 
            aria-label="Search" 
            id="search-nome" 
            name="nome">
 </div>
 <div class="col-4">
+    <label for="cargo">Cargo</label>
     <input class="form-control squareborder search-field" 
            type="text" 
-           placeholder="Cargo" 
            aria-label="Search" 
            id="search-cargo" 
            name="cargo">
@@ -25,16 +26,25 @@
 <br/>
 <br/>
 <br/>
+<br/>
 <div class="col-4">
-    <select class="form-control custon-select squareborder search-field" id="search-item-pagina" name="itensPorPagina">
-        <option value="10" disabled selected>Itens por página</option>
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
+    <label for="ativo">Estado</label>
+    <select class="form-control squareborder search-field" 
+            id="search-ativo"
+            name="ativo">
+        <option value="">Todos</option>
+        <option value="true" selected>Ativo</option>
+        <option value="false">Removido</option>
     </select>
 </div>
 <div class="col-4">
+    <label for="itensPorPagina">Itens por Página</label>
+    <select class="form-control custon-select squareborder search-field" id="search-item-pagina" name="itensPorPagina">
+        <option value="5">5</option>
+        <option value="10" selected>10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+    </select>
 </div>
 <div class="col-4">
 </div>

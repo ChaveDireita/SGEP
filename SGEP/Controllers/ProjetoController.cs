@@ -16,24 +16,30 @@ namespace SGEP.Controllers
         private readonly ApplicationDbContext _context;
         public ProjetoController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
-        public async Task<JsonResult> List(string id, string nome, DateTime? inicio, DateTime? fim, int[] funcionarios, int? itensPorPagina, int? pagina)
+        public async Task<JsonResult> List(string codigo, string nome, DateTime? inicio, DateTime? fim, string estado, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Projeto> result = await _context.Projeto.Include(p => p.Almoxarifado).ToListAsync();
-            if (id != null && id.Trim() != "")
-                result = result.Where(p => p.Id.ToString().Contains(id));
+            if (codigo != null && codigo.Trim() != "")
+                result = result.Where(p => p.Id.ToString().Contains(codigo));
             if (nome != null && nome.Trim() != "")
                 result = result.Where(p => p.Nome.Contains(nome));
             if (inicio != null && inicio?.ToString().Trim() != "")
                 result = result.Where(p => p.Inicio.ToString().Contains(inicio.ToString()));
             if (fim != null && fim?.ToString().Trim() != "")
                 result = result.Where(p => p.Fim.ToString().Contains(fim.ToString()));
-            // if (funcionarios != null && funcionarios.Count() > 0)
-            //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
+            if (estado != null && estado?.ToString().Trim() != "")
+                result = result.Where(p => (p.Fim == null) == bool.Parse(estado));
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
+            int _size = result.Count();
             result = result.ToList().GetRange(_inicio, qtd);
             
-            return Json(new {size = _context.Projeto.Count(), entities = result.ToList().ConvertAll(p => new {p.Id, Inicio = p.Inicio.ToShortDateString(), Fim = (p.Fim == null) ? "--" : p.Fim.GetValueOrDefault().ToShortDateString(), p.Almoxarifado, p.Nome})});
+            return Json(new {size = _size, entities = result.ToList()
+                                                            .ConvertAll(p => new {
+                                                                p.Id, Inicio = p.Inicio.ToShortDateString(), 
+                                                                Fim = (p.Fim == null) ? "--" : p.Fim.GetValueOrDefault().ToShortDateString(), 
+                                                                p.Almoxarifado, 
+                                                                p.Nome})});
         }
         public async Task<JsonResult> Get (int id) => Json(await _context.Projeto.FindAsync(id));
         [Authorize(Roles = "Almoxarife")]

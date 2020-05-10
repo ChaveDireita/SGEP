@@ -15,25 +15,33 @@ namespace SGEP.Controllers
         private readonly ApplicationDbContext _context;
         public MovimentacaoController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
-        public JsonResult List(DateTime? data, string origem, string destino, string material, int? quantidade, int? itensPorPagina, int? pagina)
+        public JsonResult List(DateTime? data, string origem, string destino, string material, string tipo, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Movimentacao> result = _context.Movimentacao;
             if (data != null)
                 result = result.Where(m => m.Data == data);
             if (origem != null && origem?.ToString().Trim() != "")
-                result = result.Where(m => _context.Almoxarifado.Find(m.OrigemId).Nome.Contains(origem));
+                result = result.Where(m => {
+                    _context.Almoxarifado.Find(m.OrigemId);
+                    var alm = _context.Almoxarifado.Find(m.OrigemId);
+                    return alm != null && alm.Nome.Contains(origem);
+                });
             if (destino != null && destino?.ToString().Trim() != "")
-                result = result.Where(m => _context.Almoxarifado.Find(m.DestinoId).Nome.Contains(destino));
+                result = result.Where(m => {
+                    _context.Almoxarifado.Find(m.DestinoId);
+                    var alm = _context.Almoxarifado.Find(m.DestinoId);
+                    return alm != null && alm.Nome.Contains(destino);
+                });
             if (material != null && material?.ToString().Trim() != "")
-                result = result.Where(m => m.Id.ToString().Contains(material.ToString()));
-            // if (funcionarios != null && funcionarios.Count() > 0)
-            //     result = result.Where(p => !p.Funcionarios.Where(f => funcionarios.Contains(f.Id)).ConvertAll(f => funcionarios.Contains(f.Id)).Contains(false));
+                result = result.Where(m => m.MaterialId.ToString().Contains(material.ToString()));
+            if (tipo != null && tipo?.ToString().Trim() != "")
+                result = result.Where(m => m.Tipo.Contains(tipo));
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - _inicio);
             result = result.OrderByDescending(m => m.Data).ToList().GetRange(_inicio, qtd);
             var result2 = result.ToList().ConvertAll(m => new { 
                     m.Id, 
-                    m.Data, 
+                    Data = m.Data.ToShortDateString(), 
                     m.MaterialId, 
                     m.Preco, 
                     m.Quantidade, 

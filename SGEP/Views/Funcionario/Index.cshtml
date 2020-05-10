@@ -7,7 +7,6 @@
 }
 <br />
 <div id="alert-container">
-    
 </div>
 <br />
 <h2>Funcionários</h2>
@@ -16,19 +15,24 @@
 
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
-    <button id="btn-del" 
-            class="btn btn-outline-danger squareborder" 
-            onclick="toggleDelete()"
-            title="Remover"><i class="fas fa-trash"></i></button>
+    @if(User.IsInRole("Almoxarife")){
+        <button id="btn-del" 
+                class="btn btn-outline-danger squareborder" 
+                onclick="toggleDelete()"
+                title="Remover"><i class="fas fa-times"></i>
+                </button>
+    }
 </div>
 <br/>
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
 <br/>
-
-@await Html.PartialAsync("_Create")
-@await Html.PartialAsync("_Edit")
+@if(User.IsInRole("Almoxarife")){
+    @await Html.PartialAsync("_Create")
+    @await Html.PartialAsync("_Edit")
+    @await Html.PartialAsync("_Remove")
+}
 
 <table class="table">
     <thead class="thead-dark">
@@ -58,7 +62,7 @@
         const checkDel = document.getElementById('checkDel');
         const controller = 'Funcionario';
 
-        list({});
+        list(_search());
 
         function list(searchParams)
         {
@@ -67,7 +71,17 @@
                 pagination.size = size;
                 entities.forEach(f => 
                 {
-                    f['delete-btn'] = f['ativo'] ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(' + f.id + ')" hidden="true"><i class="fas fa-minus-circle" style="font-size: 18px"></i></a>'
+                    const html = `<a class="txt-danger float-right delete text-danger" 
+                                     href="#" 
+                                     onclick="
+                                        get.id('remove-name').innerHTML = '${f.nome}';
+                                        get.id('remove-btn').onclick = () => remove(${f.id});
+                                        $('#modal-remove').modal('show');
+                                     " 
+                                     hidden="true">
+                                        <i class="fas fa-minus-circle" style="font-size: 18px"></i>
+                                    </a>`;
+                    f['delete-btn'] = f['ativo'] ? html
                                                  : 'Removido';
                 });
             });
@@ -85,7 +99,8 @@
                 $('#details').on('click', () => 
                 {
                 });
-                list({})
+                $('#modal-remove').modal('hide');
+                list(_search())
             })
         }
         
@@ -205,17 +220,6 @@
                             '</tr>';
                     }
                 });
-        }
-
-        function willFail()
-        {
-            var color = 'success';
-            fetch('/Funcionario/WillFail')
-            .then(res => {
-                color = res.ok ? 'success' : 'danger';
-                return res.text();
-            })
-            .then(text => showAlert(text, color))
         }
 
     </script>

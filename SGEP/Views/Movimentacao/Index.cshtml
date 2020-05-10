@@ -11,70 +11,102 @@
 <br />
 <h2>Movimentações</h2>
 <br />
-<div class="btn-group">
-  <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <i class="fas fa-plus"></i> Adicionar
-  </button>
-  <div class="dropdown-menu">
-    <a class="dropdown-item" 
-       href="#" 
-       data-toggle="modal" 
-       data-target="#modal-create-in" 
-       onclick="
-            const selectDest = get.id('Destino-in');
-            selectDest.innerHTML = '<option>Carregando dados...</option>';
-            selectDest.disabled = true;
-            fetch('/Almoxarifado/All')
-            .then((res) => res.json())
-            .then((json) => 
-            {
-                selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
-                for(alm of json)
+@if(User.IsInRole("Almoxarife")){
+    <div class="btn-group d-inline">
+    <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-plus"></i> Adicionar
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" 
+        href="#" 
+        data-toggle="modal" 
+        data-target="#modal-create-in" 
+        onclick="
+                const selectDest = get.id('Destino-in');
+                selectDest.innerHTML = '<option>Carregando dados...</option>';
+                selectDest.disabled = true;
+                fetch('/Almoxarifado/All')
+                .then((res) => res.json())
+                .then((json) => 
                 {
-                    if (alm.ativo)
+                    selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
+                    for(alm of json)
+                    {
+                        if (alm.ativo)
+                        {
+                            const opt = document.createElement('option');
+                            opt.value = alm.id;
+                            opt.innerText = alm.nome;
+                            selectDest.appendChild(opt);
+                        }
+                    }
+                    selectDest.disabled = false;
+                });
+                const selectMat = get.id('Material-in');
+                selectMat.innerHTML = '<option>Carregando dados...</option>';
+                selectMat.disabled = true;
+                fetch('/Material/All')
+                .then((res) => res.json())
+                .then((json) => 
+                {
+                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                    console.log (json);
+                    for(mat of json)
                     {
                         const opt = document.createElement('option');
-                        opt.value = alm.id;
-                        opt.innerText = alm.nome;
-                        selectDest.appendChild(opt);
+                        opt.value = mat.id;
+                        opt.innerText = mat.id;
+                        opt.title = mat.descricao;
+                        selectMat.appendChild(opt);
                     }
-                }
-                selectDest.disabled = false;
-            });
-            const selectMat = get.id('Material-in');
-            selectMat.innerHTML = '<option>Carregando dados...</option>';
-            selectMat.disabled = true;
-            fetch('/Material/All')
-            .then((res) => res.json())
-            .then((json) => 
-            {
-                selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
-                console.log (json);
-                for(mat of json)
+                    selectMat.disabled = false;
+                });
+                ">Entrada</a>
+        <a class="dropdown-item" 
+        href="#" 
+        data-toggle="modal" 
+        data-target="#modal-create-out"
+        onclick="
+                const selectOrig = get.id('Origem-out');
+                selectOrig.innerHTML = '<option>Carregando dados...</option>';
+                selectOrig.disabled = true;
+
+                fetch('/Almoxarifado/All')
+                .then((res) => res.json())
+                .then((json) => 
                 {
-                    const opt = document.createElement('option');
-                    opt.value = mat.id;
-                    opt.innerText = mat.id;
-                    opt.title = mat.descricao;
-                    selectMat.appendChild(opt);
-                }
-                selectMat.disabled = false;
-            });
-            ">Entrada</a>
-    <a class="dropdown-item" 
-       href="#" 
-       data-toggle="modal" 
-       data-target="#modal-create-out"
-       onclick="
-            const selectOrig = get.id('Origem-out');
-            selectOrig.innerHTML = '<option>Carregando dados...</option>';
-            selectOrig.disabled = true;
+                    selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                    console.log (json);
+                    for(alm of json)
+                    {
+                        if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+                        {
+                            const opt = document.createElement('option');
+                            opt.value = alm.id;
+                            opt.innerText = alm.nome;
+                            selectOrig.appendChild(opt);
+                        }
+                    }
+                    selectOrig.disabled = false;
+                });
+        ">Saída</a>
+        <a class="dropdown-item" 
+        href="#" 
+        data-toggle="modal" 
+        data-target="#modal-create-diff"
+        onclick="
+            const selectOrigin = get.id('Origem-diff');
+            const selectMat = get.id('Material-diff');
+            selectOrigin.innerHTML = '<option>Carregando dados...</option>';
+            selectOrigin.disabled = true;
+            selectMat.disabled = true;
+            selectMat.innerHTML = '<option>Selecione a origem</option>'
 
             fetch('/Almoxarifado/All')
             .then((res) => res.json())
             .then((json) => 
             {
-                selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
                 console.log (json);
                 for(alm of json)
                 {
@@ -83,47 +115,19 @@
                         const opt = document.createElement('option');
                         opt.value = alm.id;
                         opt.innerText = alm.nome;
-                        selectOrig.appendChild(opt);
+                        selectOrigin.appendChild(opt);
                     }
                 }
-                selectOrig.disabled = false;
-            });
-       ">Saída</a>
-    <a class="dropdown-item" 
-       href="#" 
-       data-toggle="modal" 
-       data-target="#modal-create-diff"
-       onclick="
-        const selectOrigin = get.id('Origem-diff');
-        const selectMat = get.id('Material-diff');
-        selectOrigin.innerHTML = '<option>Carregando dados...</option>';
-        selectOrigin.disabled = true;
-        selectMat.disabled = true;
-        selectMat.innerHTML = '<option>Selecione a origem</option>'
-
-        fetch('/Almoxarifado/All')
-        .then((res) => res.json())
-        .then((json) => 
-        {
-            selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
-            console.log (json);
-            for(alm of json)
-            {
-                if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
-                {
-                    const opt = document.createElement('option');
-                    opt.value = alm.id;
-                    opt.innerText = alm.nome;
-                    selectOrigin.appendChild(opt);
-                }
-            }
-            selectOrigin.disabled = false;
-        });">Consumo (?)</a>
-  </div>
-</div>
+                selectOrigin.disabled = false;
+            });">Consumo (?)</a>
+    </div>
+    </div>
+}
+<div class="d-inline">
 <button id="details" 
         class="btn btn-outline-secondary squareborder" 
         disabled><i class="fas fa-info"></i> Detalhes</button>
+</div>
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
@@ -131,7 +135,9 @@
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
-@await Html.PartialAsync("_Create")
+@if(User.IsInRole("Almoxarife")){
+    @await Html.PartialAsync("_Create")
+}
 <br/>
 <table class="table">
     <thead class="thead-dark">
@@ -166,7 +172,16 @@
         const lista = document.getElementById('lista');
         const controller = 'Movimentacao';
 
-        list({});
+        list(_search());
+
+        fetch('/Almoxarifado/All')
+        .then(res => res.json())
+        .then(json => {
+            for(const a of json){
+                get.name('destino').innerHTML += `<option value="${a.id}">${a.nome}</option>`;
+                get.name('origem').innerHTML += `<option value="${a.id}">${a.nome}</option>`;
+            }
+        })
 
         function list(searchParams)
         {

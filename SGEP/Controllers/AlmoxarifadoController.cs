@@ -24,12 +24,13 @@ namespace SGEP.Controllers
             if (nome != null && nome?.Trim() != "")
                 result = result.Where(m => m.Nome.Contains(nome));
             if (projeto != null && projeto?.Trim() != "")
-                result = result.Where(m => m.Projeto.ToString().Contains(projeto));
+                result = result.Where(m => m.Projeto == bool.Parse(projeto));
             int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
+            int _size = result.Count();
             result = result.ToList().GetRange(inicio, qtd);
             
-            return Json(new {size = _context.Almoxarifado.Count(), entities = result.ToList()});
+            return Json(new {size = _size, entities = result.ToList()});
         }
         public async Task<JsonResult> All() => Json(await _context.Almoxarifado.ToListAsync());
         [HttpGet("/Almoxarifado/GetMateriais/{id}")]

@@ -18,9 +18,9 @@ namespace SGEP.Controllers
         public IActionResult Index() => View();
         public JsonResult GraphData(string inicio, string fim, string tipo, int? material, int? almoxarifado)
         {
-            if (inicio == null || fim == null || material == null)
+            if (inicio == null || fim == null || material == null || tipo == null)
                 return Json(new object[]{});
-
+            
             MonthPeriod mpInicio = inicio;
             MonthPeriod mpFim = fim;
 
@@ -37,8 +37,6 @@ namespace SGEP.Controllers
                     movs = movs.Where(m => m.OrigemId == almoxarifado);
             }
             
-            movs.Where(m => m.Id == 2);                                                        
-
             Dictionary<string, int> data = new Dictionary<string, int> ();
             IEnumerable<MonthPeriod> months = mpFim - mpInicio;
             foreach (var month in months)
@@ -49,7 +47,25 @@ namespace SGEP.Controllers
             if (almoxarifado != null)
                 almoxarifadoNome = _context.Almoxarifado.Find(almoxarifado).Nome;
 
-            return Json(new { data, material, tipo, almoxarifado = almoxarifadoNome });
+            string title = null;
+
+            switch (tipo)
+            {
+                case "Entrada":
+                    title = almoxarifadoNome != null ? $"Entrada de {material} para {almoxarifadoNome}" 
+                                                     : $"Entrada total de {material}"; 
+                    break;
+                case "Saida":
+                    title = almoxarifadoNome != null ? $"Saída de {material} de {almoxarifadoNome}" 
+                                                     : $"Saída total de {material}"; 
+                    break;
+                case "Consumo":
+                    title = almoxarifadoNome != null ? $"Consumo de {material} por {almoxarifadoNome}" 
+                                                     : $"Consumo total de {material}"; 
+                    break;
+            }
+
+            return Json(new { data, material, tipo, almoxarifado = almoxarifadoNome, title });
         }
     }
 }

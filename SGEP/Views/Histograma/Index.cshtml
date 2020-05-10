@@ -16,18 +16,19 @@
 @section Scripts
 {
     <script>
-        function load (start, end, material, tipo)
+        function load (start, end, material, tipo, almoxarifado)
         {
-            fetch('/Histograma/GraphData?inicio=' + start.getUTCFullYear() + (start.getUTCMonth() + 1)+
-                                        '&fim=' + end.getUTCFullYear() + (end.getUTCMonth() + 1) +
-                                        '&material=' + material + '&tipo=' + tipo)
+            const url = `/Histograma/GraphData?inicio=${start.getUTCFullYear()}${start.getUTCMonth() + 1}
+                                              &fim=${end.getUTCFullYear()}${end.getUTCMonth() + 1}
+                                              &material=${material}
+                                              &tipo=${tipo}
+                                              &almoxarifado=${almoxarifado ? almoxarifado : '' }`;
+
+            fetch(url.replace(/[\n ]/g, ''))
             .then(res => res.json())
             .then(json => 
             {
-                if (json.almoxarifado == null)
-                    chart.data.datasets[0].label = json.tipo + ' total de ' + json.material;
-                else
-                    chart.data.datasets[0].label = json.tipo + ' de ' + json.material + "para" + json.almoxarifado;
+                chart.data.datasets[0].label = json.title;
                 
                 chart.data.datasets[0].data = new Array();
                 chart.data.datasets[0].backgroundColor = new Array();
@@ -75,12 +76,24 @@
         .then(res => res.json())
         .then(json => 
         {
-            console.log(json);
             for(const m of json)
             {
                 get.name('material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
             }
         });
+
+        fetch('/Almoxarifado/All')
+        .then(res => res.json())
+        .then(json => 
+        {
+            console.log(json);
+            for(const a of json)
+            {
+                get.name('almoxarifado').innerHTML += `<option value="${a.id}"> ${a.id}:${a.nome} </option>`;
+            }
+        });
+
+
         (() => 
         {
             const sixMonthSpan = 13132800000;

@@ -33,5 +33,17 @@ namespace SGEP.Controllers
             return Json(await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email)));
         }
         
+        public IActionResult SubtractMP(string t0, string t)
+        {
+            return Json((MonthPeriod) t - (MonthPeriod) t0);
+        }
+        
+        [Route("Debug/DateTimeToMP/{date}")]
+        public IActionResult DateTimeToMP(DateTime? date)
+        {
+            if (date.HasValue)
+                return Json((MonthPeriod) date);
+            return Json("Null");
+        }
     }
 }

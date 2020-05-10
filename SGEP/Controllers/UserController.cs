@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ using SGEP.Models;
 
 namespace SGEP.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Roles="Gerente,Almoxarife")]
     public class UserController : Controller
     {
         private readonly UserManager<SGEPUser> _userManager;
@@ -26,34 +27,43 @@ namespace SGEP.Controllers
             _context = context;
             _emailSender = emailSender;
         }
+        [Authorize(Roles="Gerente")]
         public IActionResult Index()
         {
             return View();
         }
+        [Authorize(Roles="Gerente")]
         public async Task<JsonResult> Get(string id)
         {
             SGEPUser user = await _userManager.FindByIdAsync(id);
             return Json(await UserForm.FromIdentity(user, _userManager));
         }
-        public async Task<JsonResult> List (string id, string email, string nome, string telefone, int? itensPorPagina, int? pagina)
+        [Authorize(Roles="Gerente")]
+        public async Task<JsonResult> List (string email, string nome, string telefone, string tipo, int? itensPorPagina, int? pagina)
         {
             List<SGEPUser> users = _userManager.Users.ToList();
-            List<UserForm> result = new List<UserForm>();
+            List<UserForm> preResult = new List<UserForm>();
             foreach (var u in users)
             {
-                result.Add(await UserForm.FromIdentity(u, _userManager));
+                preResult.Add(await UserForm.FromIdentity(u, _userManager));
             }
-            /*if (id != null && id.Trim () != "")
-                result = result.Where (f => f.Id.ToString ().Contains (id));
+            IEnumerable<UserForm> result = preResult;
+            if (email != null && email?.Trim () != "")
+                result = result.Where (u => u.Email.Contains (email));
             if (nome != null && nome?.Trim () != "")
-                result = result.Where (f => f.Nome.Contains (nome));
-            if (cargo != null && cargo?.Trim () != "")
-                result = result.Where (f => f...Contains (cargo));
+                result = result.Where (u => u.Nome.Contains (nome));
+            if (telefone != null && telefone?.Trim () != "")
+                result = result.Where (u => u.Telefone.Contains (telefone));
+            if (tipo != null && tipo?.Trim () != "")
+                result = result.Where (u => u.Role.Contains (tipo));
             int inicio = (itensPorPagina ?? 10) * ((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count () - inicio);
-            result = result.ToList ().GetRange (inicio, qtd);*/
-            return Json (new { size = _userManager.Users.Count (), entities = result });
+            int _size = result.Count();
+            result = result.ToList ().GetRange (inicio, qtd);
+            return Json (new { size = _size, entities = result });
         }
+        [Authorize(Roles="Gerente")]
+        [HttpPost]
         public async Task<IActionResult> Create([Bind("Nome,Email,Telefone,Role")] UserForm user)
         {
             if (ModelState.IsValid)
@@ -76,13 +86,15 @@ namespace SGEP.Controllers
             }
             return BadRequest("Ocorreu um erro ao criar o usuário. Verifique a validade dos dados inseridos.");
         }
+        [Authorize(Roles="Gerente")]
+        [HttpPost]
         public async Task<IActionResult> Edit([Bind("Id,Nome,Email,Telefone,Role")] UserForm user)
         {
             if (ModelState.IsValid)
             {
                 SGEPUser savedUser = await _userManager.FindByIdAsync(user.Id);
                 if (savedUser == null)
-                    return BadRequest("User does not exist");
+                    return BadRequest("ERRO: O usuário não existe");
                 savedUser.Nome = user.Nome;
                 savedUser.Email = user.Email;
                 savedUser.PhoneNumber = user.Telefone;
@@ -93,11 +105,22 @@ namespace SGEP.Controllers
                 var result = await _userManager.UpdateAsync(savedUser);
 
                 if (result.Succeeded)
-                    return Ok();
+                    return Ok("As alterações foram salvas com sucesso.");
                 else
                     return BadRequest(result.Errors);
             }
-            return BadRequest();
+            return BadRequest("As informações inseridas são inválidas.");
+        }
+        [Authorize(Roles="Gerente")]
+        [HttpPost]
+        public async Task<IActionResult> Disable(string id)
+        {
+            SGEPUser user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return BadRequest("O usuário não existe.");
+            user.Ativo = false;
+            await _userManager.UpdateAsync(user);
+            return BadRequest("O usuário foi removido com sucesso.");
         }
         public async Task<IActionResult> ChangePassword(string id, string old, string pass, string confirm)
         {
