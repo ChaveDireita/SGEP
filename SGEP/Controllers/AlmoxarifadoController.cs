@@ -67,7 +67,7 @@ namespace SGEP.Controllers
                 else matvm.Unidade = un.Abreviacao;
                 matvm.QuantidadeTotal = almoxmat[i].Quantidade;
                 matvm.AlmoxarifadoId = id;
-                matvm.Preco = materiais[i].Preco;
+                matvm.Preco = materiais[i].Preco*matvm.QuantidadeTotal;
                 matvms.Add(matvm);
             }
             return Json(matvms);
