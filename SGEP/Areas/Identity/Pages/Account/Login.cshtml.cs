@@ -18,11 +18,13 @@ namespace SGEP.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<SGEPUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<SGEPUser> _userManager;
 
-        public LoginModel(SignInManager<SGEPUser> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<SGEPUser> signInManager, ILogger<LoginModel> logger, UserManager<SGEPUser> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -71,6 +73,12 @@ namespace SGEP.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                if (user == null || !user.Ativo)
+                {
+                    ModelState.AddModelError(string.Empty, "O usuário não está ativo ou não existe");
+                    return Page();
+                }
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
