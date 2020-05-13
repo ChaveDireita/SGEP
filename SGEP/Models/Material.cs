@@ -14,7 +14,7 @@ namespace SGEP.Models
         public decimal Preco { get; set; }
         public int Categoria { get; set; }
         [Display(Name ="Unidade")]
-        public int IdUnidade { get; set; }
+        public int? IdUnidade { get; set; }
         [Display(Name ="Preço/Unidade")]
         public string Precounidade { get; set; }
         public string Showid { get; set; }

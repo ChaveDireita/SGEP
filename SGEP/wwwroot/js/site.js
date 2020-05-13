@@ -139,8 +139,9 @@ function gerarlist(nomes, lista,acao,relevanteid) {
         if (!(acao === undefined || relevanteid === undefined)) html += '<tr onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
         else html += '<tr>';
         for (variavel in item) {
-            if (verificarsemacentoecaixa(nomes,variavel)) {
-            html += '<td>' + item[variavel] + '</td>';
+            if (verificarsemacentoecaixa(nomes, variavel)) {
+                if (item[variavel] == null) html += '<td> --- </td>';
+                else html += '<td>' + item[variavel] + '</td>';
             }
         }
         html += '</tr>';

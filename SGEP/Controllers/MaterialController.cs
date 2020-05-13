@@ -33,7 +33,6 @@ namespace SGEP.Controllers
         }
         public JsonResult Unidades () => Json(_context.Unidade.ToList());
         public JsonResult UnidadePorIdJSON(int id) => Json(_context.Unidade.FirstOrDefault(u => u.Id == id));
-        public Unidade UnidadePorId(int id) => _context.Unidade.FirstOrDefault(u => u.Id == id);
 
         [HttpPost]
         public async Task<IActionResult> AdicionarUnidade([Bind("Id,Nome,Abreviacao")] Unidade unidade) {
@@ -45,6 +44,8 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("/Material/Unidade/Get/{id}")]
+        public async Task<JsonResult> EditarUnidade (int id) => Json(await _context.Unidade.FirstOrDefaultAsync(u => u.Id==id));
         [HttpPost]
         public async Task<IActionResult> EditarUnidade(int id, [Bind("Id,Nome,Alocacao")] Unidade unidade)
         {
@@ -58,7 +59,19 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
-        
+        [HttpPost]
+        public bool VerificaUnidade(Material mat) {
+            if(_context.Unidade.First(u => u.Id == mat.IdUnidade) == null)
+            {
+                mat.IdUnidade = 0;
+                mat.Precounidade = "R$" + mat.Preco;
+                _context.Update(mat);
+                _context.SaveChanges();
+                return false;
+            }
+            return true;
+        }
+
         public async Task<JsonResult> All () => Json(await _context.Material.ToListAsync());
         [HttpGet("/Material/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
@@ -67,8 +80,9 @@ namespace SGEP.Controllers
         {
             if (ModelState.IsValid)
             {
-                Unidade unidade = UnidadePorId(material.IdUnidade);
-                material.Precounidade = "R$" + material.Preco + "/" + unidade.Abreviacao;
+                Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == material.IdUnidade);
+                if (un.Abreviacao == null) material.Precounidade = "R$" + material.Preco + "/" + un.Nome;
+                else material.Precounidade = "R$" + material.Preco + "/" + un.Abreviacao;
                 _context.Add(material);
                 await _context.SaveChangesAsync();
                 int qtdzero = 7 - material.Id.ToString().Length;
@@ -90,6 +104,8 @@ namespace SGEP.Controllers
             {
                 try
                 {
+                    Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == material.IdUnidade);
+                    if (un.Abreviacao == null) material.Precounidade = "R$" + material.Preco + "/" + un.Nome;
                     _context.Update(material);
                     await _context.SaveChangesAsync();
                 }

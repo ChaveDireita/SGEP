@@ -45,7 +45,9 @@
         fetch('/Material/Unidades').then((res) => res.json()).then(unidades => {
             var html = '<option value="" selected disabled>Selecione uma unidade para o material</option>';
             for (un of unidades) {
-                var option = '<option value = ' + un.id + '>' + un.nome + ' (' + un.abreviacao + ')' + '</option>';
+                if (un.abreviacao == null) 
+                    var option = '<option value = ' + un.id + '>' + un.nome + '</option>';
+                else var option = '<option value = ' + un.id + '>' + un.nome + ' (' + un.abreviacao + ')' + '</option>';
                 html += option;
             }
             document.getElementById('unidadeselect').innerHTML = html;

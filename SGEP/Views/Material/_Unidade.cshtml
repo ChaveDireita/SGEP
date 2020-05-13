@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<SGEP.Models.Unidade>
-
 <!--MODAL DE UNIDADES-->
 <div class="modal fade" id="unidadesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -9,14 +8,14 @@
                 <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <button type="button" style="color:white;" value="Editar Unidade"/>
+
             </div>
             <div class="modal-body">
                 <p>
                     <button type="button" class="btn btn-primary squareborder" id="adduni">Editar Unidade</button>
                 </p>
-                <table class="table" id="unidadestable">
-                    
-                </table>
+                <table class="table" id="unidadestable"></table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
@@ -26,7 +25,7 @@
     </div>
 </div>
 
-<!--MODAL DE ADICIONAR/EDITAR UNIDADE-->
+<!--MODAL DE ADICIONAR UNIDADE-->
 <div class="modal fade" id="unidademanagementmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content squareborder">
@@ -43,7 +42,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label">Abreviação:</label>
-                    <input  class="form-control" id="unidadeabvinput" />
+                    <input class="form-control" id="unidadeabvinput" />
                 </div>
             </div>
             <div class="modal-footer">
@@ -54,28 +53,30 @@
     </div>
 </div>
 
-<!--
-<script>
-    var nome = document.getElementById("uninome").value;
-    var abv = document.getElementById("uniabv").value;
-    document.getElementById("adduni").onclick = () => adicionarunidade(nome, abv);
-    listarunidades();
-
-    function listarunidades() {
-        fetch('/Material/Unidades').then((res) => res.json()).then(unidades => {
-            var lista = gerarlist(undefined, unidades);
-            document.getElementById("unilistbody").innerHTML = lista;
-        });
-        $('#unidadesmodal').modal('toggle');
-    }
-    function adicionarunidade(nome,abv) {
-        const data = new FormData();
-        data.append('Nome', nome);
-        data.append('Abreviacao', abv);
-        fetch('/Material/AdicionarUnidade', { method: 'POST', body: data }).then(retorno => {
-            gerarlistaunidades();
-        });
-        $('#unidademanagementmodal').modal('toggle');
-    }
-</script>
-    -->
+<!--MODAL DE EDITAR UNIDADE-->
+<div class="modal fade" id="unidadeeditmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title">Editar Unidade</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">Nome da Unidade:</label>
+                    <input class="form-control" id="unieditnome" />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Abreviação(Opicional):</label>
+                    <input class="form-control" id="unieditabv" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary squareborder" id="adicionarunidade">Adicionar Unidade</button>
+            </div>
+        </div>
+    </div>
+</div>
