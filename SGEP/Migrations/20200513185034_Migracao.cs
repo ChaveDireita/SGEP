@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SGEP.Migrations
 {
-    public partial class _0 : Migration
+    public partial class Migracao : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

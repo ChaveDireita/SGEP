@@ -8,14 +8,14 @@ namespace SGEP.Models
         [Display(Name ="ID")]
         public int Id { get; set; }
         [DataType(DataType.MultilineText)]
-        [Display(Name = "Descrição")]
+        [Display(Name = "DescriÃ§Ã£o")]
         public string Descricao { get; set; }
         [DataType(DataType.Currency)]
         public decimal Preco { get; set; }
         public int Categoria { get; set; }
         [Display(Name ="Unidade")]
-        public int? IdUnidade { get; set; }
-        [Display(Name ="Preço/Unidade")]
+        public int IdUnidade { get; set; }
+        [Display(Name ="PreÃ§o/Unidade")]
         public string Precounidade { get; set; }
         public string Showid { get; set; }
     }

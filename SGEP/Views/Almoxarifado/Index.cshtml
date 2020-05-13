@@ -42,7 +42,7 @@
     </tbody>
 </table>
 
-@*@await Html.PartialAsync("_Details")*@
+@await Html.PartialAsync("_Details")
 
 @section Scripts
 {
@@ -157,15 +157,13 @@
             {
                 fetch('/' + controller + '/Get/' + id)
                 .then(res => res.json())
-                .then(func => 
+                .then(alm => 
                 {
-                    var idfield = document.getElementById('idfield');
-                    idfield.innerText = "FUN - " + func.id;
-                    var namefield = document.getElementById('namefield');
-                    namefield.textContent = func.nome;
-                    var cargofield = document.getElementById('cargofield');
-                    cargofield.textContent = func.cargo;
-                    gerarlista(id);
+                    var detailstable = document.getElementById('detailstable');
+                    var nomes = ['ID', 'Nome'];
+                    var content = [alm.id, alm.nome];
+                    detailstable.innerHTML = gerardetailslist(nomes, content);
+                    gerarlista(alm.id)
                     $('#detailsmodal').modal('toggle');
                 });
             });
@@ -173,39 +171,19 @@
 
         function gerarlista(id)
         {
-            fetch('/' + controller + '/ProjetosAssociados/?id=' + id).then((res) => res.json())
+            fetch('/' + controller + '/GetMaterialxAlmoxarifadoList/?id=' + id).then((res) => res.json())
                 .then((json) => {
-                    var theadr = document.getElementById('theadr');
-                    theadr.innerHTML = '';
-                    theadr.innerHTML = '<th>' +
-                        json.id +
-                        '</th >' +
-                        '<th>' +
-                        json.nome +
-                        '</th>' +
-                        '<th>' +
-                        json.inicio +
-                        '</th>' +
-                        '<th>' +
-                        json.fim +
-                        '</th>';
-                    var tbody = document.getElementById('projlista');
+                    var tbody = document.getElementById('matlista');
                     tbody.innerHTML = '';
-                    for (const p of json) {
-                        tbody.innerHTML += '<tr>' +
-                            '<td>' +
-                            p.id +
-                            '</td>' +
-                            '<td>' +
-                            p.nome +
-                            '</td>' +
-                            '<td>' +
-                            p.inicio +
-                            '</td>' +
-                            '<td>' +
-                            p.fim +
-                            '</td>' +
-                            '</tr>';
+                    for (const am of json) {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>${am.materialShowId}</td>
+                                <td>${am.descMaterial}</td>
+                                <td>${am.quantidadeTotal}/${am.unidade}</td>
+                                <td>R$ ${am.preco}/${am.unidade}</td>
+                            </tr>
+                        `;
                     }
                 });
         }

@@ -96,7 +96,7 @@ namespace SGEP.Controllers
             return BadRequest();
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,Preco")] Material material)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Descricao,Categoria,Preco,IdUnidade,Showid")] Material material)
         {
             if (id != material.Id)
                 return NotFound();

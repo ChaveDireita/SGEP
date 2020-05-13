@@ -7,7 +7,31 @@
 <br />
 <h2>Materiais</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD")
+<button class="btn btn-success squareborder" 
+        role="button"
+        id="modal-create-ativador"
+        onclick="
+                const unidadeField = get.id('unidadeselect');
+                unidadeField.innerHTML = '<option disabled selected>Carregando dados</option>';
+                fetch('/Material/Unidades')
+                .then(res => res.json())
+                .then(unidades => {
+                    let options = '<option selected disabled>Selecione uma unidade para o material</option>';
+                    for (const u of unidades)
+                    {
+                        options += `<option value=${u.id}>${u.nome}</option>`;
+                    }
+                    unidadeField.innerHTML = options;
+                    $('#modal-create').modal('show');
+                });
+                "><i class="fas fa-plus"></i> Adicionar</button>
+<button id="edit" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled><i class="fas fa-edit"></i> Editar</button>
+        
+<button id="details" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled><i class="fas fa-info"></i> Detalhes</button>
 
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
@@ -29,7 +53,7 @@
                 @Html.DisplayNameFor(model => model.Descricao)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Precounidade)
+                @Html.DisplayNameFor(model => model.Preco)
             </th>
         </tr>
     </thead>
@@ -49,7 +73,10 @@
         list({});
 
         function list(searchParams) {
-            refreshTable(controller, searchParams, ['showid', 'descricao', 'precounidade'], ({ size }) => pagination.size = size);
+            refreshTable(controller, searchParams, ['showid', 'descricao', 'preco'], ({ size, entities }) => 
+            {
+                pagination.size = size;
+            });
         }
 
         function onClickSelectRow(id) {
@@ -61,10 +88,31 @@
                             const idField = get.id('Id-edit');
                             const descricaoField = get.id('Descricao-edit');
                             const precoField = get.id('Preco-edit');
+                            const unidadeField = get.id('Unidade-edit');
+                            const categoriaField = get.id('Categoria-edit');
+                            const showidField = get.id('Showid-edit');
+
                             idField.value = mat.id;
                             descricaoField.value = mat.descricao;
                             precoField.value = mat.preco;
+                            unidadeField.innerHTML = '<option value="" disabled selected>Carregando dados</option>';
+                            showidField.value = mat.showid;
+                            categoriaField.value = mat.categoria;
+                            console.log(showidField.value);
                             $('#modal-edit').modal('show');
+                            fetch('/' + controller + '/Unidades')
+                            .then(res => res.json())
+                            .then(unidades => {
+                                let options = '';
+                                for (const u of unidades)
+                                {
+                                    if (u.id == mat.idUnidade)
+                                        options += `<option value="${u.id}" selected>${u.nome}</option>`;
+                                    else
+                                        options += `<option value="${u.id}">${u.nome}</option>`;
+                                }
+                                unidadeField.innerHTML = options;
+                            });
                         });
                 },
                 () => {
@@ -115,10 +163,6 @@
                     });
             }
         });
-        document.getElementById("modal-create-ativador").onclick = () => {
-            unidadesparaselecao();
-            $('#modal-create').modal('toggle');
-        }
     </script>
 
     <!--TAG DE UNIDADES-->
