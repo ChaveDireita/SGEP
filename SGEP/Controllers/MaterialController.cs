@@ -47,7 +47,7 @@ namespace SGEP.Controllers
         [HttpGet("/Material/Unidade/Get/{id}")]
         public async Task<JsonResult> EditarUnidade (int id) => Json(await _context.Unidade.FirstOrDefaultAsync(u => u.Id==id));
         [HttpPost]
-        public async Task<IActionResult> EditarUnidade(int id, [Bind("Id,Nome,Alocacao")] Unidade unidade)
+        public async Task<IActionResult> EditarUnidade(int id, [Bind("Id,Nome,Abreviacao")] Unidade unidade)
         {
             if (id != unidade.Id)
                 return NotFound();

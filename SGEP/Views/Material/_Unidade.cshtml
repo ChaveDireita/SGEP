@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SGEP.Models.Unidade>
+﻿@model SGEP.Models.Unidade
 <!--MODAL DE UNIDADES-->
 <div class="modal fade" id="unidadesmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -11,13 +11,22 @@
             </div>
             <div class="modal-body">
                 <p>
-                    <button type="button" class="btn btn-primary squareborder" id="adduni">Editar Unidade</button>
+                    <button type="button" class="btn btn-success squareborder" id="openuniadd">Adicionar</button>
+                    <button type="button" class="btn btn-primary squareborder" disabled id="edit-unidade">Editar</button>
                 </p>
-                <table class="table" id="unidadestable"></table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary squareborder" id="openuniadd">Adicionar Unidade</button>
+                <table class="table" id="unidadestable">
+                    <thead>
+                        <th>
+                            Nome
+                        </th>
+                        <th>
+                            Abreviação
+                        </th>
+                    </thead>
+                    <tbody id="lista-unidades">
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -62,18 +71,21 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <label class="control-label">Nome da Unidade:</label>
-                    <input class="form-control" id="unieditnome" />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Abreviação(Opicional):</label>
-                    <input class="form-control" id="unieditabv" />
-                </div>
+                <form action="" id="form-edit-unidade">
+                    <input class="form-control" type="hidden" asp-for="Id" id="unieditid" />
+                    <div class="form-group">
+                        <label class="control-label">Nome da Unidade:</label>
+                        <input class="form-control" asp-for="Nome" id="unieditnome" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Abreviação(Opicional):</label>
+                        <input class="form-control" asp-for="Abreviacao" id="unieditabv" />
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary squareborder" id="adicionarunidade">Adicionar Unidade</button>
+                <button type="button" class="btn btn-primary squareborder" id="editarunidade">Salvar</button>
             </div>
         </div>
     </div>

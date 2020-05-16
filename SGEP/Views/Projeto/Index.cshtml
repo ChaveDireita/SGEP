@@ -151,10 +151,10 @@
             console.log(id);
             fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
                 fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
-                    alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id);
+                    alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id, ['selectable']);
                 });
                 fetch('/' + controller + '/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
-                    nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id);
+                    nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id, ['selectable']);
                 });
             });
         }

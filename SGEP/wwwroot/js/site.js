@@ -130,14 +130,19 @@ function verificarsemacentoecaixa(lista, palavra) {
     else return false;
 }
 
-function gerarlist(nomes, lista,acao,relevanteid) {
+function gerarlist(nomes, lista,acao,relevanteid,rowClasses) {
+    var classes = '';
+    if (rowClasses)
+        for (const classe of rowClasses)
+            classes += classe + ' ';
+
     var html = '';
     html += '<thead class="thead-dark">';
     for (n of nomes) html += '<th style:"position:sticky; top:0">' + n + '</th>';
     html += '</thead> <tbody>';
     for (item of lista) {
-        if (!(acao === undefined || relevanteid === undefined)) html += '<tr onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
-        else html += '<tr>';
+        if (!(acao === undefined || relevanteid === undefined)) html += '<tr class="' + classes + '" onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
+        else html += '<tr class="' + classes + '">';
         for (variavel in item) {
             if (verificarsemacentoecaixa(nomes, variavel)) {
                 if (item[variavel] == null) html += '<td> --- </td>';

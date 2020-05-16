@@ -32,7 +32,7 @@
 <button id="details" 
         class="btn btn-outline-secondary squareborder" 
         disabled><i class="fas fa-info"></i> Detalhes</button>
-
+<button type="button" class="btn btn-outline-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button>
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
@@ -62,7 +62,7 @@
 
 <partial name="_Unidade" />
 <partial name="_Details" />
-<button type="button" class="btn btn-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button>
+@* <button type="button" class="btn btn-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button> *@
 @section Scripts
     {
     <script>
@@ -177,13 +177,46 @@
             var abv = document.getElementById("unidadeabvinput").value;
             adicionarunidade(nome, abv);
         }
+        document.getElementById("editarunidade").onclick = () => {
+            var nome = document.getElementById("unieditnome").value;
+            var abv = document.getElementById("unieditabv").value;
+            var id = document.getElementById("unieditid").value;
+            editarunidade(id, nome, abv);
+        }
 
 
         function listarunidades() {
             fetch('/Material/Unidades').then((res) => res.json()).then(unidades => {
+                get.id('edit-unidade')
                 var nomes = ["Nome", "Abreviação"];
-                var lista = gerarlist(nomes,unidades);
-                document.getElementById("unidadestable").innerHTML = lista;
+                
+                const lista = get.id('lista-unidades');
+                lista.innerHTML = '';
+                for(const u of unidades)
+                {
+                    const tr = document.createElement('tr');
+                    tr.classList.add('selectable', 'unidade');
+                    tr.innerHTML = `<td>${u.nome}</td>
+                                    <td>${u.abreviacao}</td>`;
+                    tr.onclick = () => {
+                        const selected = $('.selected.unidade');
+                        if (selected.length > 0) 
+                            selected[0].setAttribute('class', 'selectable');
+                        tr.classList.remove('selectable');
+                        tr.classList.add('selected');
+                        const editUnidade = get.id('edit-unidade');
+                        editUnidade.disabled = false;
+                        editUnidade.onclick = () => {
+                            get.id('unieditnome').value = u.nome;
+                            get.id('unieditabv').value = u.abreviacao;
+                            get.id('unieditid').value = u.id;
+                            $('#unidadesmodal').modal('toggle');
+                            $('#unidadeeditmodal').modal('show')
+                        }
+                    }
+
+                    lista.appendChild(tr);
+                }
             });
             $('#unidadesmodal').modal('toggle');
         }
@@ -195,6 +228,16 @@
                 listarunidades();
             });
             $('#unidademanagementmodal').modal('toggle');
+        }
+        function editarunidade(id, nome, abv) {
+            const data = new FormData();
+            data.append('Nome', nome);
+            data.append('Abreviacao', abv);
+            data.append('Id', id);
+            fetch('/Material/EditarUnidade', { method: 'POST', body: data }).then(retorno => {
+                listarunidades();
+            });
+            $('#unidadeeditmodal').modal('toggle');
         }
     </script>
 }
