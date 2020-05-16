@@ -58,16 +58,18 @@ namespace SGEP.Controllers
             {
                 Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == materiais[i].IdUnidade);
                 MaterialAlmoxarifadoViewModel matvm = new MaterialAlmoxarifadoViewModel();
-                matvm.MaterialId = almoxmat[i].MaterialId;
-                matvm.MaterialShowId = materiais[i].Showid;
-                matvm.DescMaterial = materiais[i].Descricao;
+                matvm.Id = almoxmat[i].MaterialId;
+                matvm.Showid = materiais[i].Showid;
+                matvm.Descricao = materiais[i].Descricao;
                 matvm.Categoria = materiais[i].Categoria;
-                matvm.PrecoUnidade = materiais[i].Precounidade;
-                if (un.Abreviacao.Equals(null)) matvm.Unidade = un.Nome;
+                if (un.Abreviacao == null) matvm.Unidade = un.Nome;
                 else matvm.Unidade = un.Abreviacao;
-                matvm.QuantidadeTotal = almoxmat[i].Quantidade;
+                if (un.Abreviacao == null) matvm.QuantidadeTotal = almoxmat[i].Quantidade +" "+ un.Nome + "(s)";
+                else matvm.QuantidadeTotal = almoxmat[i].Quantidade + un.Abreviacao + "(s)";
                 matvm.AlmoxarifadoId = id;
-                matvm.Preco = materiais[i].Preco*matvm.QuantidadeTotal;
+                matvm.Preco = materiais[i].Preco * almoxmat[i].Quantidade;
+                if (un.Abreviacao == null) matvm.PrecoUnidade = "R$" + matvm.Preco + " /" + un.Nome;
+                else matvm.PrecoUnidade = "R$" + matvm.Preco + " /" + un.Abreviacao;
                 matvms.Add(matvm);
             }
             return Json(matvms);

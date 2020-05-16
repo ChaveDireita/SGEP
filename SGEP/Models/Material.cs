@@ -15,8 +15,6 @@ namespace SGEP.Models
         public int Categoria { get; set; }
         [Display(Name ="Unidade")]
         public int IdUnidade { get; set; }
-        [Display(Name ="Preço/Unidade")]
-        public string Precounidade { get; set; }
         public string Showid { get; set; }
     }
 }

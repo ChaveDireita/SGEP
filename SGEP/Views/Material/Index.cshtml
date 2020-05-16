@@ -73,7 +73,7 @@
         list({});
 
         function list(searchParams) {
-            refreshTable(controller, searchParams, ['showid', 'descricao', 'preco'], ({ size, entities }) => 
+            refreshTable(controller, searchParams, ['showid', 'descricao', 'precoUnidade'], ({ size, entities }) => 
             {
                 pagination.size = size;
             });
@@ -120,13 +120,9 @@
                     fetch('/' + controller + '/Get/' + id)
                         .then(res => res.json())
                         .then(mat => {
-                            fetch('/' + controller + '/UnidadePorIdJSON/' + mat.idUnidade)
-                                .then(res => res.json())
-                                .then(unidade => {
-                                    var content = [mat.showid, mat.descricao, mat.categoria, mat.precounidade, unidade.nome];
-                                    document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
-                                    $('#detailsmodal').modal('toggle');
-                                });
+                        var content = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                        document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
+                        $('#detailsmodal').modal('toggle');
                         });
                 });
         }
@@ -196,7 +192,9 @@
                 {
                     const tr = document.createElement('tr');
                     tr.classList.add('selectable', 'unidade');
-                    tr.innerHTML = `<td>${u.nome}</td>
+                    if (u.abreviacao == null) tr.innerHTML = `<td>${u.nome}</td>
+                       <td>---</td>`;
+                    else tr.innerHTML = `<td>${u.nome}</td>
                                     <td>${u.abreviacao}</td>`;
                     tr.onclick = () => {
                         const selected = $('.selected.unidade');
@@ -236,6 +234,7 @@
             data.append('Id', id);
             fetch('/Material/EditarUnidade', { method: 'POST', body: data }).then(retorno => {
                 listarunidades();
+                list({});
             });
             $('#unidadeeditmodal').modal('toggle');
         }

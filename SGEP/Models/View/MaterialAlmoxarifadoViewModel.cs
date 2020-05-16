@@ -7,11 +7,11 @@ namespace SGEP.Models.View
 {
     public class MaterialAlmoxarifadoViewModel
     {
-        public int MaterialId { get; set; }
-        public string MaterialShowId { get; set; }
+        public int Id { get; set; }
+        public string Showid { get; set; }
         public int Categoria { get; set; }
-        public string DescMaterial { get; set; }
-        public decimal QuantidadeTotal { get; set; }
+        public string Descricao { get; set; }
+        public string QuantidadeTotal { get; set; }
         public string Unidade { get; set; }
         public  decimal Preco { get; set; }
         public string PrecoUnidade { get; set; }
