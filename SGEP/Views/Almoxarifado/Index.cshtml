@@ -188,10 +188,10 @@
                     for (const am of json) {
                         tbody.innerHTML += `
                             <tr>
-                                <td>${am.materialShowId}</td>
-                                <td>${am.descMaterial}</td>
-                                <td>${am.quantidadeTotal}/${am.unidade}</td>
-                                <td>R$ ${am.preco}/${am.unidade}</td>
+                                <td class="text-break">${am.showid}</td>
+                                <td class="text-break">${am.descricao}</td>
+                                <td class="text-break">${am.quantidadeTotal}</td>
+                                <td class="text-break">${am.precoUnidade}</td>
                             </tr>
                         `;
                     }

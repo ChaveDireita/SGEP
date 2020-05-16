@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
+using SGEP.Models.View;
 
 namespace SGEP.Controllers
 {
@@ -20,7 +21,9 @@ namespace SGEP.Controllers
 
         public async Task<JsonResult> List(string codigo, string descricao, string preco, string unidade, int? itensPorPagina, int? pagina)
         {
-            IEnumerable<Material> result = await _context.Material.ToListAsync();
+            IEnumerable<MaterialAlmoxarifadoViewModel> result = ConverterListaParaShow(await _context.Material.ToListAsync());
+            if (id != null && id.Trim() != "")
+                result = result.Where(m => m.Id.ToString().Contains(id));
             if (descricao != null && descricao?.Trim() != "")
                 result = result.Where(m => m.Descricao.Contains(descricao));
             if (preco != null && preco?.Trim() != "")
@@ -34,7 +37,39 @@ namespace SGEP.Controllers
         }
         public JsonResult Unidades () => Json(_context.Unidade.ToList());
         public JsonResult UnidadePorIdJSON(int id) => Json(_context.Unidade.FirstOrDefault(u => u.Id == id));
-
+        public IEnumerable<MaterialAlmoxarifadoViewModel> ConverterListaParaShow(IEnumerable<Material> mats)
+        {
+            List<MaterialAlmoxarifadoViewModel> matmodels = new List<MaterialAlmoxarifadoViewModel>();
+            foreach(Material m in mats)
+            {
+                MaterialAlmoxarifadoViewModel matmodel = new MaterialAlmoxarifadoViewModel();
+                Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == m.IdUnidade);
+                matmodel.Id = m.Id;
+                matmodel.Preco = m.Preco;
+                matmodel.Showid = m.Showid;
+                if (un.Abreviacao == null) matmodel.PrecoUnidade = "R$" + m.Preco + "/" + un.Nome;
+                else matmodel.PrecoUnidade = matmodel.PrecoUnidade = "R$" + m.Preco + "/" + un.Abreviacao;
+                matmodel.Unidade = un.Nome;
+                matmodel.Categoria = m.Categoria;
+                matmodel.Descricao = m.Descricao;
+                matmodels.Add(matmodel);
+            }
+            return matmodels;
+        }
+        public MaterialAlmoxarifadoViewModel GetViewModelMat(Material m)
+        {
+            MaterialAlmoxarifadoViewModel matmodel = new MaterialAlmoxarifadoViewModel();
+            Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == m.IdUnidade);
+            matmodel.Id = m.Id;
+            matmodel.Showid = m.Showid;
+            if (un.Abreviacao == null) matmodel.PrecoUnidade = "R$" + m.Preco + "/" + un.Nome;
+            else matmodel.PrecoUnidade = matmodel.PrecoUnidade = "R$" + m.Preco + "/" + un.Abreviacao;
+            matmodel.Unidade = un.Nome;
+            matmodel.Categoria = m.Categoria;
+            matmodel.Preco = m.Preco;
+            matmodel.Descricao = m.Descricao;
+            return matmodel;
+        }
         [HttpPost]
         public async Task<IActionResult> AdicionarUnidade([Bind("Id,Nome,Abreviacao")] Unidade unidade) {
             if (ModelState.IsValid)
@@ -60,24 +95,12 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
-        [HttpPost]
-        public bool VerificaUnidade(Material mat) {
-            if(_context.Unidade.First(u => u.Id == mat.IdUnidade) == null)
-            {
-                mat.IdUnidade = 0;
-                mat.Precounidade = "R$" + mat.Preco;
-                _context.Update(mat);
-                _context.SaveChanges();
-                return false;
-            }
-            return true;
-        }
 
         public async Task<JsonResult> All () => Json(await _context.Material.ToListAsync());
 
         [HttpGet("/Material/Get/{id}")]
-        public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
-        
+        public async Task<JsonResult> Get (int id) => Json(GetViewModelMat(await _context.Material.FindAsync(id)));
+
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Descricao,Preco,Categoria,IdUnidade")] Material material)
@@ -85,8 +108,6 @@ namespace SGEP.Controllers
             if (ModelState.IsValid)
             {
                 Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == material.IdUnidade);
-                if (un.Abreviacao == null) material.Precounidade = "R$" + material.Preco + "/" + un.Nome;
-                else material.Precounidade = "R$" + material.Preco + "/" + un.Abreviacao;
                 _context.Add(material);
                 await _context.SaveChangesAsync();
                 int qtdzero = 7 - material.Id.ToString().Length;
@@ -110,8 +131,6 @@ namespace SGEP.Controllers
             {
                 try
                 {
-                    Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == material.IdUnidade);
-                    if (un.Abreviacao == null) material.Precounidade = "R$" + material.Preco + "/" + un.Nome;
                     _context.Update(material);
                     await _context.SaveChangesAsync();
                 }
