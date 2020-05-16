@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SGEP.Data;
 using SGEP.Models;
+using SGEP.Models.View;
 
 namespace SGEP.Controllers
 {
@@ -45,6 +46,34 @@ namespace SGEP.Controllers
                                                                                            .AlmoxarifadosxMateriais
                                                                                            .Where(am => am.MaterialId == idMat && am.Quantidade > 0)
                                                                                            .ToList());
+        public JsonResult GetMaterialxAlmoxarifadoList (int id){
+            List<AlmoxarifadosxMateriais> almoxmat = _context.AlmoxarifadosxMateriais
+                .Where(a => a.AlmoxarifadoId == id).ToList();
+            List<Material> materiais = new List<Material>();
+            List<MaterialAlmoxarifadoViewModel> matvms = new List<MaterialAlmoxarifadoViewModel>();
+            foreach(AlmoxarifadosxMateriais mat in almoxmat)
+            {
+                materiais.Add(_context.Material.FirstOrDefault(m => m.Id==mat.MaterialId));
+            }
+            for (int i = 0; i < almoxmat.Count; i++)
+            {
+                Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == materiais[i].IdUnidade);
+                MaterialAlmoxarifadoViewModel matvm = new MaterialAlmoxarifadoViewModel();
+                matvm.MaterialId = almoxmat[i].MaterialId;
+                matvm.MaterialShowId = materiais[i].Showid;
+                matvm.DescMaterial = materiais[i].Descricao;
+                matvm.Categoria = materiais[i].Categoria;
+                matvm.PrecoUnidade = materiais[i].Precounidade;
+                if (un.Abreviacao.Equals(null)) matvm.Unidade = un.Nome;
+                else matvm.Unidade = un.Abreviacao;
+                matvm.QuantidadeTotal = almoxmat[i].Quantidade;
+                matvm.AlmoxarifadoId = id;
+                matvm.Preco = materiais[i].Preco*matvm.QuantidadeTotal;
+                matvms.Add(matvm);
+            }
+            return Json(matvms);
+        }
+
         [HttpGet("/Almoxarifado/Get/{id}")]
         public async Task<JsonResult> Get (int id)
         {

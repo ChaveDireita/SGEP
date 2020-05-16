@@ -22,6 +22,7 @@ namespace SGEP.Data
         public DbSet<ProjetosxFuncionarios> ProjetosxFuncionarios { get; set; }
         public DbSet<Almoxarifado> Almoxarifado { get; set; }
         public DbSet<AlmoxarifadosxMateriais> AlmoxarifadosxMateriais { get; set; }
+        public DbSet<Unidade> Unidade { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

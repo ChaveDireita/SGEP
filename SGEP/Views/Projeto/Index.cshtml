@@ -15,20 +15,22 @@
 @await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
-    <button id="btn-del" 
-            class="btn btn-outline-danger squareborder" 
+    <button id="btn-del"
+            class="btn btn-outline-danger squareborder"
             title="Finalizar"
             onclick="
             const btns = gets.cls('delete');
             for(btn of btns)
                 btn.hidden = !btn.hidden;
-            "><i class="fas fa-calendar-check"></i></button>
+            ">
+        <i class="fas fa-calendar-check"></i>
+    </button>
 </div>
-<br/>
+<br />
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
-<br/>
+<br />
 
 @await Html.PartialAsync("_Create")
 @await Html.PartialAsync("_Edit")
@@ -52,43 +54,40 @@
             <th></th>
         </tr>
     </thead>
-    <tbody id="lista">
-    </tbody>
+    <tbody id="lista"></tbody>
 </table>
 
 @await Html.PartialAsync("_Details")
 
-@section Scripts 
-{
+@section Scripts
+    {
     <script>
         const lista = document.getElementById('lista');
         const controller = 'Projeto';
 
         list({});
 
-        function finalize(id)
-        {
-            fetch ('/' + controller + '/Get/' + id)
-            .then(res => res.json())
-            .then(json => 
-            {
-                const id = get.id ('Id-end');
-                const title = get.id('modal-end-title');
-                const inicio = get.id('Inicio-end');
-                const fim = get.id('Fim-end');
+        function finalize(id) {
+            fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(json => {
+                    const id = get.id('Id-end');
+                    const title = get.id('modal-end-title');
+                    const inicio = get.id('Inicio-end');
+                    const fim = get.id('Fim-end');
+                    const almoxarifado = get.id('Almoxarifado-end');
 
-                title.innerText = 'Finalizar ' + json.nome;
-                id.value = json.id;
-                inicio.value = json.inicio;
-                fim.value = json.end;
-                $('#modal-end').modal('show');
-            });
+                    title.innerText = 'Finalizar ' + json.nome;
+                    id.value = json.id;
+                    inicio.value = json.inicio;
+                    fim.value = json.end;
+                    almoxarifado.value = json.almoxarifadoId;
+                    $('#modal-end').modal('show');
+                });
         }
 
-        function list(searchParams)
-        {
-            refreshTable(controller, searchParams, ['id', 'nome', 'inicio', 'fim', 'end-btn'], ({size, entities}) => 
-            {
+        function list(searchParams) {
+            refreshTable(controller, searchParams, ['id', 'nome', 'inicio', 'fim', 'end-btn'], ({ size, entities }) => {
                 pagination.size = size;
                 entities.forEach(p => 
                 {
@@ -99,44 +98,42 @@
                                    condition2 ?  ''
                                               : '<i class="delete text-secondary fas fa-check-circle float-right" title="Consuma ou transfira todos os materiais deste projeto antes de finalizá-lo" hidden="true" style="font-size: 18px"></i>';
                     p.fim = condition ? '--'
-                                      : p.fim;
+                        : p.fim;
                 })
             });
         }
 
-        function onClickSelectRow (id)
-        {
-            selectRow(id, () => 
-            {
+        function onClickSelectRow(id) {
+            selectRow(id, () => {
                 fetch('/' + controller + '/Get/' + id)
-                .then(res => res.json())
-                .then(proj => 
-                {
-                    const idField = get.id('Id-edit');
-                    const nomeField = get.id('Nome-edit');
-                    const inicioField = get.id('Inicio-edit');
-                    const fimField = get.id('Fim-edit');
-                    const almoxarifado = get.id('Almoxarifado-edit');
-                    const fimGroup = get.id('Fim-edit-group');
-                    
-                    idField.value = proj.id;
-                    nomeField.value = proj.nome;
-                    inicioField.value = proj.inicio.slice(0, 10);
-                    almoxarifado.value = proj.almoxarifadoId;
-                    fimGroup.hidden = proj.fim == null;
-                    fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
-                    $('#modal-edit').modal('show');
-                });
+                    .then(res => res.json())
+                    .then(proj => {
+                        const idField = get.id('Id-edit');
+                        const nomeField = get.id('Nome-edit');
+                        const inicioField = get.id('Inicio-edit');
+                        const fimField = get.id('Fim-edit');
+                        const almoxarifado = get.id('Almoxarifado-edit');
+                        const fimGroup = get.id('Fim-edit-group');
+
+                        idField.value = proj.id;
+                        nomeField.value = proj.nome;
+                        inicioField.value = proj.inicio.slice(0, 10);
+                        almoxarifado.value = proj.almoxarifadoId;
+                        fimGroup.hidden = proj.fim == null;
+                        fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
+                        $('#modal-edit').modal('show');
+                    });
             },
-            () => showdetailsmodal(id));
+                () => showdetailsmodal(id));
         }
-    
+
         function showdetailsmodal(id) {
             atualizaralocacao(id);
             fetch('/' + controller + '/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
                 var detailstable = document.getElementById('detailstable');
                 var nomes = ['ID', 'Nome', 'Início', 'Fim'];
-                detailstable.innerHTML = gerardetailslist(nomes, proj);
+                var content = [proj.id, proj.nome, proj.inicio, proj.fim];
+                detailstable.innerHTML = gerardetailslist(nomes, content);
             });
             document.getElementById('abriralocacao').onclick = function () {
                 gerartabelas(id);
@@ -145,7 +142,7 @@
             }
             $('#detailsmodal').modal('toggle');
         }
-        
+
         function atualizaralocacao(id) {
             fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
                 fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(lista => {
@@ -154,17 +151,17 @@
                 });
             });
         }
-        
+
         var alocadostab = document.getElementById('tabelaalocados');
         var nalocadostab = document.getElementById('tabelanaoalocados');
         function gerartabelas(id) {
             console.log(id);
             fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
                 fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
-                    alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id);
+                    alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id, ['selectable']);
                 });
                 fetch('/' + controller + '/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
-                    nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id);
+                    nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id, ['selectable']);
                 });
             });
         }
@@ -213,5 +210,6 @@
                 });
             }
         });
+
     </script>
 }

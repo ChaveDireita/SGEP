@@ -12,16 +12,40 @@
 <br />
 <h2>Materiais</h2>
 <br />
-@await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
-
+<button class="btn btn-success squareborder" 
+        role="button"
+        id="modal-create-ativador"
+        onclick="
+                const unidadeField = get.id('unidadeselect');
+                unidadeField.innerHTML = '<option disabled selected>Carregando dados</option>';
+                fetch('/Material/Unidades')
+                .then(res => res.json())
+                .then(unidades => {
+                    let options = '<option selected disabled>Selecione uma unidade para o material</option>';
+                    for (const u of unidades)
+                    {
+                        options += `<option value=${u.id}>${u.nome}</option>`;
+                    }
+                    unidadeField.innerHTML = options;
+                    $('#modal-create').modal('show');
+                });
+                "><i class="fas fa-plus"></i> Adicionar</button>
+<button id="edit" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled><i class="fas fa-edit"></i> Editar</button>
+        
+<button id="details" 
+        class="btn btn-outline-secondary squareborder" 
+        disabled><i class="fas fa-info"></i> Detalhes</button>
+<button type="button" class="btn btn-outline-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button>
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
-<br/>
+<br />
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
-<br/>
+<br />
 @await Html.PartialAsync("_Create")
 @await Html.PartialAsync("_Edit")
 <table class="table">
@@ -38,46 +62,78 @@
             </th>
         </tr>
     </thead>
-    <tbody id="lista">
-    </tbody>
+    <tbody id="lista"></tbody>
 </table>
 
+<partial name="_Unidade" />
+<partial name="_Details" />
+@* <button type="button" class="btn btn-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button> *@
 @section Scripts
-{
+    {
     <script>
-        
+
         const lista = document.getElementById('lista');
         const controller = 'Material';
 
         list({});
 
-        function list(searchParams)
-        {
-            refreshTable(controller, searchParams, ['id', 'descricao', 'preco'], ({size}) => pagination.size = size);
+        function list(searchParams) {
+            refreshTable(controller, searchParams, ['showid', 'descricao', 'preco'], ({ size, entities }) => 
+            {
+                pagination.size = size;
+            });
         }
 
-        function onClickSelectRow (id)
-        {
-            selectRow(id, 
-            () => 
-            {
-                fetch('/' + controller + '/Get/' + id)
-                .then(res => res.json())
-                .then(mat => 
-                {
-                    const idField = get.id('Id-edit');
-                    const descricaoField = get.id('Descricao-edit');
-                    const precoField = get.id('Preco-edit');
-                    idField.value = mat.id;
-                    descricaoField.value = mat.descricao;
-                    precoField.value = mat.preco;
-                    $('#modal-edit').modal('show');
+        function onClickSelectRow(id) {
+            selectRow(id,
+                () => {
+                    fetch('/' + controller + '/Get/' + id)
+                        .then(res => res.json())
+                        .then(mat => {
+                            const idField = get.id('Id-edit');
+                            const descricaoField = get.id('Descricao-edit');
+                            const precoField = get.id('Preco-edit');
+                            const unidadeField = get.id('Unidade-edit');
+                            const categoriaField = get.id('Categoria-edit');
+                            const showidField = get.id('Showid-edit');
+
+                            idField.value = mat.id;
+                            descricaoField.value = mat.descricao;
+                            precoField.value = mat.preco;
+                            unidadeField.innerHTML = '<option value="" disabled selected>Carregando dados</option>';
+                            showidField.value = mat.showid;
+                            categoriaField.value = mat.categoria;
+                            console.log(showidField.value);
+                            $('#modal-edit').modal('show');
+                            fetch('/' + controller + '/Unidades')
+                            .then(res => res.json())
+                            .then(unidades => {
+                                let options = '';
+                                for (const u of unidades)
+                                {
+                                    if (u.id == mat.idUnidade)
+                                        options += `<option value="${u.id}" selected>${u.nome}</option>`;
+                                    else
+                                        options += `<option value="${u.id}">${u.nome}</option>`;
+                                }
+                                unidadeField.innerHTML = options;
+                            });
+                        });
+                },
+                () => {
+                    var nomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                    fetch('/' + controller + '/Get/' + id)
+                        .then(res => res.json())
+                        .then(mat => {
+                            fetch('/' + controller + '/UnidadePorIdJSON/' + mat.idUnidade)
+                                .then(res => res.json())
+                                .then(unidade => {
+                                    var content = [mat.showid, mat.descricao, mat.categoria, mat.precounidade, unidade.nome];
+                                    document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
+                                    $('#detailsmodal').modal('toggle');
+                                });
+                        });
                 });
-            },
-            () => 
-            {
-                //Código do modal
-            });
         }
     </script>
 
@@ -91,8 +147,8 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create'))
                 }).then(function (response) {
-                    $('#modal-create').modal('hide');
-                    get.id ('form-create').reset();
+                    $('#modal-create').modal('toggle');
+                    get.id('form-create').reset();
                     list({});
                 });
             }
@@ -104,15 +160,89 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-edit'))
                 })
-                .then(res => res.text())
-                .then(_ => 
-                {
-                    $('#modal-edit').modal('hide');
-                    get.id ('form-edit').reset();
-                    list({});
-                });
+                    .then(res => res.text())
+                    .then(_ => {
+                        $('#modal-edit').modal('hide');
+                        get.id('form-edit').reset();
+                        list({});
+                    });
             }
         });
     </script>
 
+    <!--TAG DE UNIDADES-->
+    <script>
+        
+        document.getElementById("openuniadd").onclick = () => {
+            $('#unidadesmodal').modal('toggle');
+            $('#unidademanagementmodal').modal('toggle');
+        }
+        document.getElementById("adicionarunidade").onclick = () => {
+            var nome = document.getElementById("unidadenomeinput").value;
+            var abv = document.getElementById("unidadeabvinput").value;
+            adicionarunidade(nome, abv);
+        }
+        document.getElementById("editarunidade").onclick = () => {
+            var nome = document.getElementById("unieditnome").value;
+            var abv = document.getElementById("unieditabv").value;
+            var id = document.getElementById("unieditid").value;
+            editarunidade(id, nome, abv);
+        }
+
+
+        function listarunidades() {
+            fetch('/Material/Unidades').then((res) => res.json()).then(unidades => {
+                get.id('edit-unidade')
+                var nomes = ["Nome", "Abreviação"];
+                
+                const lista = get.id('lista-unidades');
+                lista.innerHTML = '';
+                for(const u of unidades)
+                {
+                    const tr = document.createElement('tr');
+                    tr.classList.add('selectable', 'unidade');
+                    tr.innerHTML = `<td>${u.nome}</td>
+                                    <td>${u.abreviacao}</td>`;
+                    tr.onclick = () => {
+                        const selected = $('.selected.unidade');
+                        if (selected.length > 0) 
+                            selected[0].setAttribute('class', 'selectable');
+                        tr.classList.remove('selectable');
+                        tr.classList.add('selected');
+                        const editUnidade = get.id('edit-unidade');
+                        editUnidade.disabled = false;
+                        editUnidade.onclick = () => {
+                            get.id('unieditnome').value = u.nome;
+                            get.id('unieditabv').value = u.abreviacao;
+                            get.id('unieditid').value = u.id;
+                            $('#unidadesmodal').modal('toggle');
+                            $('#unidadeeditmodal').modal('show')
+                        }
+                    }
+
+                    lista.appendChild(tr);
+                }
+            });
+            $('#unidadesmodal').modal('toggle');
+        }
+        function adicionarunidade(nome, abv) {
+            const data = new FormData();
+            data.append('Nome', nome);
+            data.append('Abreviacao', abv);
+            fetch('/Material/AdicionarUnidade', { method: 'POST', body: data }).then(retorno => {
+                listarunidades();
+            });
+            $('#unidademanagementmodal').modal('toggle');
+        }
+        function editarunidade(id, nome, abv) {
+            const data = new FormData();
+            data.append('Nome', nome);
+            data.append('Abreviacao', abv);
+            data.append('Id', id);
+            fetch('/Material/EditarUnidade', { method: 'POST', body: data }).then(retorno => {
+                listarunidades();
+            });
+            $('#unidadeeditmodal').modal('toggle');
+        }
+    </script>
 }

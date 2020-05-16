@@ -22,7 +22,7 @@
     </div>
 </div>
 <!--MODAL DE ALOCAÇÃO-->
-<div class="modal fade" id="alocacaomodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="alocacaomodal" tabindex="-1" style="height:650px;overflow-y: auto;" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content squareborder">
             <div class="modal-header header-dark squareborder">
@@ -31,12 +31,15 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body" id="modalbody">
-                <h5 class="modal-title" style="float: left;">Funcionários alocados:</h5>
-                <h5 class="modal-title" style="float: right;">Funcionários não alocados:</h5>
-                <br />
-                <table class="table table-bordered shadow-regular" style="float: left; width: 45%" id="tabelaalocados"></table>
-                <table class="table table-bordered shadow-regular" style="float: right; width: 45%" id="tabelanaoalocados"></table>
+            <div class="modal-body"  id="modalbody">
+                <h5 class="modal-title">Funcionários alocados:</h5>
+                <div class="tableFixHead">
+                    <table class="table table-bordered shadow-regular" id="tabelaalocados"></table>
+                </div>
+                <h5 class="modal-title" style="padding-top:20px">Funcionários não alocados:</h5>
+                <div class="tableFixHead">
+                    <table class="table table-bordered shadow-regular" id="tabelanaoalocados"></table>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary squareborder" onclick="alocardismiss()">Fechar</button>

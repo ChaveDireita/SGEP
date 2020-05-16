@@ -1,0 +1,24 @@
+﻿@model SGEP.Models.Material
+
+<div class="modal fade" id="detailsmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes do Material</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbodyr">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular" id="detailstable"></table>
+                <h4>Projetos em uso deste material:</h4>
+                <table class="table" id="tableidd"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary squareborder" id="abriralocacao">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>

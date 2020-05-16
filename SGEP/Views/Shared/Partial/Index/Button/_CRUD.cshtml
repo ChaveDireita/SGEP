@@ -2,7 +2,7 @@
         string roleAllowedToModify = (string) ViewData["role-allowed-to-modify"];
 }
 @if(roleAllowedToModify == null || User.IsInRole(roleAllowedToModify)){
-        <button class="btn btn-success squareborder" data-toggle="modal" data-target="#modal-create"><i class="fas fa-plus"></i> Adicionar</button>
+        <button class="btn btn-success squareborder" data-toggle="modal" data-target="#modal-create" id="modal-create-ativador"><i class="fas fa-plus"></i> Adicionar</button>
         <button id="edit" 
                 class="btn btn-outline-secondary squareborder" 
                 disabled><i class="fas fa-edit"></i> Editar</button>

@@ -40,13 +40,13 @@
             <th>
                 @Html.DisplayNameFor(model => model.Matricula)
             </th>
-            <th>
+            <th style="position:sticky; top:0">
                 @Html.DisplayNameFor(model => model.Nome)
             </th>
-            <th>
+            <th style="position:sticky; top:0">
                 @Html.DisplayNameFor(model => model.Cargo)
             </th>
-            <th></th>
+            <th style="position:sticky; top:0"></th>
         </tr>
     </thead>
     <tbody id="lista">
@@ -172,12 +172,10 @@
                 .then(res => res.json())
                 .then(func => 
                 {
-                    var idfield = document.getElementById('idfield');
-                    idfield.innerText = "FUN - " + func.id;
-                    var namefield = document.getElementById('namefield');
-                    namefield.textContent = func.nome;
-                    var cargofield = document.getElementById('cargofield');
-                    cargofield.textContent = func.cargo;
+                    var detailstable = document.getElementById('detailstable');
+                    var nomes = ['ID', 'Nome', 'Cargo'];
+                    var content = [func.id, func.nome, func.cargo];
+                    detailstable.innerHTML = gerardetailslist(nomes, content);
                     gerarlista(id);
                     $('#detailsmodal').modal('toggle');
                 });
@@ -189,9 +187,11 @@
                 .then((json) => {
                     var theadr = document.getElementById('theadr');
                     theadr.innerHTML = '';
-                    theadr.innerHTML = '<th>' +
+                    theadr.innerHTML = '<th>ID</th> <th>Nome</th> <th>Início</th> <th>Fim</th>';
+                    /*
+                        '<th>' +
                         json.id +
-                        '</th >' +
+                        '</th>' +
                         '<th>' +
                         json.nome +
                         '</th>' +
@@ -200,7 +200,7 @@
                         '</th>' +
                         '<th>' +
                         json.fim +
-                        '</th>';
+                        '</th>';*/
                     var tbody = document.getElementById('projlista');
                     tbody.innerHTML = '';
                     for (const p of json) {
