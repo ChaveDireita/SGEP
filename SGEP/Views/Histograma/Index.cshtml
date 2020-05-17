@@ -2,9 +2,7 @@
     ViewData["Title"] = "Index";
 }
 <br />
-<div id="alert-container">
-    
-</div>
+@await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Histograma</h2>
 <br />
@@ -18,6 +16,7 @@
     <script>
         function load (start, end, material, tipo, almoxarifado)
         {
+            loading.show();
             const url = `/Histograma/GraphData?inicio=${start.getUTCFullYear()}${start.getUTCMonth() + 1}
                                               &fim=${end.getUTCFullYear()}${end.getUTCMonth() + 1}
                                               &material=${material}
@@ -44,6 +43,7 @@
                 }
                 chart.update();
                 $('#form-modal').modal('hide');
+                loading.hide();
             });
         }
 
@@ -71,26 +71,30 @@
                 }
             }
         });
-
+        loading.show('Carregando dados...');
         fetch('/Material/All')
         .then(res => res.json())
         .then(json => 
         {
+            loading.show('Carregando dados...');
             for(const m of json)
             {
                 get.name('material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
             }
+            loading.hide();
         });
 
         fetch('/Almoxarifado/All')
         .then(res => res.json())
         .then(json => 
         {
+            loading.show('Carregando dados...');
             console.log(json);
             for(const a of json)
             {
                 get.name('almoxarifado').innerHTML += `<option value="${a.id}"> ${a.id}:${a.nome} </option>`;
             }
+            loading.hide();
         });
 
 

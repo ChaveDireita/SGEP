@@ -179,3 +179,16 @@ function showAlert(msg, cls)
         </div>
         `;
 }
+
+const loading = {
+    show: (msg) => {
+        if (!msg)
+            msg = 'Carregando...';
+        get.id('loading-info').innerHTML = `
+        <i class="fas fa-sync reloading" style="font-size: medium;"></i> ${msg}
+        `;
+    },
+    hide: () => {
+        get.id('loading-info').innerHTML = '';
+    }
+}

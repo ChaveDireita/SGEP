@@ -1,6 +1,7 @@
 <button type="button" class="btn btn-primary squareborder" data-toggle="modal" data-target="#form-modal">
     <i class="fas fa-clock"></i> Escolher período
 </button>
+@await Html.PartialAsync("Partial/Index/_LoadingInfo")
 <div class="modal fade" 
      id="form-modal" 
      tabindex="-1" 

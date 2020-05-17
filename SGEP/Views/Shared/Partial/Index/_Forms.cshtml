@@ -2,6 +2,7 @@
     $('#form-create').submit(function (e) {
         e.preventDefault()
         if ($(this).valid()) {
+            loading.show();
             var color = 'success';
             fetch('/' + controller + '/Create', {
                 method: 'post',
@@ -17,6 +18,7 @@
                 get.id ('form-create').reset();
                 list(_search());
                 showAlert(text, color);
+                loading.hide();
             });
         }
     });
@@ -24,6 +26,7 @@
     $('#form-edit').submit(function (e) {
         e.preventDefault()
         if ($(this).valid()) {
+            loading.show();
             var color = 'success';
             fetch('/' + controller + '/Edit', {
                 method: 'post',
@@ -40,6 +43,7 @@
                 list(_search());
                 showAlert(text, color);
             });
+            loading.hide();
         }
     });
 </script>

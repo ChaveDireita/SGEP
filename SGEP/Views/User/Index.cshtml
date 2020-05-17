@@ -5,15 +5,12 @@
     ViewData["search-fields"] = "_User";
     ViewData["role-allowed-to-modify"] = "Gerente";
 }
-
-<div id="alert-container">
-    
-</div>
+@await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Usuários</h2>
 <br />
 @await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
-
+@await Html.PartialAsync("Partial/Index/_LoadingInfo")
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
     <button id="btn-del"
@@ -113,6 +110,7 @@
             selectRow(id,
             () =>
             {
+                loading.show();
                 fetch('/' + controller + '/Get/' + id)
                 .then(res => res.json())
                 .then(user =>
@@ -129,10 +127,12 @@
                     telefoneField.value = user.telefone;
                     roleField.value = user.role;
                     $('#modal-edit').modal('show');
+                    loading.hide();
                 });
             },
             () =>
             {
+                loading.show();
                 fetch('/' + controller + '/Get/' + id)
                 .then(res => res.json())
                 .then(func =>
@@ -144,6 +144,7 @@
                     var cargofield = document.getElementById('cargofield');
                     cargofield.textContent = func.cargo;
                     $('#detailsmodal').modal('toggle');
+                    loading.hide();
                 });
             });
         }

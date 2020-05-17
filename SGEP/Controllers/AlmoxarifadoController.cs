@@ -17,7 +17,7 @@ namespace SGEP.Controllers
         private readonly ApplicationDbContext _context;
         public AlmoxarifadoController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
-        public async Task<JsonResult> List(string id, string nome, string projeto, int? itensPorPagina, int? pagina)
+        public async Task<JsonResult> List(string id, string nome, string projeto, string material, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Almoxarifado> result = await _context.Almoxarifado.ToListAsync();
             if (id != null && id.Trim() != "")
@@ -26,6 +26,8 @@ namespace SGEP.Controllers
                 result = result.Where(m => m.Nome.Contains(nome));
             if (projeto != null && projeto?.Trim() != "")
                 result = result.Where(m => m.Projeto == bool.Parse(projeto));
+            if (material != null && material?.Trim() != "")
+                result = result.Where(a => a.AlmoxarifadosxMateriais.ConvertAll(am => _context.Material.Find(am.MaterialId)).First(m => m.Showid.Contains(material)) != null);
             int inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
             int qtd = Math.Min (itensPorPagina ?? 10, result.Count() - inicio);
             int _size = result.Count();

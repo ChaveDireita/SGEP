@@ -6,9 +6,7 @@
     ViewData["role-allowed-to-modify"] = "Almoxarife";
 }
 <br />
-<div id="alert-container">
-    
-</div>
+@await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Materiais</h2>
 <br />
@@ -38,6 +36,7 @@
         class="btn btn-outline-secondary squareborder" 
         disabled><i class="fas fa-info"></i> Detalhes</button>
 <button type="button" class="btn btn-outline-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button>
+@await Html.PartialAsync("Partial/Index/_LoadingInfo")
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
@@ -87,6 +86,7 @@
         function onClickSelectRow(id) {
             selectRow(id,
                 () => {
+                    loading.show();
                     fetch('/' + controller + '/Get/' + id)
                         .then(res => res.json())
                         .then(mat => {
@@ -103,7 +103,6 @@
                             unidadeField.innerHTML = '<option value="" disabled selected>Carregando dados</option>';
                             showidField.value = mat.showid;
                             categoriaField.value = mat.categoria;
-                            console.log(showidField.value);
                             $('#modal-edit').modal('show');
                             fetch('/' + controller + '/Unidades')
                             .then(res => res.json())
@@ -117,10 +116,12 @@
                                         options += `<option value="${u.id}">${u.nome}</option>`;
                                 }
                                 unidadeField.innerHTML = options;
+                                loading.hide();
                             });
                         });
                 },
                 () => {
+                    loading.show();
                     var nomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
                     fetch('/' + controller + '/Get/' + id)
                         .then(res => res.json())
@@ -131,6 +132,7 @@
                                     var content = [mat.showid, mat.descricao, mat.categoria, mat.precounidade, unidade.nome];
                                     document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
                                     $('#detailsmodal').modal('toggle');
+                                    loading.hide();
                                 });
                         });
                 });
@@ -143,6 +145,7 @@
         $('#form-create').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                loading.show();
                 fetch('/' + controller + '/Create', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create'))
@@ -150,12 +153,14 @@
                     $('#modal-create').modal('toggle');
                     get.id('form-create').reset();
                     list({});
+                    loading.hide();
                 });
             }
         });
         $('#form-edit').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                loading.show();
                 fetch('/' + controller + '/Edit', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-edit'))
@@ -165,6 +170,7 @@
                         $('#modal-edit').modal('hide');
                         get.id('form-edit').reset();
                         list({});
+                        loading.hide();
                     });
             }
         });

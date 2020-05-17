@@ -326,19 +326,6 @@ namespace SGEP.Migrations
                     b.ToTable("ProjetosxFuncionarios");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("SGEP.Models.SGEPUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<bool>("Ativo");
-
-                    b.Property<string>("Nome");
-
-                    b.ToTable("SGEPUser");
-
-                    b.HasDiscriminator().HasValue("SGEPUser");
-=======
             modelBuilder.Entity("SGEP.Models.Unidade", b =>
                 {
                     b.Property<int>("Id")
@@ -352,7 +339,19 @@ namespace SGEP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Unidade");
->>>>>>> dev_pacote2_unidades
+                });
+
+            modelBuilder.Entity("SGEP.Models.SGEPUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<bool>("Ativo");
+
+                    b.Property<string>("Nome");
+
+                    b.ToTable("SGEPUser");
+
+                    b.HasDiscriminator().HasValue("SGEPUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

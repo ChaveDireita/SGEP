@@ -5,9 +5,7 @@
     ViewData["search-fields"] = "_Movimentacao";
 }
 <br />
-<div id="alert-container">
-    
-</div>
+@await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Movimentações</h2>
 <br />
@@ -128,6 +126,7 @@
         class="btn btn-outline-secondary squareborder" 
         disabled><i class="fas fa-info"></i> Detalhes</button>
 </div>
+@await Html.PartialAsync("Partial/Index/_LoadingInfo")
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
@@ -218,10 +217,12 @@
         {
             selectRow(id, () => 
             {
+                loading.show();
                 //Código do modal
             },
             () => 
             {
+                loading.show();
                 //Código do modal
             });
         }

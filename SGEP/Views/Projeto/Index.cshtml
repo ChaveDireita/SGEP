@@ -6,13 +6,12 @@
     ViewData["role-allowed-to-modify"] = "Almoxarife";
 }
 <br />
-<div id="alert-container">
-    
-</div>
+@await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Projetos</h2>
 <br />
 @await Html.PartialAsync("Partial/Index/Button/_CRUD", ViewData)
+@await Html.PartialAsync("Partial/Index/_LoadingInfo")
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
     <button id="btn-del"
@@ -68,6 +67,7 @@
         list({});
 
         function finalize(id) {
+            loading.show();
             fetch('/' + controller + '/Get/' + id)
                 .then(res => res.json())
                 .then(json => {
@@ -83,6 +83,7 @@
                     fim.value = json.end;
                     almoxarifado.value = json.almoxarifadoId;
                     $('#modal-end').modal('show');
+                    loading.hide();
                 });
         }
 
@@ -105,6 +106,7 @@
 
         function onClickSelectRow(id) {
             selectRow(id, () => {
+                loading.show();
                 fetch('/' + controller + '/Get/' + id)
                     .then(res => res.json())
                     .then(proj => {
@@ -122,18 +124,20 @@
                         fimGroup.hidden = proj.fim == null;
                         fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
                         $('#modal-edit').modal('show');
+                        loading.hide();
                     });
-            },
-                () => showdetailsmodal(id));
+            }, () => showdetailsmodal(id));
         }
 
         function showdetailsmodal(id) {
+            loading.show();
             atualizaralocacao(id);
             fetch('/' + controller + '/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
                 var detailstable = document.getElementById('detailstable');
                 var nomes = ['ID', 'Nome', 'Início', 'Fim'];
                 var content = [proj.id, proj.nome, proj.inicio, proj.fim];
                 detailstable.innerHTML = gerardetailslist(nomes, content);
+                loading.hide();
             });
             document.getElementById('abriralocacao').onclick = function () {
                 gerartabelas(id);
@@ -192,6 +196,7 @@
         $('#form-end').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                loading.show();
                 var color = 'success';
                 fetch('/' + controller + '/Finalizar', {
                     method: 'post',
@@ -207,6 +212,7 @@
                     get.id ('form-end').reset();
                     list({});
                     showAlert(text, color);
+                    loading.hide();
                 });
             }
         });
