@@ -10,28 +10,30 @@
 <br />
 <h2>Materiais</h2>
 <br />
-<button class="btn btn-success squareborder" 
-        role="button"
-        id="modal-create-ativador"
-        onclick="
-                const unidadeField = get.id('unidadeselect');
-                unidadeField.innerHTML = '<option disabled selected>Carregando dados</option>';
-                fetch('/Material/Unidades')
-                .then(res => res.json())
-                .then(unidades => {
-                    let options = '<option selected disabled>Selecione uma unidade para o material</option>';
-                    for (const u of unidades)
-                    {
-                        options += `<option value=${u.id}>${u.nome}</option>`;
-                    }
-                    unidadeField.innerHTML = options;
-                    $('#modal-create').modal('show');
-                });
-                "><i class="fas fa-plus"></i> Adicionar</button>
-<button id="edit" 
-        class="btn btn-outline-secondary squareborder" 
-        disabled><i class="fas fa-edit"></i> Editar</button>
-        
+@if (User.IsInRole("Almoxarife")){
+    <button class="btn btn-success squareborder" 
+            role="button"
+            id="modal-create-ativador"
+            onclick="
+                    const unidadeField = get.id('unidadeselect');
+                    unidadeField.innerHTML = '<option disabled selected>Carregando dados</option>';
+                    fetch('/Material/Unidades')
+                    .then(res => res.json())
+                    .then(unidades => {
+                        let options = '<option selected disabled>Selecione uma unidade para o material</option>';
+                        for (const u of unidades)
+                        {
+                            options += `<option value=${u.id}>${u.nome}</option>`;
+                        }
+                        unidadeField.innerHTML = options;
+                        $('#modal-create').modal('show');
+                    });
+                    "><i class="fas fa-plus"></i> Adicionar</button>
+    <button id="edit" 
+            class="btn btn-outline-secondary squareborder" 
+            disabled><i class="fas fa-edit"></i> Editar</button>
+            
+}
 <button id="details" 
         class="btn btn-outline-secondary squareborder" 
         disabled><i class="fas fa-info"></i> Detalhes</button>

@@ -2,6 +2,7 @@
     $('#form-create').submit(function (e) {
         e.preventDefault()
         if ($(this).valid()) {
+            console.log('a');
             loading.show();
             var color = 'success';
             fetch('/' + controller + '/Create', {
@@ -26,6 +27,7 @@
     $('#form-edit').submit(function (e) {
         e.preventDefault()
         if ($(this).valid()) {
+            console.log('s');
             loading.show();
             var color = 'success';
             fetch('/' + controller + '/Edit', {

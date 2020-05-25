@@ -72,10 +72,10 @@
             {
                 pagination.size = size;
                 entities.forEach(u => {
-                    u.ativo = u.ativo ? 'Ativo' : 'Desativado';
                     
                     u['delete-btn'] = (u.ativo) ? '<a class="txt-danger float-right delete text-danger" href="#" + onclick="remove(\'' + u.id + '\')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>' 
-                                                : '<a class="txt-danger float-right delete text-success" href="#" + onclick="remove(\'' + u.id + '\')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>'; 
+                                                : '<a class="float-right delete text-success" href="#" + onclick="remove(\'' + u.id + '\')" hidden="true"><i class="fas fa-power-off" style="font-size: 18px"></i></a>'; 
+                    u.ativo = u.ativo ? 'Ativo' : 'Desativado';
                 });
             });
         }

@@ -96,7 +96,9 @@ function selectRow (id, editCallback, detailsCallback)
         selected[0].setAttribute('class', 'selectable');
     $('#' + id).attr('class', 'selected');
     $('#edit').attr('disabled', false);
-    get.id('edit').onclick = editCallback;
+    const editBtn = get.id('edit'); 
+    if (editBtn)
+        editBtn.onclick = editCallback;
     $('#details').attr('disabled', false);
     get.id('details').onclick = detailsCallback;
 }

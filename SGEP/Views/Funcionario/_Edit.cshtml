@@ -16,21 +16,21 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-edit">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input id="Id-edit" asp-for="Id" hidden class="form-control" />
-                    <input id="Ativo-edit" asp-for="Ativo" hidden class="form-control" />
+                    <input id="Id-edit" asp-for="Id" type="hidden" class="form-control" />
+                    <input id="Ativo-edit" asp-for="Ativo" type="hidden" class="form-control" />
                     <div class="form-group">
                         <label asp-for="Nome" class="control-label">Nome</label>
-                        <input id="Nome-edit" asp-for="Nome" class="form-control" />
+                        <input id="Nome-edit" asp-for="Nome" class="form-control squareborder" />
                         <span asp-validation-for="Nome" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Cargo" class="control-label">Cargo</label>
-                        <input id="Cargo-edit" asp-for="Cargo" class="form-control" />
+                        <input id="Cargo-edit" asp-for="Cargo" class="form-control squareborder" />
                         <span asp-validation-for="Cargo" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Matricula" class="control-label">Matrícula</label>
-                        <input asp-for="Matricula" id="Matricula-edit" class="form-control" />
+                        <input asp-for="Matricula" id="Matricula-edit" class="form-control squareborder" />
                         <span asp-validation-for="Matricula" class="text-danger"></span>
                     </div>
                     <div class="form-group">

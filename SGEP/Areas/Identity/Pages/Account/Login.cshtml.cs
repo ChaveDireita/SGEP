@@ -38,12 +38,12 @@ namespace SGEP.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Insira seu e-mail")]
-            [EmailAddress]
+            [Required(ErrorMessage = "Insira seu e-mail.")]
+            [EmailAddress(ErrorMessage = "Esse e-mail está inválido.")]
             [Display(Name = "E-mail")]
             public string Email { get; set; }
 
-            [Required(ErrorMessage = "Insira sua senha")]
+            [Required(ErrorMessage = "Insira sua senha.")]
             [DataType(DataType.Password)]
             [Display(Name = "Senha")]
             public string Password { get; set; }
@@ -74,15 +74,19 @@ namespace SGEP.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByEmailAsync(Input.Email);
-                if (user == null || !user.Ativo)
+                if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "O usuário não está ativo ou não existe");
+                    ModelState.AddModelError(string.Empty, "O e-mail inserido não está cadastrado.");
+                    return Page();
+                }
+                if (!user.Ativo)
+                {
+                    ModelState.AddModelError(string.Empty, "Essa conta está desativada.");
                     return Page();
                 }
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -96,12 +100,11 @@ namespace SGEP.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Senha incorreta.");
                     return Page();
                 }
             }
-
-            // If we got this far, something failed, redisplay form
+            ModelState.AddModelError(string.Empty, "Ocorreu um erro ao tentar entrar em sua conta.");
             return Page();
         }
     }

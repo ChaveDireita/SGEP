@@ -9,19 +9,18 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <section>
+            @await Html.PartialAsync("Partial/Index/_AlertContainer")
             <form method="post">
                 <h3 class="text-center">Log in</h3>
                 <hr />
-                <div asp-validation-summary="All" class="text-danger"></div>
+                <div asp-validation-summary="All" class="text-danger error-message-correction"></div>
                 <div class="form-group">
                     <label asp-for="Input.Email"></label>
                     <input asp-for="Input.Email" class="form-control squareborder" />
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="Input.Password"></label>
                     <input asp-for="Input.Password" class="form-control squareborder" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <div class="checkbox">
@@ -42,33 +41,7 @@
 <br />
 <br />
 
-<div class="modal fade" id="modal-forgot" tabindex="-1" role="dialog" aria-labelledby="modal-forgot-label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content squareborder">
-            <div class="modal-header header-dark squareborder">
-                <h5 class="modal-title" id="modal-forgot-title">Esqueci minha senha</h5>
-                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    Enviaremos um link para seu e-mail onde você poderá alterar sua senha.
-                </p>
-                <form asp-action="ForgotPassword" asp-controller="User" id="form-forgot">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <div class="form-group">
-                        <label for="E-mail" class="control-label">Insira seu e-mail</label>
-                        <input id="Email" name="Email" class="form-control squareborder" type="email" />
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Enviar" class="btn btn-success squareborder" />
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+@await Html.PartialAsync("_ForgotPasswordModal", null, ViewData)
 
 
 @section Scripts {
@@ -77,12 +50,14 @@
         $('#form-forgot').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
+                console.log('a');
                 fetch('/Identity/Account/ForgotPassword', {
                     method: 'post',
                     body: new FormData(document.querySelector('#form-forgot'))
                 });
                 $('#modal-forgot').modal('hide');
                 get.id ('form-forgot').reset();
+                showAlert("Verifique sua caixa de entrada.", 'warning');
             }
         });
     </script>

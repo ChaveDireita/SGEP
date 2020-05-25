@@ -122,20 +122,19 @@ namespace SGEP.Controllers
             await _userManager.UpdateAsync(user);
             return Ok("O usuário foi removido com sucesso.");
         }
-        public async Task<IActionResult> ChangePassword(string id, string old, string pass, string confirm)
+        public async Task<IActionResult> ChangePassword([Bind("")] ChangePasswordViewModel model)
         {
-            SGEPUser user = await _userManager.FindByIdAsync(id);
+            SGEPUser user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
-                return BadRequest("User does not exist");
-            if (_userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, old) == PasswordVerificationResult.Failed)
-                return BadRequest("Provided old password is wrong");
-            if (pass != confirm)
-                return BadRequest("The new password didn't match with confirm");
+                return BadRequest("O usuários não existe.");
+            if (_userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Old) == PasswordVerificationResult.Failed)
+                return BadRequest("A senha atual inserida está incorreta.");
+            if (model.New != model.Confirm)
+                return BadRequest("Os campos \"Nova senha\" e \"Confirme a nova senha\" estão diferentes.");
             await _signInManager.SignOutAsync();
-            await _userManager.ChangePasswordAsync(user, old, pass);
+            await _userManager.ChangePasswordAsync(user, model.Old, model.New);
             return Ok("Success");
         }
-
         public async Task<IActionResult> Profile()
         {
             if (_signInManager.IsSignedIn(User))

@@ -10,10 +10,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>
-                    <button type="button" class="btn btn-success squareborder" id="openuniadd">Adicionar</button>
-                    <button type="button" class="btn btn-primary squareborder" disabled id="edit-unidade">Editar</button>
-                </p>
+                @if (User.IsInRole("Almoxarife")){
+                    <p>
+                        <button type="button" class="btn btn-success squareborder" id="openuniadd">Adicionar</button>
+                        <button type="button" class="btn btn-primary squareborder" disabled id="edit-unidade">Editar</button>
+                    </p>
+                }
                 <table class="table" id="unidadestable">
                     <thead>
                         <th>

@@ -139,11 +139,13 @@
                 detailstable.innerHTML = gerardetailslist(nomes, content);
                 loading.hide();
             });
-            document.getElementById('abriralocacao').onclick = function () {
-                gerartabelas(id);
-                $('#alocacaomodal').modal('toggle');
-                $('#detailsmodal').modal('toggle');
-            }
+            const abrirAlocacaoBtn = document.getElementById('abriralocacao');
+            if (abrirAlocacaoBtn)
+                abrirAlocacaoBtn.onclick = function () {
+                    gerartabelas(id);
+                    $('#alocacaomodal').modal('toggle');
+                    $('#detailsmodal').modal('toggle');
+                }
             $('#detailsmodal').modal('toggle');
         }
 

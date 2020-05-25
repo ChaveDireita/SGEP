@@ -3,7 +3,7 @@
 @{
     ViewData["Id"] = Model.Id;
 }
-
+@await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Meu Perfil</h2>
 <br />
@@ -26,7 +26,7 @@
 </div>
 <button class="btn btn-secondary squareborder" data-toggle="modal" data-target="#modal-password">Alterar Senha</button>
 
-@await Html.PartialAsync("_ChangePassword", ViewData)
+@await Html.PartialAsync("_ChangePassword", null, ViewData)
 
 @section Scripts
 {
@@ -34,6 +34,7 @@
 @{await Html.RenderPartialAsync ("_ValidationScriptsPartial");}
 
     <script>
+        var color = 'success';
         $('#form-password').submit(function (e) {
             e.preventDefault()
             if ($(this).valid()) {
@@ -41,9 +42,14 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-password'))
                 })
-                .then(res => res.text())
-                .then(_ =>
+                .then(res => {
+                    if (Math.floor(res.status/100) == 4)
+                        color = 'danger';
+                    return res.text()
+                })
+                .then(text =>
                 {
+                    showAlert(text, color)
                     $('#modal-password').modal('hide');
                     document.querySelector('#form-password').reset();
                     window.location.replace("/");
