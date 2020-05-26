@@ -227,7 +227,8 @@ namespace SGEP.Migrations
 
                     b.Property<string>("Cargo");
 
-                    b.Property<string>("Matricula");
+                    b.Property<string>("Matricula")
+                        .IsRequired();
 
                     b.Property<string>("Nome");
 

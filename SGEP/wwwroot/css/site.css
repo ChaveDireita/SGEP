@@ -79,6 +79,15 @@ i.reloading
     margin-top: 16px;
 }
 
+svg.reloading 
+{
+    animation-name: rotate;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    font-size: 64px;
+    margin-top: 16px;
+}
+
 td.reloading
 {
     color:  rgb(155, 155, 155);

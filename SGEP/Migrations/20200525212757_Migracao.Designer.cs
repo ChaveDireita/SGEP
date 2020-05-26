@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200516200947_Migracao")]
+    [Migration("20200525212757_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -229,7 +229,8 @@ namespace SGEP.Migrations
 
                     b.Property<string>("Cargo");
 
-                    b.Property<string>("Matricula");
+                    b.Property<string>("Matricula")
+                        .IsRequired();
 
                     b.Property<string>("Nome");
 

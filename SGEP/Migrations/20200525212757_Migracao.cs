@@ -75,7 +75,7 @@ namespace SGEP.Migrations
                     Nome = table.Column<string>(nullable: true),
                     Cargo = table.Column<string>(nullable: true),
                     Ativo = table.Column<bool>(nullable: false),
-                    Matricula = table.Column<string>(nullable: true)
+                    Matricula = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

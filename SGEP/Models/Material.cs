@@ -11,6 +11,7 @@ namespace SGEP.Models
         [Display(Name = "Descrição")]
         public string Descricao { get; set; }
         [DataType(DataType.Currency)]
+        [Display(Name = "Preço")]
         public decimal Preco { get; set; }
         public int Categoria { get; set; }
         [Display(Name ="Unidade")]
