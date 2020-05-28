@@ -96,7 +96,9 @@ function selectRow (id, editCallback, detailsCallback)
         selected[0].setAttribute('class', 'selectable');
     $('#' + id).attr('class', 'selected');
     $('#edit').attr('disabled', false);
-    get.id('edit').onclick = editCallback;
+    const btnEdit = get.id('edit');
+    if (btnEdit)
+        btnEdit.onclick = editCallback;
     $('#details').attr('disabled', false);
     get.id('details').onclick = detailsCallback;
 }
@@ -153,6 +155,18 @@ function gerarlist(nomes, lista,acao,relevanteid,rowClasses) {
     }
     html += '</tbody>';
     return html;
+}
+function gerarlistitemunico(nomes, item) {
+    var html = '';
+    html += '<thead class="thead-dark">';
+    for (n of nomes) html += '<th style:"position:sticky; top:0">' + n + '</th>';
+    html += '</thead> <tbody>';
+    for (variavel in item) {
+        if (variavel != null) html += '<td>' +item[variavel]+ '</td>';
+        else html += '<td>---</td>';
+    }
+    return html;
+
 }
 function gerarlistsemnome(lista, acao, relevanteid) {
     var html = '';

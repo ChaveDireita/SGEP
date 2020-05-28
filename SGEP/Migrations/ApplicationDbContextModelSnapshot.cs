@@ -15,7 +15,7 @@ namespace SGEP.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -254,8 +254,6 @@ namespace SGEP.Migrations
 
                     b.Property<decimal>("Preco");
 
-                    b.Property<string>("Precounidade");
-
                     b.Property<string>("Showid");
 
                     b.HasKey("Id");
@@ -326,19 +324,6 @@ namespace SGEP.Migrations
                     b.ToTable("ProjetosxFuncionarios");
                 });
 
-<<<<<<< HEAD
-            modelBuilder.Entity("SGEP.Models.SGEPUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<bool>("Ativo");
-
-                    b.Property<string>("Nome");
-
-                    b.ToTable("SGEPUser");
-
-                    b.HasDiscriminator().HasValue("SGEPUser");
-=======
             modelBuilder.Entity("SGEP.Models.Unidade", b =>
                 {
                     b.Property<int>("Id")
@@ -352,7 +337,19 @@ namespace SGEP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Unidade");
->>>>>>> dev_pacote2_unidades
+                });
+
+            modelBuilder.Entity("SGEP.Models.SGEPUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<bool>("Ativo");
+
+                    b.Property<string>("Nome");
+
+                    b.ToTable("SGEPUser");
+
+                    b.HasDiscriminator().HasValue("SGEPUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

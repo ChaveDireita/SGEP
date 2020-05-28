@@ -1,5 +1,5 @@
 @model SGEP.Models.Movimentacao
-
+<!--MODAL ENTRADA-->
 <div class="modal fade" id="modal-create-in" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content squareborder">
@@ -12,7 +12,7 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-create-in">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" value="entrada" asp-for="Tipo"/>
+                    <input type="hidden" value="entrada" asp-for="Tipo" />
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-in" class="form-control squareborder" />
@@ -31,8 +31,8 @@
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-in" class="form-control squareborder" type="number" min="0"/>
+                        <label id="qtlabelIn" class="control-label">Quantidade</label>
+                        <input asp-for="Quantidade" id="Quantidade-in" class="form-control squareborder" type="number" min="0" />
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -43,7 +43,7 @@
         </div>
     </div>
 </div>
-
+<!--MODAL SAÍDA-->
 <div class="modal fade" id="modal-create-out" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content squareborder">
@@ -56,7 +56,7 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-create-out">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" value="saída" asp-for="Tipo"/>
+                    <input type="hidden" value="saída" asp-for="Tipo" />
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-out" class="form-control squareborder" />
@@ -64,54 +64,52 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="OrigemId" class="control-label">Origem</label>
-                        <select asp-for="OrigemId" 
-                                id="Origem-out" 
+                        <select asp-for="OrigemId"
+                                id="Origem-out"
                                 class="form-control squareborder"
                                 onchange="
-                                const selected = get.id('Origem-out').value;
-                                const selectDest = get.id ('Destino-out');
-                                const selectMat = get.id ('Material-out');
-                                
-                                selectDest.disabled = true;
-                                selectMat.disabled = true;
-                                selectDest.innerHTML = '<option disabled selected>Selecione a origem</option>';
-                                selectMat.innerHTML = '<option disabled selected>Selecione a origem</option>';
-                                
+                                const selected=get.id('Origem-out').value;
+                                const selectDest=get.id ('Destino-out');
+                                const selectMat=get.id ('Material-out');
+                                selectDest.disabled=true;
+                                selectMat.disabled=true;
+                                selectDest.innerHTML='<option disabled selected>Selecione a origem</option>' ;
+                                selectMat.innerHTML='<option disabled selected>Selecione a origem</option>' ;
                                 fetch('/Almoxarifado/All')
-                                .then(res => res.json())
-                                .then(json => 
-                                {
-                                    for(alm of json)
-                                    {
-                                        if (alm.id == selected)
-                                            continue;
-                                        if (alm.ativo)
-                                        {
-                                            const opt = document.createElement('option');
-                                            opt.value = alm.id;
-                                            opt.innerText = alm.nome;
-                                            selectDest.appendChild(opt);
-                                        }
-                                    }
-                                    selectDest.disabled = false;
-                                });
+                        .then(res => res.json())
+                        .then(json =>
+                        {
+                        for(alm of json)
+                        {
+                        if (alm.id == selected)
+                        continue;
+                        if (alm.ativo)
+                        {
+                        const opt = document.createElement('option');
+                        opt.value = alm.id;
+                        opt.innerText = alm.nome;
+                        selectDest.appendChild(opt);
+                        }
+                        }
+                        selectDest.disabled = false;
+                        });
 
-                                fetch('/Almoxarifado/GetMateriais/' + selected)
-                                .then(res => res.json())
-                                .then(json => 
-                                {
-                                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
-                                    console.log (json);
-                                    for(mat of json)
-                                    {
-                                        const opt = document.createElement('option');
-                                        opt.value = mat.id;
-                                        opt.innerText = mat.id;
-                                        opt.title = mat.descricao;
-                                        selectMat.appendChild(opt);
-                                    }
-                                    selectMat.disabled = false;
-                                });">
+                        fetch('/Almoxarifado/GetMateriais/' + selected)
+                        .then(res => res.json())
+                        .then(json =>
+                        {
+                        selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                        console.log (json);
+                        for(mat of json)
+                        {
+                        const opt = document.createElement('option');
+                        opt.value = mat.id;
+                        opt.innerText = mat.id;
+                        opt.title = mat.descricao;
+                        selectMat.appendChild(opt);
+                        }
+                        selectMat.disabled = false;
+                        });">
                         </select>
                         <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
@@ -123,30 +121,13 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="MaterialId" class="control-label">Material</label>
-                        <select asp-for="MaterialId" id="Material-out" class="form-control squareborder"
-                        onchange="
-                        const origin = get.id('Origem-out').value;
-                        const material = get.id('Material-out').value;
-                        const qtdField = get.id('Quantidade-out');
-                        qtdField.disabled = true;
-                        
-                        fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material)
-                        .then(res => res.json())
-                        .then(json => 
-                        {
-                            for (o of json) 
-                                if (o.materialId == material) 
-                                    qtdField.max = o.quantidade;
-                            
-                            qtdField.disabled = false;
-                        });
-                        ">
+                        <select asp-for="MaterialId" id="Material-out" class="form-control squareborder">
                         </select>
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-out" disabled placeholder="Selecione o material" class="form-control squareborder" type="number" min="0" max="0"/>
+                        <label id="qtlabelOut" class="control-label">Quantidade</label>
+                        <input asp-for="Quantidade" id="Quantidade-out" disabled placeholder="Selecione o material" class="form-control squareborder" type="number" min="0" max="0" />
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -157,7 +138,7 @@
         </div>
     </div>
 </div>
-
+<!--MODAL CONSUMO(?)-->
 <div class="modal fade" id="modal-create-diff" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content squareborder">
@@ -170,7 +151,7 @@
             <div class="modal-body">
                 <form asp-action="_Create" asp-controller="Create" id="form-create-diff">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" value="consumo" asp-for="Tipo"/>
+                    <input type="hidden" value="consumo" asp-for="Tipo" />
                     <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-diff" class="form-control squareborder" />
@@ -178,62 +159,64 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="OrigemId" class="control-label">Origem</label>
-                        <select asp-for="OrigemId" 
-                                id="Origem-diff" 
+                        <select asp-for="OrigemId"
+                                id="Origem-diff"
                                 class="form-control squareborder"
                                 onchange="
-                                const selected = get.id('Origem-diff').value;
-                                const selectMat = get.id ('Material-diff');
-
+                                const selected=get.id('Origem-diff').value;
+                                const selectMat=get.id ('Material-diff');
                                 fetch('/Almoxarifado/GetMateriais/' + selected)
-                                .then(res => res.json())
-                                .then(json => 
-                                {
-                                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
-                                    console.log (json);
-                                    for(mat of json)
-                                    {
-                                        const opt = document.createElement('option');
-                                        opt.value = mat.id;
-                                        opt.innerText = mat.id;
-                                        opt.title = mat.descricao;
-                                        selectMat.appendChild(opt);
-                                    }
-                                    selectMat.disabled = false;
-                                });">
-                                ">
+                        .then(res => res.json())
+                        .then(json =>
+                        {
+                        selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                        console.log (json);
+                        for(mat of json)
+                        {
+                        const opt = document.createElement('option');
+                        opt.value = mat.id;
+                        opt.innerText = mat.id;
+                        opt.title = mat.descricao;
+                        selectMat.appendChild(opt);
+                        }
+                        selectMat.disabled = false;
+                        });">
+                        ">
                         </select>
                         <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="MaterialId" class="control-label">Material</label>
-                        <select asp-for="MaterialId" 
-                                id="Material-diff" 
-                                disabled 
+                        <label asp-for="MaterialId" class="control-label"/>
+                        <select asp-for="MaterialId"
+                                id="Material-diff"
+                                disabled
                                 class="form-control squareborder"
                                 onchange="
-                                const origin = get.id('Origem-diff').value;
-                                const material = get.id('Material-diff').value;
-                                const qtdField = get.id('Quantidade-diff');
-                                qtdField.disabled = true;
-                                
-                                fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material)
-                                .then(res => res.json())
-                                .then(json => 
-                                {
-                                    for (o of json) 
-                                        if (o.materialId == material) 
-                                            qtdField.max = o.quantidade;
-                                    
-                                    qtdField.disabled = false;
-                                });
-                                ">
+                                const selected=get.id('Origem-diff').value;
+                                const selectMat=get.id ('Material-diff');
+                                fetch('/Almoxarifado/GetMateriais/' + selected)
+                        .then(res => res.json())
+                        .then(json =>
+                        {
+                        selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+                        console.log (json);
+                        for(mat of json)
+                        {
+                        const opt = document.createElement('option');
+                        opt.value = mat.id;
+                        opt.innerText = mat.id;
+                        opt.title = mat.descricao;
+                        selectMat.appendChild(opt);
+                        }
+                        selectMat.disabled = false;
+                        });"
+                        >
                         </select>
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-diff" class="form-control squareborder" type="number" min="0"/>
+                        <label class="control-label">Quantidade</label>
+                        <input asp-for="Quantidade" id="Quantidade-diff" class="form-control squareborder" type="number" min="0" />
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -244,3 +227,43 @@
         </div>
     </div>
 </div>
+
+<script>
+    var matselectIn = document.getElementById('Material-in');
+    var matselectOut = document.getElementById('Material-out');
+    matselectIn.onchange = () => {
+        var qtlabel = document.getElementById('qtlabelIn');
+        var selected = matselectIn.options[matselectIn.selectedIndex].value;
+        fetch('/Movimentacao/PegarUnidade/' + selected)
+            .then(res => res.json())
+            .then(un => {
+                if (un.abreviacao == null) qtlabel.innerText = "Quantidade (" + un.nome + ")";
+                else qtlabel.innerText = "Quantidade (" + un.abreviacao + ")";
+            });
+    }
+    matselectOut.onchange = () => {
+        var qtlabel = document.getElementById('qtlabelOut');
+        console.log("foi aq");
+        const origin = get.id('Origem-out').value;
+        const material = get.id('Material-out').value;
+        const qtdField = get.id('Quantidade-out');
+        qtdField.disabled = true;
+
+        fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material)
+            .then(res => res.json())
+            .then(json => {
+                for (o of json)
+                    if (o.materialId == material)
+                        qtdField.max = o.quantidade;
+
+                qtdField.disabled = false;
+            });
+        var mselected = matselectOut.options[matselectOut.selectedIndex].value;
+        fetch('/Movimentacao/PegarUnidade/' + mselected)
+            .then(res => res.json())
+            .then(un => {
+                if (un.abreviacao == null) qtlabel.innerText = "Quantidade (" + un.nome + ")";
+                else qtlabel.innerText = "Quantidade (" + un.abreviacao + ")";
+            });
+    }
+</script>

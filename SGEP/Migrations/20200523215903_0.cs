@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SGEP.Migrations
 {
-    public partial class Migracao : Migration
+    public partial class _0 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -286,7 +286,6 @@ namespace SGEP.Migrations
                     Preco = table.Column<decimal>(nullable: false),
                     Categoria = table.Column<int>(nullable: false),
                     IdUnidade = table.Column<int>(nullable: false),
-                    Precounidade = table.Column<string>(nullable: true),
                     Showid = table.Column<string>(nullable: true),
                     AlmoxarifadosxMateriaisAlmoxarifadoId = table.Column<int>(nullable: true),
                     AlmoxarifadosxMateriaisMaterialId = table.Column<int>(nullable: true)

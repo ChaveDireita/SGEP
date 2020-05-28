@@ -6,139 +6,142 @@
 }
 <br />
 <div id="alert-container">
-    
+
 </div>
 <br />
 <h2>Movimentações</h2>
 <br />
-@if(User.IsInRole("Almoxarife")){
+@if (User.IsInRole("Almoxarife"))
+{
     <div class="btn-group d-inline">
-    <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <i class="fas fa-plus"></i> Adicionar
-    </button>
-    <div class="dropdown-menu">
-        <a class="dropdown-item" 
-        href="#" 
-        data-toggle="modal" 
-        data-target="#modal-create-in" 
-        onclick="
-                const selectDest = get.id('Destino-in');
-                selectDest.innerHTML = '<option>Carregando dados...</option>';
-                selectDest.disabled = true;
-                fetch('/Almoxarifado/All')
-                .then((res) => res.json())
-                .then((json) => 
-                {
-                    selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
-                    for(alm of json)
-                    {
-                        if (alm.ativo)
-                        {
-                            const opt = document.createElement('option');
-                            opt.value = alm.id;
-                            opt.innerText = alm.nome;
-                            selectDest.appendChild(opt);
-                        }
-                    }
-                    selectDest.disabled = false;
-                });
-                const selectMat = get.id('Material-in');
-                selectMat.innerHTML = '<option>Carregando dados...</option>';
-                selectMat.disabled = true;
-                fetch('/Material/All')
-                .then((res) => res.json())
-                .then((json) => 
-                {
-                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
-                    console.log (json);
-                    for(mat of json)
-                    {
-                        const opt = document.createElement('option');
-                        opt.value = mat.id;
-                        opt.innerText = mat.id;
-                        opt.title = mat.descricao;
-                        selectMat.appendChild(opt);
-                    }
-                    selectMat.disabled = false;
-                });
-                ">Entrada</a>
-        <a class="dropdown-item" 
-        href="#" 
-        data-toggle="modal" 
-        data-target="#modal-create-out"
-        onclick="
-                const selectOrig = get.id('Origem-out');
-                selectOrig.innerHTML = '<option>Carregando dados...</option>';
-                selectOrig.disabled = true;
-
-                fetch('/Almoxarifado/All')
-                .then((res) => res.json())
-                .then((json) => 
-                {
-                    selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
-                    console.log (json);
-                    for(alm of json)
-                    {
-                        if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
-                        {
-                            const opt = document.createElement('option');
-                            opt.value = alm.id;
-                            opt.innerText = alm.nome;
-                            selectOrig.appendChild(opt);
-                        }
-                    }
-                    selectOrig.disabled = false;
-                });
-        ">Saída</a>
-        <a class="dropdown-item" 
-        href="#" 
-        data-toggle="modal" 
-        data-target="#modal-create-diff"
-        onclick="
-            const selectOrigin = get.id('Origem-diff');
-            const selectMat = get.id('Material-diff');
-            selectOrigin.innerHTML = '<option>Carregando dados...</option>';
-            selectOrigin.disabled = true;
-            selectMat.disabled = true;
-            selectMat.innerHTML = '<option>Selecione a origem</option>'
-
-            fetch('/Almoxarifado/All')
+        <button type="button" class="btn btn-success dropdown-toggle squareborder" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-plus"></i> Adicionar
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item"
+               href="#"
+               data-toggle="modal"
+               data-target="#modal-create-in"
+               onclick="
+               const selectDest=get.id('Destino-in');
+               selectDest.innerHTML='<option>Carregando dados...</option>' ;
+               selectDest.disabled=true;
+               fetch('/Almoxarifado/All')
             .then((res) => res.json())
-            .then((json) => 
+            .then((json) =>
             {
-                selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
-                console.log (json);
-                for(alm of json)
-                {
-                    if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
-                    {
-                        const opt = document.createElement('option');
-                        opt.value = alm.id;
-                        opt.innerText = alm.nome;
-                        selectOrigin.appendChild(opt);
-                    }
-                }
-                selectOrigin.disabled = false;
+            selectDest.innerHTML = '<option disabled selected>Selecione o destino</option>';
+            for(alm of json)
+            {
+            if (alm.ativo)
+            {
+            const opt = document.createElement('option');
+            opt.value = alm.id;
+            opt.innerText = alm.nome;
+            selectDest.appendChild(opt);
+            }
+            }
+            selectDest.disabled = false;
+            });
+            const selectMat = get.id('Material-in');
+            selectMat.innerHTML = '<option>Carregando dados...</option>';
+            selectMat.disabled = true;
+            fetch('/Material/All')
+            .then((res) => res.json())
+            .then((json) =>
+            {
+            selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
+            console.log (json);
+            for(mat of json)
+            {
+            const opt = document.createElement('option');
+            opt.value = mat.id;
+            opt.innerText = mat.id;
+            opt.title = mat.descricao;
+            selectMat.appendChild(opt);
+            }
+            selectMat.disabled = false;
+            });
+            ">Entrada</a>
+            <a class="dropdown-item"
+               href="#"
+               data-toggle="modal"
+               data-target="#modal-create-out"
+               onclick="
+               const selectOrig=get.id('Origem-out');
+               selectOrig.innerHTML='<option>Carregando dados...</option>' ;
+               selectOrig.disabled=true;
+               fetch('/Almoxarifado/All')
+            .then((res) => res.json())
+            .then((json) =>
+            {
+            selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
+            console.log (json);
+            for(alm of json)
+            {
+            if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+            {
+            const opt = document.createElement('option');
+            opt.value = alm.id;
+            opt.innerText = alm.nome;
+            selectOrig.appendChild(opt);
+            }
+            }
+            selectOrig.disabled = false;
+            });
+            ">Saída</a>
+            <a class="dropdown-item"
+               href="#"
+               data-toggle="modal"
+               data-target="#modal-create-diff"
+               onclick="
+               const selectOrigin=get.id('Origem-diff');
+               const selectMat=get.id('Material-diff');
+               selectOrigin.innerHTML='<option>Carregando dados...</option>' ;
+               selectOrigin.disabled=true;
+               selectMat.disabled=true;
+               selectMat.innerHTML='<option>Selecione a origem</option>'
+               fetch('/Almoxarifado/All')
+            .then((res) => res.json())
+            .then((json) =>
+            {
+            selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
+            console.log (json);
+            for(alm of json)
+            {
+            if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+            {
+            const opt = document.createElement('option');
+            opt.value = alm.id;
+            opt.innerText = alm.nome;
+            selectOrigin.appendChild(opt);
+            }
+            }
+            selectOrigin.disabled = false;
             });">Consumo (?)</a>
-    </div>
+        </div>
     </div>
 }
 <div class="d-inline">
-<button id="details" 
-        class="btn btn-outline-secondary squareborder" 
-        disabled><i class="fas fa-info"></i> Detalhes</button>
+    <button id="details"
+            class="btn btn-outline-secondary squareborder"
+            disabled>
+        <i class="fas fa-info"></i> Detalhes
+    </button>
 </div>
 <div class="float-right d-inline">
     @await Html.PartialAsync("Partial/Index/Button/_SearchButtons")
 </div>
-<br/>
+<br />
 <div class="container row justify-content-center">
     @await Html.PartialAsync("Partial/Index/Search/_Search", null, ViewData)
 </div>
-@if(User.IsInRole("Almoxarife")){
+@if (User.IsInRole("Almoxarife"))
+{
     @await Html.PartialAsync("_Create")
+    @await Html.PartialAsync("_Details")
 }
-<br/>
+<br />
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -175,55 +178,99 @@
         list(_search());
 
         fetch('/Almoxarifado/All')
-        .then(res => res.json())
-        .then(json => {
-            for(const a of json){
-                get.name('destino').innerHTML += `<option value="${a.id}">${a.nome}</option>`;
-                get.name('origem').innerHTML += `<option value="${a.id}">${a.nome}</option>`;
-            }
-        })
+            .then(res => res.json())
+            .then(json => {
+                for (const a of json) {
+                    get.name('destino').innerHTML += `<option value="${a.id}">${a.nome}</option>`;
+                    get.name('origem').innerHTML += `<option value="${a.id}">${a.nome}</option>`;
+                }
+            })
 
-        function list(searchParams)
-        {
-            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origem', 'destino', 'quantidade'], ({size, entities}) => 
-            {
+        function list(searchParams) {
+            refreshTable(controller, searchParams, ['data', 'materialId', 'tipo', 'origem', 'destino', 'quantidade'], ({ size, entities }) => {
                 pagination.size = size;
-                entities.forEach(e => 
-                {
+                entities.forEach(e => {
                     if (e.destino == null)
                         e.destino = '--';
                     if (e.origem == null)
                         e.origem = '--';
-                    
-                    if (e.destino.projeto)
-                    {
+
+                    if (e.destino.projeto) {
                         e.destino = `${e.destino.nome} <span class="badge badge-info">Projeto</span>`;
-                    } else if (e.destino != '--')
-                    {
+                    } else if (e.destino != '--') {
                         e.destino = e.destino.nome;
                     }
-                    
-                    if (e.origem.projeto)
-                    {
+
+                    if (e.origem.projeto) {
                         e.origem = `${e.origem.nome} <span class="badge badge-info">Projeto</span>`;
-                    } else if (e.origem != '--')
-                    {
+                    } else if (e.origem != '--') {
                         e.origem = e.origem.nome;
                     }
                 });
             });
         }
 
-        function onClickSelectRow (id)
-        {
-            selectRow(id, () => 
-            {
+        function onClickSelectRow(id) {
+            selectRow(id, () => {
                 //Código do modal
             },
-            () => 
-            {
-                //Código do modal
-            });
+                () => {
+                    fetch('/' + controller + '/Get/' + id)
+                        .then(res => res.json())
+                        .then(mov => {
+                            var nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Preço'];
+                            var content = [mov.id, mov.data, mov.quantidade, mov.tipo, mov.preco];
+                            switch (mov.tipo) {
+                                //MODAL DE SAÍDA
+                                case "saída":
+                                    var detailstable = document.getElementById('detailstablesa');
+                                    detailstable.innerHTML = gerardetailslist(nomes, content);
+                                    fetch('/Material/Get/' + mov.materialId)
+                                        .then(res => res.json())
+                                        .then(mat => {
+                                            var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                                            var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                                            document.getElementById('satablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
+                                        });
+                                    //Projeto de destino
+                                    fetch('/Projeto/ProjetoSelecionado/?id=' + mov.destinoId).then((res) => res.json()).then(proj => {
+                                        var projdetailstable = document.getElementById('detableproj');
+                                        var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
+                                        var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
+                                        projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                                    });
+                                    //Projeto de origem
+                                    fetch('/Projeto/ProjetoSelecionado/?id=' + mov.origemId).then((res) => res.json()).then(proj => {
+                                        var projdetailstable = document.getElementById('ortableproj');
+                                        var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
+                                        var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
+                                        projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                                    });
+                                    $('#detailsmodalsaida').modal('toggle');
+                                    break;
+
+                                //MODAL DE ENTRADA
+                                case "entrada":
+                                    var detailstable = document.getElementById('detailstableen');
+                                    detailstable.innerHTML = gerardetailslist(nomes, content);
+                                    fetch('/Material/Get/' + mov.materialId)
+                                        .then(res => res.json())
+                                        .then(mat => {
+                                            var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                                            var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                                            document.getElementById('tablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
+                                        });
+                                    fetch('/Projeto/ProjetoSelecionado/?id=' + mov.destinoId).then((res) => res.json()).then(proj => {
+                                        var projdetailstable = document.getElementById('tableproj');
+                                        var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
+                                        var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
+                                        projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                                    });
+                                    $('#detailsmodalentrada').modal('toggle');
+                                    break;
+                            }
+                        });
+                });
         }
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -236,17 +283,16 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-in'))
                 })
-                .then(res => {
-                    color = res.ok ? 'success' : 'danger';
-                    return res.text()
-                })
-                .then(text => 
-                {
-                    $('#modal-create-in').modal('hide');
-                    get.id ('form-create-in').reset();
-                    list({});
-                    showAlert(text, color);
-                });
+                    .then(res => {
+                        color = res.ok ? 'success' : 'danger';
+                        return res.text()
+                    })
+                    .then(text => {
+                        $('#modal-create-in').modal('hide');
+                        get.id('form-create-in').reset();
+                        list({});
+                        showAlert(text, color);
+                    });
             }
         });
         $('#form-create-out').submit(function (e) {
@@ -257,17 +303,16 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-out'))
                 })
-                .then(res => {
-                    color = res.ok ? 'success' : 'danger';
-                    return res.text()
-                })
-                .then(text => 
-                {
-                    $('#modal-create-out').modal('hide');
-                    get.id ('form-create-out').reset();
-                    list({});
-                    showAlert(text, color);
-                });
+                    .then(res => {
+                        color = res.ok ? 'success' : 'danger';
+                        return res.text()
+                    })
+                    .then(text => {
+                        $('#modal-create-out').modal('hide');
+                        get.id('form-create-out').reset();
+                        list({});
+                        showAlert(text, color);
+                    });
             }
         });
         $('#form-create-diff').submit(function (e) {
@@ -278,17 +323,16 @@
                     method: 'post',
                     body: new FormData(document.querySelector('#form-create-diff'))
                 })
-                .then(res => {
-                    color = res.ok ? 'success' : 'danger';
-                    return res.text()
-                })
-                .then(text => 
-                {
-                    $('#modal-create-diff').modal('hide');
-                    get.id ('form-create-diff').reset();
-                    list({});
-                    showAlert(text, color);
-                });
+                    .then(res => {
+                        color = res.ok ? 'success' : 'danger';
+                        return res.text()
+                    })
+                    .then(text => {
+                        $('#modal-create-diff').modal('hide');
+                        get.id('form-create-diff').reset();
+                        list({});
+                        showAlert(text, color);
+                    });
             }
         });
     </script>

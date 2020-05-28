@@ -22,8 +22,6 @@ namespace SGEP.Controllers
         public async Task<JsonResult> List(string codigo, string descricao, string preco, string unidade, int? itensPorPagina, int? pagina)
         {
             IEnumerable<MaterialAlmoxarifadoViewModel> result = ConverterListaParaShow(await _context.Material.ToListAsync());
-            if (id != null && id.Trim() != "")
-                result = result.Where(m => m.Id.ToString().Contains(id));
             if (descricao != null && descricao?.Trim() != "")
                 result = result.Where(m => m.Descricao.Contains(descricao));
             if (preco != null && preco?.Trim() != "")
@@ -35,7 +33,14 @@ namespace SGEP.Controllers
             
             return Json(new {size = _size, entities = result});
         }
+        public JsonResult GetUn(int id)
+        {
+            Material mat = _context.Material.FirstOrDefault(m => m.Id == id);
+            return Json(_context.Unidade
+            .FirstOrDefault(u => u.Id == mat.IdUnidade));
+        }
         public JsonResult Unidades () => Json(_context.Unidade.ToList());
+
         public JsonResult UnidadePorIdJSON(int id) => Json(_context.Unidade.FirstOrDefault(u => u.Id == id));
         public IEnumerable<MaterialAlmoxarifadoViewModel> ConverterListaParaShow(IEnumerable<Material> mats)
         {
@@ -110,15 +115,20 @@ namespace SGEP.Controllers
                 Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == material.IdUnidade);
                 _context.Add(material);
                 await _context.SaveChangesAsync();
-                int qtdzero = 7 - material.Id.ToString().Length;
-                string zeros = "";
-                for (int i = 0; i < qtdzero; i++) zeros += "0";
-                material.Showid = material.Categoria + "." + zeros + material.Id.ToString();
+                material.Showid = ConvertId(material.Id, material.Categoria);
                 _context.Update(material);
                 await _context.SaveChangesAsync();
                 return Ok();
             }
             return BadRequest();
+        }
+        public string ConvertId(int id, int categoria)
+        {
+            int qtdzero = 7 - id.ToString().Length;
+            string zeros = "";
+            for (int i = 0; i < qtdzero; i++) zeros += "0";
+            string showid = categoria + "." + zeros + id;
+            return showid;
         }
 
         [Authorize(Roles = "Almoxarife")]

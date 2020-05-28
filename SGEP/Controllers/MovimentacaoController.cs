@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SGEP.Data;
 using SGEP.Models;
+using SGEP.Models.View;
 
 namespace SGEP.Controllers
 {
@@ -71,6 +72,27 @@ namespace SGEP.Controllers
             _context.Update(destino);
             await _context.SaveChangesAsync();
             return Ok("Movimentação adicionada com sucesso.");
+        }
+        public JsonResult PegarUnidade(int id) => Json(_context.Unidade
+            .FirstOrDefault(u => u.Id == _context.Material.FirstOrDefault(m => m.Id == id).IdUnidade));
+        public JsonResult Get(int id)
+        {
+            MovimentacaoViewModel movvm = new MovimentacaoViewModel();
+            Movimentacao mov = _context.Movimentacao.FirstOrDefault(m => m.Id == id);
+            Material mat = _context.Material.FirstOrDefault(m => m.Id == mov.MaterialId);
+            Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == mat.IdUnidade);
+            decimal preco = mat.Preco;
+            preco *= mov.Quantidade;
+            movvm.Id = mov.Id;
+            movvm.MaterialId = mov.MaterialId;
+            movvm.OrigemId = mov.OrigemId;
+            movvm.Preco = "R$" + preco;
+            movvm.Data = mov.Data;
+            if (un.Abreviacao == null) movvm.Quantidade = mov.Quantidade + " " + un.Nome;
+            else movvm.Quantidade = movvm.Quantidade = mov.Quantidade + " " + un.Abreviacao;
+            movvm.DestinoId = mov.DestinoId;
+            movvm.Tipo = mov.Tipo;
+            return Json(movvm);
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]

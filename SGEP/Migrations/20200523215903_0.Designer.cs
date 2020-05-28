@@ -10,18 +10,14 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<< HEAD:SGEP/Migrations/20200512164137_Migracao.Designer.cs
-    [Migration("20200512164137_Migracao")]
-=======
-    [Migration("20200513185034_Migracao")]
->>>>>>> dev_pacote2_unidades:SGEP/Migrations/20200513185034_Migracao.Designer.cs
-    partial class Migracao
+    [Migration("20200523215903_0")]
+    partial class _0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -260,8 +256,6 @@ namespace SGEP.Migrations
 
                     b.Property<decimal>("Preco");
 
-                    b.Property<string>("Precounidade");
-
                     b.Property<string>("Showid");
 
                     b.HasKey("Id");
@@ -332,19 +326,6 @@ namespace SGEP.Migrations
                     b.ToTable("ProjetosxFuncionarios");
                 });
 
-<<<<<<< HEAD:SGEP/Migrations/20200512164137_Migracao.Designer.cs
-            modelBuilder.Entity("SGEP.Models.SGEPUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<bool>("Ativo");
-
-                    b.Property<string>("Nome");
-
-                    b.ToTable("SGEPUser");
-
-                    b.HasDiscriminator().HasValue("SGEPUser");
-=======
             modelBuilder.Entity("SGEP.Models.Unidade", b =>
                 {
                     b.Property<int>("Id")
@@ -358,7 +339,19 @@ namespace SGEP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Unidade");
->>>>>>> dev_pacote2_unidades:SGEP/Migrations/20200513185034_Migracao.Designer.cs
+                });
+
+            modelBuilder.Entity("SGEP.Models.SGEPUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<bool>("Ativo");
+
+                    b.Property<string>("Nome");
+
+                    b.ToTable("SGEPUser");
+
+                    b.HasDiscriminator().HasValue("SGEPUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
