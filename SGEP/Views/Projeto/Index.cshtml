@@ -195,9 +195,12 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{await Html.RenderPartialAsync("Partial/Index/_Forms");}
     <script>
+        lock.end = true;
+
         $('#form-end').submit(function (e) {
             e.preventDefault()
-            if ($(this).valid()) {
+            if ($(this).valid() && lock.end) {
+                lock.end = false;
                 loading.show();
                 var color = 'success';
                 fetch('/' + controller + '/Finalizar', {
@@ -215,6 +218,7 @@
                     list({});
                     showAlert(text, color);
                     loading.hide();
+                    lock.end = true;
                 });
             }
         });

@@ -126,7 +126,7 @@ namespace SGEP.Controllers
         {
             SGEPUser user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
-                return BadRequest("O usuários não existe.");
+                return BadRequest("O usuário não existe.");
             if (_userManager.PasswordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Old) == PasswordVerificationResult.Failed)
                 return BadRequest("A senha atual inserida está incorreta.");
             if (model.New != model.Confirm)

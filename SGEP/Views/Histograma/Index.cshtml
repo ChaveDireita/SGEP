@@ -79,7 +79,7 @@
             loading.show('Carregando dados...');
             for(const m of json)
             {
-                get.name('material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
+                get.name('Material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
             }
             loading.hide();
         });
@@ -92,7 +92,7 @@
             console.log(json);
             for(const a of json)
             {
-                get.name('almoxarifado').innerHTML += `<option value="${a.id}"> ${a.id}:${a.nome} </option>`;
+                get.name('Almoxarifado').innerHTML += `<option value="${a.id}"> ${a.id}:${a.nome} </option>`;
             }
             loading.hide();
         });
@@ -106,4 +106,24 @@
             load(pastDate, currentDate, 1, 'Entrada');
         })();
     </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $('#graph-query').submit(function (e)
+        {
+            console.log('asdasdasd');
+            e.preventDefault();
+            if ($(this).valid())
+            {
+                load(new Date(get.name('Inicio').value), 
+                              new Date(get.name('Fim').value),
+                              get.name('Material').value,
+                              get.name('Tipo').value,
+                              get.name('Almoxarifado').value);
+                get.id('graph-query').reset();
+            }
+        })
+    </script>
+
 }

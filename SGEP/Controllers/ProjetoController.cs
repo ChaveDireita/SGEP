@@ -143,24 +143,21 @@ namespace SGEP.Controllers
         public async Task<IActionResult> Finalizar (int? id, DateTime? inicio, DateTime? fim)
         {
             if (id == null)
-                return BadRequest("No id provided");
-            if (inicio == null)
-                return BadRequest("No start provided");
-            if (fim == null)
-                return BadRequest("No end provided");
-            
+                return BadRequest("Este projeto não existe.");
+            if (inicio == null || fim == null)
+                return BadRequest("Ocorreu um erro ao enviar os dados ao servidor.");
             int _id = id.GetValueOrDefault();
             DateTime start = inicio.GetValueOrDefault();
             DateTime end = fim.GetValueOrDefault();
 
             if (start > end)
-                return BadRequest("End must be after start");
-
+                return BadRequest("A data final do projeto deve ser posterior a sua data inicial.");
+            
             Projeto p = await _context.Projeto.FindAsync(_id);
             if (p == null)
-                return BadRequest("Project not found");
+                return BadRequest("Projeto não existe.");
             if (p.Almoxarifado.AlmoxarifadosxMateriais.Count > 0)
-                return BadRequest("There are materials on this project");
+                return BadRequest("Existem materiais alocados no projeto.");
 
             p.Fim = end;
             p.Almoxarifado.Ativo = false;
@@ -168,7 +165,16 @@ namespace SGEP.Controllers
             _context.Update(p);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok("Projeto finalizado com successo!");
+        }
+
+        [AllowAnonymous]
+        [AcceptVerbs("Get", "Post")]
+        public JsonResult ValidateDate(DateTime inicio, DateTime fim)
+        {
+            if (fim < inicio)
+                return Json("A data de término deve ser posterior a data de início.");
+            return Json(true);
         }
     }
 }

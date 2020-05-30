@@ -1,7 +1,12 @@
 <script>
+    const lock = {
+        create: true,
+        edit: true
+    }
     $('#form-create').submit(function (e) {
         e.preventDefault()
-        if ($(this).valid()) {
+        if ($(this).valid() && lock.create) {
+            lock.create = false;
             console.log('a');
             loading.show();
             var color = 'success';
@@ -21,12 +26,14 @@
                 showAlert(text, color);
                 loading.hide();
             });
+            lock.create = true;
         }
     });
 
     $('#form-edit').submit(function (e) {
         e.preventDefault()
-        if ($(this).valid()) {
+        if ($(this).valid() && lock.edit) {
+            lock.edit = false;
             console.log('s');
             loading.show();
             var color = 'success';
@@ -44,6 +51,7 @@
                 get.id ('form-edit').reset();
                 list(_search());
                 showAlert(text, color);
+                lock.edit = true;
             });
             loading.hide();
         }

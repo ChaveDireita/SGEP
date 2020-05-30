@@ -229,9 +229,16 @@
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
+        const lock = {
+            in: true,
+            out: true,
+            diff: true
+        }
+
         $('#form-create-in').submit(function (e) {
             e.preventDefault()
-            if ($(this).valid()) {
+            if ($(this).valid() && lock.in) {
+                lock.in = false;
                 var color = 'success';
                 fetch('/' + controller + '/CreateEntrada', {
                     method: 'post',
@@ -247,12 +254,14 @@
                     get.id ('form-create-in').reset();
                     list({});
                     showAlert(text, color);
+                    lock.in = true;
                 });
             }
         });
         $('#form-create-out').submit(function (e) {
             e.preventDefault()
-            if ($(this).valid()) {
+            if ($(this).valid() && lock.out) {
+                lock.out = false;
                 var color = 'success';
                 fetch('/' + controller + '/CreateSaida', {
                     method: 'post',
@@ -268,12 +277,14 @@
                     get.id ('form-create-out').reset();
                     list({});
                     showAlert(text, color);
+                    lock.out = true;
                 });
             }
         });
         $('#form-create-diff').submit(function (e) {
             e.preventDefault()
-            if ($(this).valid()) {
+            if ($(this).valid() && lock.diff) {
+                lock.diff = false;
                 var color = 'success';
                 fetch('/' + controller + '/CreateConsumo', {
                     method: 'post',
@@ -289,6 +300,7 @@
                     get.id ('form-create-diff').reset();
                     list({});
                     showAlert(text, color);
+                    lock.diff = true;
                 });
             }
         });

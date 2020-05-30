@@ -126,6 +126,7 @@ namespace SGEP.Controllers
             }
             return BadRequest();
         }
+        
         private bool MaterialExists(int id) =>  _context.Material.Any(e => e.Id == id);
     }
 }

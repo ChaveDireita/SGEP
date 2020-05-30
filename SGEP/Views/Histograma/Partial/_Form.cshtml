@@ -1,3 +1,5 @@
+@model HistogramaViewModel
+
 <button type="button" class="btn btn-primary squareborder" data-toggle="modal" data-target="#form-modal">
     <i class="fas fa-clock"></i> Escolher período
 </button>
@@ -18,45 +20,54 @@
       <div class="modal-body">
         <form class="form" id="graph-query">
             <div class="form-group">
-                <label for="inicio">Mês inicial</label>
-                <input class="form-control squareborder" type="month" name="inicio"/>
+                <label asp-for="Inicio">Mês inicial</label>
+                <input class="form-control squareborder" asp-for="Inicio" type="month"/>
+                <span asp-validation-for="Inicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="fim">Mês final</label>
-                <input class="form-control squareborder" type="month" name="fim"/>
+                <input class="form-control squareborder" asp-for="Fim" type="month"/>
+                <span asp-validation-for="Fim" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="material">Material</label>
-                <select class="form-control squareborder" name="material">
+                <select class="form-control squareborder" asp-for="Material">
                     <option value="0" selected disabled>Selecione um material</option>
                 </select>
+                <span asp-validation-for="Material" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="material">Almoxarifado/Projeto</label>
-                <select class="form-control squareborder" name="almoxarifado">
+                <select class="form-control squareborder" asp-for="Almoxarifado">
                     <option value="" selected>Todos</option>
                 </select>
+                <span asp-validation-for="Almoxarifado" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label for="tipo">Tipo de movimentação</label>
-                <select class="form-control squareborder" name="tipo">
+                <select class="form-control squareborder" asp-for="Tipo">
                     <option value="" selected disabled>Selecione um tipo</option>
                     <option value="Entrada">Entrada</option>
                     <option value="Consumo">Consumo</option>
                     <option value="Saida">Saída</option>
                 </select>
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+              <input type="submit" id="graph-update" class="btn btn-primary squareborder" value="Atualizar" />
+                      @* Atualizar *@
             </div>
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" 
+      @* <div class="modal-footer"> *@
+        @* <button type="button" 
                 id="graph-update" 
                 class="btn btn-primary squareborder"
                 onclick="
-                const startDate = get.name('inicio');
-                const endDate = get.name('fim');
-                const selectMat = get.name('material');
-                const selectTipo = get.name('tipo');
+                const startDate = get.name('Inicio');
+                const endDate = get.name('Fim');
+                const selectMat = get.name('Material');
+                const selectTipo = get.name('Tipo');
 
                 if (startDate.value == '')
                 {
@@ -78,12 +89,12 @@
                   selectTipo.focus();
                   return;
                 }
-                load(new Date(get.name('inicio').value), 
-                              new Date(get.name('fim').value),
-                              get.name('material').value,
-                              get.name('tipo').value,
-                              get.name('almoxarifado').value)">Atualizar</button>
-      </div>
+                load(new Date(get.name('Inicio').value), 
+                              new Date(get.name('Fim').value),
+                              get.name('Material').value,
+                              get.name('Tipo').value,
+                              get.name('Almoxarifado').value)">Atualizar</button> *@
+      @* </div> *@
     </div>
   </div>
 </div>
