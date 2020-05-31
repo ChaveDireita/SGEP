@@ -170,10 +170,48 @@
                     .then(res => res.text())
                     .then(_ => {
                         $('#modal-edit').modal('hide');
-                        get.id('form-edit').reset();
+                        get.id('form-create-unidade').reset();
                         list({});
                         loading.hide();
                     });
+            }
+        });
+
+
+
+
+        $('#form-create-unidade').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                loading.show();
+                fetch('/Material/AdicionarUnidade', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-create-unidade'))
+                }).then(function (response) {
+                    $('#unidademanagementmodal').modal('hide');
+                    $('#unidadesmodal').modal('show');
+                    get.id('form-create-unidade').reset();
+                    listarunidades();
+                    loading.hide();
+                });
+            }
+        });
+        $('#form-edit-unidade').submit(function (e) {
+            e.preventDefault()
+            if ($(this).valid()) {
+                loading.show();
+                fetch('/Material/EditarUnidade', {
+                    method: 'post',
+                    body: new FormData(document.querySelector('#form-edit-unidade'))
+                })
+                .then(res => res.text())
+                .then(_ => {
+                    $('#unidadeeditmodal').modal('hide');
+                    $('#unidadesmodal').modal('show');
+                    get.id('form-edit-unidade').reset();
+                    listarunidades();
+                    loading.hide();
+                });
             }
         });
     </script>
@@ -185,17 +223,8 @@
             $('#unidadesmodal').modal('toggle');
             $('#unidademanagementmodal').modal('toggle');
         }
-        document.getElementById("adicionarunidade").onclick = () => {
-            var nome = document.getElementById("unidadenomeinput").value;
-            var abv = document.getElementById("unidadeabvinput").value;
-            adicionarunidade(nome, abv);
-        }
-        document.getElementById("editarunidade").onclick = () => {
-            var nome = document.getElementById("unieditnome").value;
-            var abv = document.getElementById("unieditabv").value;
-            var id = document.getElementById("unieditid").value;
-            editarunidade(id, nome, abv);
-        }
+
+    
 
 
         function listarunidades() {
@@ -210,7 +239,7 @@
                     const tr = document.createElement('tr');
                     tr.classList.add('selectable', 'unidade');
                     tr.innerHTML = `<td>${u.nome}</td>
-                                    <td>${u.abreviacao}</td>`;
+                                    <td>${u.abreviacao ? u.abreviacao : '--'}</td>`;
                     tr.onclick = () => {
                         const selected = $('.selected.unidade');
                         if (selected.length > 0) 

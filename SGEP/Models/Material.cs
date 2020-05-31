@@ -10,13 +10,13 @@ namespace SGEP.Models
         public int Id { get; set; }
         [DataType(DataType.MultilineText)]
         [Display(Name = "Descrição")]
-        [Required(ErrorMessage = CommomErrorMessages.REQUIRED_FIELD)]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public string Descricao { get; set; }
         [DataType(DataType.Currency)]
         [Display(Name = "Preço")]
-        [Required(ErrorMessage = CommomErrorMessages.REQUIRED_FIELD)]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public decimal Preco { get; set; }
-        [Required(ErrorMessage = CommomErrorMessages.REQUIRED_FIELD)]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int Categoria { get; set; }
         [Display(Name ="Unidade")]
         public int IdUnidade { get; set; }

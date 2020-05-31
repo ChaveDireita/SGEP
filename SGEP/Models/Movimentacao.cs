@@ -11,7 +11,7 @@ namespace SGEP.Models
         public DateTime Data { get; set; }
         [Display(Name = "Material")]
         public int MaterialId { get; set; }
-        [Required(ErrorMessage = CommomErrorMessages.REQUIRED_FIELD)]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int Quantidade { get; set; }
         [Display(Name = "Origem")]
         public int OrigemId { get; set; }

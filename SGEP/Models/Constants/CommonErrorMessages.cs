@@ -1,6 +1,6 @@
 namespace SGEP.Models.Constants
 {
-    public static class CommomErrorMessages
+    public static class CommonMessages
     {
         public const string 
         REQUIRED_FIELD = "Este campo é obrigatório.",
