@@ -53,7 +53,7 @@
                     {
                         const opt = document.createElement('option');
                         opt.value = mat.id;
-                        opt.innerText = mat.id;
+                        opt.innerText = mat.showid;
                         opt.title = mat.descricao;
                         selectMat.appendChild(opt);
                     }
@@ -66,6 +66,8 @@
         data-target="#modal-create-out"
         onclick="
                 const selectOrig = get.id('Origem-out');
+                const selectDest = get.id('Destino-out');
+                const selectMat = get.id('Material-out');
                 selectOrig.innerHTML = '<option>Carregando dados...</option>';
                 selectOrig.disabled = true;
 
@@ -74,6 +76,8 @@
                 .then((json) => 
                 {
                     selectOrig.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                    selectDest.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                    selectMat.innerHTML = '<option disabled selected>Selecione a origem</option>';
                     console.log (json);
                     for(alm of json)
                     {
@@ -117,7 +121,7 @@
                     }
                 }
                 selectOrigin.disabled = false;
-            });">Consumo (?)</a>
+            });">Consumo</a>
     </div>
     </div>
 }
@@ -197,6 +201,9 @@
                     if (e.destino.projeto)
                     {
                         e.destino = `${e.destino.nome} <span class="badge badge-info">Projeto</span>`;
+                    } else if (e.destino.projeto === false)
+                    {
+                        e.destino = `${e.destino.nome} <span class="badge badge-info">Alomoxarifado</span>`;
                     } else if (e.destino != '--')
                     {
                         e.destino = e.destino.nome;
@@ -205,6 +212,9 @@
                     if (e.origem.projeto)
                     {
                         e.origem = `${e.origem.nome} <span class="badge badge-info">Projeto</span>`;
+                    } else if (e.origem.projeto === false)
+                    {
+                        e.origem = `${e.origem.nome} <span class="badge badge-info">Alomoxarifado</span>`;
                     } else if (e.origem != '--')
                     {
                         e.origem = e.origem.nome;
@@ -226,6 +236,17 @@
                 //Código do modal
             });
         }
+
+        $('#modal-create-out').on('hidden.bs.modal', () => {
+            $('#Quantidade-out-label').html('Quantidade');
+            get.id('Quantidade-out').setAttribute('data-val-maximum', '');
+        });
+
+        $('#modal-create-diff').on('hidden.bs.modal', () => {
+            $('#Quantidade-diff-label').html('Quantidade');
+            get.id('Quantidade-diff').setAttribute('data-val-maximum', '');
+        });
+
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>

@@ -88,7 +88,7 @@ namespace SGEP.Controllers
         }
         private bool ProjetoExists(int id) =>  _context.Projeto.Any(e => e.Id == id);
         public JsonResult ProjetoSelecionado(int? id) {
-            return Json(_context.Projeto.FirstOrDefault(i=>i.Id==id));
+            return Json(_context.Projeto.FirstOrDefault(i=>i.Id==id).ToBeShow());
         }
         public JsonResult FuncionariosNaoAlocados(int? id)
         {
@@ -145,7 +145,7 @@ namespace SGEP.Controllers
             if (id == null)
                 return BadRequest("Este projeto não existe.");
             if (inicio == null || fim == null)
-                return BadRequest("Ocorreu um erro ao enviar os dados ao servidor.");
+                return BadRequest("Ocorreu um erro ao enviar os dados ao servidor.\nVerifique se inseriu a data de término corretamente.");
             int _id = id.GetValueOrDefault();
             DateTime start = inicio.GetValueOrDefault();
             DateTime end = fim.GetValueOrDefault();
@@ -170,8 +170,10 @@ namespace SGEP.Controllers
 
         [AllowAnonymous]
         [AcceptVerbs("Get", "Post")]
-        public JsonResult ValidateDate(DateTime inicio, DateTime fim)
+        public JsonResult ValidateDate(DateTime inicio, DateTime? fim)
         {
+            if (fim == null)
+                return Json("Insira uma data de término.");
             if (fim < inicio)
                 return Json("A data de término deve ser posterior a data de início.");
             return Json(true);

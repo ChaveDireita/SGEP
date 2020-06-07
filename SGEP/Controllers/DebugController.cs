@@ -45,5 +45,10 @@ namespace SGEP.Controllers
                 return Json((MonthPeriod) date);
             return Json("Null");
         }
+
+        public IActionResult Page()
+        {
+            return View();
+        }
     }
 }

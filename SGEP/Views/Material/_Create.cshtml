@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="Categoria" class="control-label"></label>
-                        <input asp-for="Categoria" class="form-control squareborder" maxlength="3" type="number" step="0.01" />
+                        <input asp-for="Categoria" class="form-control squareborder" type="number" data-val-step="A categoria deve possuir 3 números" step="0.01" />
                         <span asp-validation-for="Categoria" class="text-danger"></span>
                     </div>
                     <div class="form-group">

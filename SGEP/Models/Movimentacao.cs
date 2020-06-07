@@ -8,8 +8,10 @@ namespace SGEP.Models
     {
         public int Id { get; set; }
         [DataType(DataType.Date)]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public DateTime Data { get; set; }
         [Display(Name = "Material")]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int MaterialId { get; set; }
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int Quantidade { get; set; }

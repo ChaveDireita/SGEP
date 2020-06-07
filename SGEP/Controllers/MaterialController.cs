@@ -112,6 +112,7 @@ namespace SGEP.Controllers
                 {
                     Unidade un = _context.Unidade.FirstOrDefault(u => u.Id == material.IdUnidade);
                     if (un.Abreviacao == null) material.Precounidade = "R$" + material.Preco + "/" + un.Nome;
+                    else material.Precounidade = "R$" + material.Preco + "/" + un.Abreviacao;
                     _context.Update(material);
                     await _context.SaveChangesAsync();
                 }

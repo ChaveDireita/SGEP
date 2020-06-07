@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 using SGEP.Models.Constants;
 
 namespace SGEP.Models
@@ -15,9 +16,21 @@ namespace SGEP.Models
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public DateTime Inicio { get; set; }
         [DataType(DataType.Date)]
+        [Remote(action: "ValidateDate", controller: "Projeto", AdditionalFields = "Inicio")]
         public DateTime? Fim { get; set; }
         public int AlmoxarifadoId { get; set; }
         public virtual Almoxarifado Almoxarifado { get; set; }
         public bool Finalizado { get => Fim != null; }
+
+        public object ToBeShow()
+        {
+            return new {
+                Id,
+                Nome,
+                Almoxarifado,
+                Inicio = Inicio.ToShortDateString(),
+                Fim = Fim == null ? "--" : Fim.GetValueOrDefault().ToShortDateString()
+            };
+        }
     }
 }

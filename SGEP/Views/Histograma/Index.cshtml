@@ -21,7 +21,7 @@
                                               &fim=${end.getUTCFullYear()}${end.getUTCMonth() + 1}
                                               &material=${material}
                                               &tipo=${tipo}
-                                              &almoxarifado=${almoxarifado ? almoxarifado : '' }`;
+                                              &almoxarifado=${almoxarifado}`;
 
             fetch(url.replace(/[\n ]/g, ''))
             .then(res => res.json())
@@ -79,7 +79,7 @@
             loading.show('Carregando dados...');
             for(const m of json)
             {
-                get.name('Material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.id} </option>`;
+                get.name('Material').innerHTML += `<option value="${m.id}" title="${m.descricao}"> ${m.showid} </option>`;
             }
             loading.hide();
         });
@@ -103,7 +103,7 @@
             const sixMonthSpan = 13132800000;
             const currentDate = new Date();
             const pastDate = new Date(currentDate - sixMonthSpan);
-            load(pastDate, currentDate, 1, 'Entrada');
+            load(pastDate, currentDate, 1, 'Entrada', -1);
         })();
     </script>
 
@@ -121,7 +121,6 @@
                               get.name('Material').value,
                               get.name('Tipo').value,
                               get.name('Almoxarifado').value);
-                get.id('graph-query').reset();
             }
         })
     </script>

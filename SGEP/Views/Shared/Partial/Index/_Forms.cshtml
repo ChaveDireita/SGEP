@@ -21,7 +21,6 @@
             .then(text => 
             {
                 $('#modal-create').modal('hide');
-                get.id ('form-create').reset();
                 list(_search());
                 showAlert(text, color);
                 loading.hide();
@@ -48,7 +47,6 @@
             .then(text => 
             {
                 $('#modal-edit').modal('hide');
-                get.id ('form-edit').reset();
                 list(_search());
                 showAlert(text, color);
                 lock.edit = true;

@@ -17,8 +17,11 @@ namespace SGEP.Models
         public string Id { get; set; }
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public string Nome { get; set; }
+        // [DataType(DataType.PhoneNumber)]
+        [Phone]
         public string Telefone { get; set; }
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
+        [EmailAddress(ErrorMessage = "Esse e-mail está inválido.")]
         public string Email { get; set; }
         public bool Ativo { get; set; }
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]

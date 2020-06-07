@@ -194,3 +194,12 @@ const loading = {
         get.id('loading-info').innerHTML = '';
     }
 }
+
+$('.modal').on('hidden.bs.modal', () => {
+    const $messages = $('.field-validation-error');
+    $messages.html('');
+
+    $('form').trigger('reset');
+});
+
+$('form').attr('autocomplete', 'off')

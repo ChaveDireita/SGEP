@@ -19,6 +19,7 @@ namespace SGEP.Models
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int Categoria { get; set; }
         [Display(Name ="Unidade")]
+        [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int IdUnidade { get; set; }
         [Display(Name ="Preço/Unidade")]
         public string Precounidade { get; set; }

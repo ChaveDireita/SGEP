@@ -39,7 +39,7 @@
             <div class="form-group">
                 <label for="material">Almoxarifado/Projeto</label>
                 <select class="form-control squareborder" asp-for="Almoxarifado">
-                    <option value="" selected>Todos</option>
+                    <option value="-1" selected>Todos</option>
                 </select>
                 <span asp-validation-for="Almoxarifado" class="text-danger"></span>
             </div>
@@ -55,46 +55,9 @@
             </div>
             <div class="form-group">
               <input type="submit" id="graph-update" class="btn btn-primary squareborder" value="Atualizar" />
-                      @* Atualizar *@
             </div>
         </form>
       </div>
-      @* <div class="modal-footer"> *@
-        @* <button type="button" 
-                id="graph-update" 
-                class="btn btn-primary squareborder"
-                onclick="
-                const startDate = get.name('Inicio');
-                const endDate = get.name('Fim');
-                const selectMat = get.name('Material');
-                const selectTipo = get.name('Tipo');
-
-                if (startDate.value == '')
-                {
-                  startDate.focus();
-                  return;
-                }
-                if (endDate.value == '')
-                {
-                  endDate.focus();
-                  return;
-                }
-                if (selectMat.value == 0)
-                {
-                  selectMat.focus();
-                  return;
-                }
-                if (selectTipo.value == '')
-                {
-                  selectTipo.focus();
-                  return;
-                }
-                load(new Date(get.name('Inicio').value), 
-                              new Date(get.name('Fim').value),
-                              get.name('Material').value,
-                              get.name('Tipo').value,
-                              get.name('Almoxarifado').value)">Atualizar</button> *@
-      @* </div> *@
     </div>
   </div>
 </div>

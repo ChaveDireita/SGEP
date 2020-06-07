@@ -14,7 +14,7 @@ namespace SGEP.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
+                    Nome = table.Column<string>(nullable: false),
                     Projeto = table.Column<bool>(nullable: false),
                     Ativo = table.Column<bool>(nullable: false),
                     AlmoxarifadosxMateriaisId = table.Column<int>(nullable: false)
@@ -72,8 +72,8 @@ namespace SGEP.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
-                    Cargo = table.Column<string>(nullable: true),
+                    Nome = table.Column<string>(nullable: false),
+                    Cargo = table.Column<string>(nullable: false),
                     Ativo = table.Column<bool>(nullable: false),
                     Matricula = table.Column<string>(nullable: false)
                 },
@@ -121,7 +121,7 @@ namespace SGEP.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
+                    Nome = table.Column<string>(nullable: false),
                     Abreviacao = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -154,7 +154,7 @@ namespace SGEP.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
+                    Nome = table.Column<string>(nullable: false),
                     Inicio = table.Column<DateTime>(nullable: false),
                     Fim = table.Column<DateTime>(nullable: true),
                     AlmoxarifadoId = table.Column<int>(nullable: false)
@@ -282,7 +282,7 @@ namespace SGEP.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Descricao = table.Column<string>(nullable: true),
+                    Descricao = table.Column<string>(nullable: false),
                     Preco = table.Column<decimal>(nullable: false),
                     Categoria = table.Column<int>(nullable: false),
                     IdUnidade = table.Column<int>(nullable: false),

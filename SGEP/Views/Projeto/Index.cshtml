@@ -121,8 +121,16 @@
                         nomeField.value = proj.nome;
                         inicioField.value = proj.inicio.slice(0, 10);
                         almoxarifado.value = proj.almoxarifadoId;
-                        fimGroup.hidden = proj.fim == null;
-                        fimField.value = proj.fim ? proj.fim.slice(0, 10) : null;
+                        if (proj.fim)
+                        {
+                            fimGroup.hidden = false;
+                            fimField.value = proj.fim.slice(0, 10);
+                            fimField.required = true;
+                        } else {
+                            fimGroup.hidden = true;
+                            fimField.value = null;
+                            fimField.required = false;
+                        }
                         $('#modal-edit').modal('show');
                         loading.hide();
                     });
@@ -135,6 +143,9 @@
             fetch('/' + controller + '/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
                 var detailstable = document.getElementById('detailstable');
                 var nomes = ['ID', 'Nome', 'Início', 'Fim'];
+                
+                if (!proj.fim)
+                    proj.fim = '--';
                 var content = [proj.id, proj.nome, proj.inicio, proj.fim];
                 detailstable.innerHTML = gerardetailslist(nomes, content);
                 loading.hide();

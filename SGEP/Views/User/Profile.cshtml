@@ -3,6 +3,7 @@
 @{
     ViewData["Id"] = Model.Id;
 }
+<br />
 @await Html.PartialAsync("Partial/Index/_AlertContainer")
 <br />
 <h2>Meu Perfil</h2>
@@ -45,14 +46,16 @@
                 .then(res => {
                     if (Math.floor(res.status/100) == 4)
                         color = 'danger';
-                    return res.text()
+                    const [text, status] = [res.text(), res.status];
+                    return Promise.all ([text, status]);
                 })
-                .then(text =>
+                .then(([text, status]) =>
                 {
                     showAlert(text, color)
                     $('#modal-password').modal('hide');
                     document.querySelector('#form-password').reset();
-                    window.location.replace("/");
+                    if (status == 200)
+                        window.location.replace("/");
                 });
             }
         });

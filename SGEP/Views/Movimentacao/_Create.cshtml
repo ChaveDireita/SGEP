@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="DestinoId" class="control-label">Destino</label>
-                        <select asp-for="DestinoId" id="Destino-in" class="form-control squareborder">
+                        <select asp-for="DestinoId" id="Destino-in" class="form-control squareborder" data-val-required="Este campo é obrigatório.">
                         </select>
                         <span asp-validation-for="DestinoId" class="text-danger"></span>
                     </div>
@@ -67,6 +67,7 @@
                         <select asp-for="OrigemId" 
                                 id="Origem-out" 
                                 class="form-control squareborder"
+                                data-val-required="Este campo é obrigatório."
                                 onchange="
                                 const selected = get.id('Origem-out').value;
                                 const selectDest = get.id ('Destino-out');
@@ -106,7 +107,7 @@
                                     {
                                         const opt = document.createElement('option');
                                         opt.value = mat.id;
-                                        opt.innerText = mat.id;
+                                        opt.innerText = mat.showid;
                                         opt.title = mat.descricao;
                                         selectMat.appendChild(opt);
                                     }
@@ -117,7 +118,7 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="DestinoId" class="control-label">Destino</label>
-                        <select asp-for="DestinoId" id="Destino-out" class="form-control squareborder">
+                        <select asp-for="DestinoId" id="Destino-out" class="form-control squareborder" data-val-required="Este campo é obrigatório.">
                         </select>
                         <span asp-validation-for="DestinoId" class="text-danger"></span>
                     </div>
@@ -136,7 +137,13 @@
                         {
                             for (o of json) 
                                 if (o.materialId == material) 
-                                    qtdField.max = o.quantidade;
+                                {
+                                    qtdField.setAttribute('data-val-maximum', o.quantidade);
+                                    let label = get.id('Quantidade-out-label').innerHTML;
+                                    label = label.slice(0, 10);
+                                    get.id('Quantidade-out-label').innerHTML = label + `(Disponível: ${o.quantidade})`;
+                                    break;
+                                }
                             
                             qtdField.disabled = false;
                         });
@@ -145,8 +152,38 @@
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-out" disabled placeholder="Selecione o material" class="form-control squareborder" type="number" min="0" max="0"/>
+                        <label asp-for="Quantidade" id="Quantidade-out-label" class="control-label">Quantidade</label>
+                        <input asp-for="Quantidade" 
+                               id="Quantidade-out" disabled 
+                               placeholder="Selecione o material" 
+                               class="form-control squareborder" 
+                               type="number" 
+                               data-val-regex-pattern="-?[0-9]+"
+                               data-val-regex="Insira um número válido"
+                               onchange="
+                               const field = get.id('Quantidade-out');
+                               const max = field.getAttribute('data-val-maximum');
+                               const input = field.value;
+                               
+                               if (Number.parseInt(input) > Number.parseInt(max))
+                               {
+                                    field.value = max;
+                                    field.focus();
+                               }
+                               else if (Number.parseInt(input) < 1)
+                               {
+                                    field.value = 1; 
+                                    field.focus();
+                               }
+                               "
+                               onblur="
+                               const validation = get.id('Quantidade-out-error');
+                               console.log(validation)
+                               if (validation.innerHTML == 'Please enter a valid number.')
+                               {
+                                   validation.innerHTML = 'Insira um número válido.';
+                               }
+                               "/>
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -195,7 +232,7 @@
                                     {
                                         const opt = document.createElement('option');
                                         opt.value = mat.id;
-                                        opt.innerText = mat.id;
+                                        opt.innerText = mat.showid;
                                         opt.title = mat.descricao;
                                         selectMat.appendChild(opt);
                                     }
@@ -223,7 +260,13 @@
                                 {
                                     for (o of json) 
                                         if (o.materialId == material) 
-                                            qtdField.max = o.quantidade;
+                                        {
+                                            qtdField.setAttribute('data-val-maximum', o.quantidade);
+                                            let label = get.id('Quantidade-diff-label').innerHTML;
+                                            label = label.slice(0, 10);
+                                            get.id('Quantidade-diff-label').innerHTML = label + `(Disponível: ${o.quantidade})`;
+                                            break;
+                                        }
                                     
                                     qtdField.disabled = false;
                                 });
@@ -232,8 +275,36 @@
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="Quantidade" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-diff" class="form-control squareborder" type="number" min="0"/>
+                        <label asp-for="Quantidade" id="Quantidade-diff-label" class="control-label">Quantidade</label>
+                        <input asp-for="Quantidade" 
+                               id="Quantidade-diff" 
+                               class="form-control squareborder" 
+                               type="number" 
+                               min="0"
+                               onchange="
+                               const field = get.id('Quantidade-diff');
+                               const max = field.getAttribute('data-val-maximum');
+                               const input = field.value;
+                               
+                               if (Number.parseInt(input) > Number.parseInt(max))
+                               {
+                                    field.value = max;
+                                    field.focus();
+                               }
+                               else if (Number.parseInt(input) < 1)
+                               {
+                                    field.value = 1; 
+                                    field.focus();
+                               }
+                               "
+                               onblur="
+                               const validation = get.id('Quantidade-diff-error');
+                               console.log(validation)
+                               if (validation.innerHTML == 'Please enter a valid number.')
+                               {
+                                   validation.innerHTML = 'Insira um número válido.';
+                               }
+                               "/>
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">

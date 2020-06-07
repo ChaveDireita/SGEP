@@ -18,7 +18,7 @@ namespace SGEP.Controllers
         public IActionResult Index() => View();
         public JsonResult GraphData(string inicio, string fim, string tipo, int? material, int? almoxarifado)
         {
-            if (inicio == null || fim == null || material == null || tipo == null)
+            if (inicio == null || fim == null || material == null || tipo == null || almoxarifado == null)
                 return Json(new object[]{});
             
             MonthPeriod mpInicio = inicio;
@@ -29,7 +29,7 @@ namespace SGEP.Controllers
                                                         m.Data <= mpFim &&
                                                         m.MaterialId == material.Value);
             
-            if (almoxarifado != null)
+            if (almoxarifado.GetValueOrDefault() != -1)
             {
                 if (tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))
                     movs = movs.Where(m => m.DestinoId == almoxarifado);
@@ -44,28 +44,39 @@ namespace SGEP.Controllers
                                   .Sum(m => m.Quantidade);
             
             string almoxarifadoNome = null;
-            if (almoxarifado != null)
+            if (almoxarifado != -1)
                 almoxarifadoNome = _context.Almoxarifado.Find(almoxarifado).Nome;
 
             string title = null;
+            string materialShowId = _context.Material.Find(material.GetValueOrDefault()).Showid;
 
             switch (tipo)
             {
                 case "Entrada":
-                    title = almoxarifadoNome != null ? $"Entrada de {material} para {almoxarifadoNome}" 
-                                                     : $"Entrada total de {material}"; 
+                    title = almoxarifadoNome != null ? $"Entrada de {materialShowId} para {almoxarifadoNome}" 
+                                                     : $"Entrada total de {materialShowId}"; 
                     break;
                 case "Saida":
-                    title = almoxarifadoNome != null ? $"Saída de {material} de {almoxarifadoNome}" 
-                                                     : $"Saída total de {material}"; 
+                    title = almoxarifadoNome != null ? $"Saída de {materialShowId} de {almoxarifadoNome}" 
+                                                     : $"Saída total de {materialShowId}"; 
                     break;
                 case "Consumo":
-                    title = almoxarifadoNome != null ? $"Consumo de {material} por {almoxarifadoNome}" 
-                                                     : $"Consumo total de {material}"; 
+                    title = almoxarifadoNome != null ? $"Consumo de {materialShowId} por {materialShowId}" 
+                                                     : $"Consumo total de {materialShowId}"; 
                     break;
             }
 
-            return Json(new { data, material, tipo, almoxarifado = almoxarifadoNome, title });
+            return Json(new { data, materialShowId, tipo, almoxarifado = almoxarifadoNome, title });
+        }
+        [AllowAnonymous]
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult ValidateDate(DateTime? inicio, DateTime? fim)
+        {
+            if (inicio == null || fim == null)
+                return Json(true);
+            if (fim.GetValueOrDefault() < inicio.GetValueOrDefault())
+                return Json("A data final deve ser posterior a data inicial.");
+            return Json(true);
         }
     }
 }

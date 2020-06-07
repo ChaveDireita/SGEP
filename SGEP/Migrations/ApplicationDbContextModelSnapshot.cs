@@ -195,7 +195,8 @@ namespace SGEP.Migrations
 
                     b.Property<bool>("Ativo");
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.Property<bool>("Projeto");
 
@@ -225,12 +226,14 @@ namespace SGEP.Migrations
 
                     b.Property<bool>("Ativo");
 
-                    b.Property<string>("Cargo");
+                    b.Property<string>("Cargo")
+                        .IsRequired();
 
                     b.Property<string>("Matricula")
                         .IsRequired();
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -249,7 +252,8 @@ namespace SGEP.Migrations
 
                     b.Property<int>("Categoria");
 
-                    b.Property<string>("Descricao");
+                    b.Property<string>("Descricao")
+                        .IsRequired();
 
                     b.Property<int>("IdUnidade");
 
@@ -303,7 +307,8 @@ namespace SGEP.Migrations
 
                     b.Property<DateTime>("Inicio");
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -335,7 +340,8 @@ namespace SGEP.Migrations
 
                     b.Property<string>("Abreviacao");
 
-                    b.Property<string>("Nome");
+                    b.Property<string>("Nome")
+                        .IsRequired();
 
                     b.HasKey("Id");
 

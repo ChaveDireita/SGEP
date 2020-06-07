@@ -33,7 +33,7 @@ namespace SGEP.Controllers
                     return alm != null && alm.Nome.Contains(destino);
                 });
             if (material != null && material?.ToString().Trim() != "")
-                result = result.Where(m => m.MaterialId.ToString().Contains(material.ToString()));
+                result = result.Where(m => _context.Material.Find(m.MaterialId).Showid.ToString().Contains(material.ToString()));
             if (tipo != null && tipo?.ToString().Trim() != "")
                 result = result.Where(m => m.Tipo.Contains(tipo));
             int _inicio = (itensPorPagina ?? 10)*((pagina ?? 1) - 1);
@@ -42,7 +42,7 @@ namespace SGEP.Controllers
             var result2 = result.ToList().ConvertAll(m => new { 
                     m.Id, 
                     Data = m.Data.ToShortDateString(), 
-                    m.MaterialId, 
+                    MaterialId = _context.Material.Find(m.MaterialId).Showid, 
                     m.Preco, 
                     m.Quantidade, 
                     m.Tipo, 
