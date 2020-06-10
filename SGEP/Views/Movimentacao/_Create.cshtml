@@ -160,7 +160,6 @@
                     <div class="form-group">
                         <label asp-for="OrigemId" class="control-label">Origem</label>
                         <select asp-for="OrigemId"
-                                id="Origem-diff"
                                 class="form-control squareborder"
                                 onchange="
                                 const selected=get.id('Origem-diff').value;
@@ -175,7 +174,7 @@
                         {
                         const opt = document.createElement('option');
                         opt.value = mat.id;
-                        opt.innerText = mat.id;
+                        opt.innerText = mat.showid;
                         opt.title = mat.descricao;
                         selectMat.appendChild(opt);
                         }
@@ -186,37 +185,64 @@
                         <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="MaterialId" class="control-label"/>
+                        <label asp-for="MaterialId" class="control-label">Material</label>
                         <select asp-for="MaterialId"
                                 id="Material-diff"
                                 disabled
                                 class="form-control squareborder"
                                 onchange="
-                                const selected=get.id('Origem-diff').value;
-                                const selectMat=get.id ('Material-diff');
-                                fetch('/Almoxarifado/GetMateriais/' + selected)
+                                const origin=get.id('Origem-diff').value;
+                                const material=get.id('Material-diff').value;
+                                const qtdField=get.id('Quantidade-diff');
+                                qtdField.disabled=true;
+                                fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material)
                         .then(res => res.json())
                         .then(json =>
                         {
-                        selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
-                        console.log (json);
-                        for(mat of json)
+                        for (o of json)
+                        if (o.materialId == material)
                         {
-                        const opt = document.createElement('option');
-                        opt.value = mat.id;
-                        opt.innerText = mat.id;
-                        opt.title = mat.descricao;
-                        selectMat.appendChild(opt);
+                        qtdField.setAttribute('data-val-maximum', o.quantidade);
+                        let label = get.id('Quantidade-diff-label').innerHTML;
+                        label = label.slice(0, 10);
+                        get.id('Quantidade-diff-label').innerHTML = label + `(Disponível: ${o.quantidade})`;
+                        break;
                         }
-                        selectMat.disabled = false;
-                        });"
-                        >
+                        qtdField.disabled = false;
+                        ">
                         </select>
                         <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-diff" class="form-control squareborder" type="number" min="0" />
+                        <label asp-for="Quantidade" id="Quantidade-diff-label" class="control-label">Quantidade</label>
+                        <input asp-for="Quantidade"
+                               id="Quantidade-diff"
+                               class="form-control squareborder"
+                               type="number"
+                               min="0"
+                               onchange="
+                               const field=get.id('Quantidade-diff');
+                               const max=field.getAttribute('data-val-maximum');
+                               const input=field.value;
+                               if (Number.parseInt(input)> Number.parseInt(max))
+                        {
+                        field.value = max;
+                        field.focus();
+                        }
+                        else if (Number.parseInt(input) < 1)
+                        {
+                        field.value = 1;
+                        field.focus();
+                        }
+                        "
+                        onblur="
+                        const validation = get.id('Quantidade-diff-error');
+                        console.log(validation)
+                        if (validation.innerHTML == 'Please enter a valid number.')
+                        {
+                        validation.innerHTML = 'Insira um número válido.';
+                        }
+                        "/>
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
@@ -231,6 +257,7 @@
 <script>
     var matselectIn = document.getElementById('Material-in');
     var matselectOut = document.getElementById('Material-out');
+    var matselectDiff = document.getElementById('Material-diff');
     matselectIn.onchange = () => {
         var qtlabel = document.getElementById('qtlabelIn');
         var selected = matselectIn.options[matselectIn.selectedIndex].value;
@@ -260,6 +287,16 @@
             });
         var mselected = matselectOut.options[matselectOut.selectedIndex].value;
         fetch('/Movimentacao/PegarUnidade/' + mselected)
+            .then(res => res.json())
+            .then(un => {
+                if (un.abreviacao == null) qtlabel.innerText = "Quantidade (" + un.nome + ")";
+                else qtlabel.innerText = "Quantidade (" + un.abreviacao + ")";
+            });
+    }
+    matselectDiff.onchange = () => {
+        var qtlabel = document.getElementById('qtlabelIn');
+        var selected = matselectIn.options[matselectIn.selectedIndex].value;
+        fetch('/Movimentacao/PegarUnidade/' + selected)
             .then(res => res.json())
             .then(un => {
                 if (un.abreviacao == null) qtlabel.innerText = "Quantidade (" + un.nome + ")";

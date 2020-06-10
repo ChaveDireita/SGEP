@@ -260,13 +260,33 @@
                                             var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
                                             document.getElementById('tablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
                                         });
-                                    fetch('/Projeto/ProjetoSelecionado/?id=' + mov.destinoId).then((res) => res.json()).then(proj => {
+                                    fetch('/Projeto/ProjetoSelecionado/?id=' + mov.origemId).then((res) => res.json()).then(proj => {
                                         var projdetailstable = document.getElementById('tableproj');
                                         var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
                                         var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
                                         projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
                                     });
                                     $('#detailsmodalentrada').modal('toggle');
+                                    break;
+                                //MODAL DE CONSUMO
+                                case "consumo":
+                                    var detailstable = document.getElementById('detailstableco');
+                                    detailstable.innerHTML = gerardetailslist(nomes, content);
+                                    fetch('/Material/Get/' + mov.materialId)
+                                        .then(res => res.json())
+                                        .then(mat => {
+                                            var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                                            var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                                            document.getElementById('cotablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
+                                        });
+                                    fetch('/Projeto/ProjetoSelecionado/?id=' + mov.origemId).then((res) => res.json()).then(proj => {
+                                        console.log('aaaa');
+                                        var projdetailstable = document.getElementById('cotableproj');
+                                        var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
+                                        var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
+                                        projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                                    });
+                                    $('#detailsmodalconsumo').modal('toggle');
                                     break;
                             }
                         });
