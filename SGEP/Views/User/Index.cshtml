@@ -31,6 +31,7 @@
 
 @await Html.PartialAsync("_Create")
 @await Html.PartialAsync("_Edit")
+@await Html.PartialAsync("_Details")
 
 <table class="table">
     <thead class="thead-dark">
@@ -135,14 +136,12 @@
             {
                 fetch('/' + controller + '/Get/' + id)
                 .then(res => res.json())
-                .then(func =>
+                .then(user =>
                 {
-                    var idfield = document.getElementById('idfield');
-                    idfield.innerText = "FUN - " + func.id;
-                    var namefield = document.getElementById('namefield');
-                    namefield.textContent = func.nome;
-                    var cargofield = document.getElementById('cargofield');
-                    cargofield.textContent = func.cargo;
+                    var detailstable = document.getElementById('detailstable');
+                    var nomes = ['Nome', 'Telefone', 'Email', 'Ativo', 'Tipo'];
+                    var content = [user.nome, user.telefone, user.email, user.ativo ? 'Ativo' : 'Inativo', user.role];
+                    detailstable.innerHTML = gerardetailslist(nomes, content);
                     $('#detailsmodal').modal('toggle');
                 });
             });
