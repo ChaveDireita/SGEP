@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200607164525_Migracao")]
+    [Migration("20200611180754_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

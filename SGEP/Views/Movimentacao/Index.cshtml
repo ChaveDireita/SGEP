@@ -102,23 +102,23 @@
                selectMat.disabled=true;
                selectMat.innerHTML='<option>Selecione a origem</option>'
                fetch('/Almoxarifado/All')
-            .then((res) => res.json())
-            .then((json) =>
-            {
-            selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
-            console.log (json);
-            for(alm of json)
-            {
-            if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
-            {
-            const opt = document.createElement('option');
-            opt.value = alm.id;
-            opt.innerText = alm.nome;
-            selectOrigin.appendChild(opt);
-            }
-            }
-            selectOrigin.disabled = false;
-            });">Consumo (?)</a>
+                .then((res) => res.json())
+                .then((json) =>
+                {
+                    selectOrigin.innerHTML = '<option disabled selected>Selecione a origem</option>';
+                    console.log (json);
+                for(alm of json)
+                {
+                    if (alm.ativo && alm.almoxarifadosxMateriais.length > 0)
+                    {
+                        const opt = document.createElement('option');
+                        opt.value = alm.id;
+                        opt.innerText = alm.nome;
+                        selectOrigin.appendChild(opt);
+                    }
+                }
+                selectOrigin.disabled = false;
+                });">Consumo (?)</a>
         </div>
     </div>
 }
