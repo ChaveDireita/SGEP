@@ -79,7 +79,7 @@
         list({});
 
         function list(searchParams) {
-            refreshTable(controller, searchParams, ['showid', 'descricao', 'preco'], ({ size, entities }) => 
+            refreshTable(controller, searchParams, ['showid', 'descricao', 'precoUnidade'], ({ size, entities }) => 
             {
                 pagination.size = size;
             });
@@ -278,6 +278,7 @@
             data.append('Id', id);
             fetch('/Material/EditarUnidade', { method: 'POST', body: data }).then(retorno => {
                 listarunidades();
+                list({});
             });
             $('#unidadeeditmodal').modal('toggle');
         }

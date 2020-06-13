@@ -1,0 +1,77 @@
+﻿@model SGEP.Models.Movimentacao
+<!--MODAL ENTRADA-->
+<div class="modal fade" id="detailsmodalentrada" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes da Movimentação</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbodyr">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular" id="detailstableen"></table>
+                <h4>Projeto de destino:</h4>
+                <table class="table" id="tableproj"></table>
+                <h4>Material enviado:</h4>
+                <table class="table" id="tablemat"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary squareborder" id="abriralocacao">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL SAIDA-->
+<div class="modal fade" id="detailsmodalsaida" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes da Movimentação</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbodyr">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular" id="detailstablesa"></table>
+                <h4>Projeto de origem:</h4>
+                <table class="table" id="ortableproj"></table>
+                <h4>Projeto de destino:</h4>
+                <table class="table" id="detableproj"></table>
+                <h4>Material enviado:</h4>
+                <table class="table" id="satablemat"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary squareborder" id="abriralocacao">Editar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL CONSUMO-->
+<div class="modal fade" id="detailsmodalconsumo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content squareborder">
+            <div class="modal-header header-dark squareborder">
+                <h5 class="modal-title" id="modaltitle">Detalhes do Consumo</h5>
+                <button type="button" style="color:white;" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalbodyr">
+                <h4>Informações:</h4>
+                <table class="table table-bordered shadow-regular" id="detailstableco"></table>
+                <h4>Projeto que consumiu:</h4>
+                <table class="table" id="cotableproj"></table>
+                <h4>Material consumido:</h4>
+                <table class="table" id="cotablemat"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary squareborder" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -156,6 +156,18 @@ function gerarlist(nomes, lista,acao,relevanteid,rowClasses) {
     html += '</tbody>';
     return html;
 }
+function gerarlistitemunico(nomes, item) {
+    var html = '';
+    html += '<thead class="thead-dark">';
+    for (n of nomes) html += '<th style:"position:sticky; top:0">' + n + '</th>';
+    html += '</thead> <tbody>';
+    for (variavel in item) {
+        if (variavel != null) html += '<td>' +item[variavel]+ '</td>';
+        else html += '<td>---</td>';
+    }
+    return html;
+
+}
 function gerarlistsemnome(lista, acao, relevanteid) {
     var html = '';
     for (item of lista) {
