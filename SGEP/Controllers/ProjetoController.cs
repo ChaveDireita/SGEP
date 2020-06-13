@@ -87,8 +87,8 @@ namespace SGEP.Controllers
             return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
         private bool ProjetoExists(int id) =>  _context.Projeto.Any(e => e.Id == id);
-        public JsonResult ProjetoSelecionado(int? id) {
-            return Json(_context.Projeto.FirstOrDefault(i=>i.Id==id));
+        public JsonResult GetForAlmoxarifado(int? id) {
+            return Json(_context.Projeto.FirstOrDefault(p => p.Almoxarifado.Id==id));
         }
         public JsonResult FuncionariosNaoAlocados(int? id)
         {

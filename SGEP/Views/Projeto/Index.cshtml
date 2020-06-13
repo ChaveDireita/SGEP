@@ -129,7 +129,7 @@
 
         function showdetailsmodal(id) {
             atualizaralocacao(id);
-            fetch('/' + controller + '/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
+            fetch('/' + controller + '/Get/id=' + id).then((res) => res.json()).then(proj => {
                 var detailstable = document.getElementById('detailstable');
                 var nomes = ['ID', 'Nome', 'Início', 'Fim'];
                 var content = [proj.id, proj.nome, proj.inicio, proj.fim];
