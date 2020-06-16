@@ -181,17 +181,24 @@ function gerarlistsemnome(lista, acao, relevanteid) {
     return html;
 }
 
+const genAlertId = (() => {
+    var next = 1;
+    return () => next++;
+})();
+
 function showAlert(msg, cls)
 {
     const alertContainer = get.id('alert-container');
+    const id = genAlertId();
     alertContainer.innerHTML += `
-        <div class="alert alert-${cls} alert-dismissible fade show" role="alert">
+        <div class="alert alert-${cls} alert-dismissible fade show" role="alert" id="alert:${id}">
             ${msg}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
         `;
+    setTimeout(() => get.id('alert:' + id).outerHTML = '', 5000);
 }
 
 const loading = {
