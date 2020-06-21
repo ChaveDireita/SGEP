@@ -77,93 +77,94 @@
                         <span asp-validation-for="Data" class="text-danger"></span>
                     </div>
                     <div class="form-group">
+                        <label asp-for="MaterialId" class="control-label">Material</label>
+                        <select asp-for="MaterialId" id="Material-out" class="form-control squareborder"
+                            onchange="
+                            const selectOrigin = get.id('Origem-out');
+                            const selectDest = get.id('Destino-out');
+                            const qtdField = get.id('Quantidade-out');
+
+                            const origin = get.id('Origem-out').value;
+                            const material = get.id('Material-out').value;
+
+                            fetch('/Almoxarifado/All?material=' + material)
+                            .then(res => res.json())
+                            .then(json => 
+                            {
+                                
+                                selectOrigin.innerHTML = `<option selected disabled>Selecione a origem</option>`;
+                                for(a of json)
+                                {
+                                    const opt = document.createElement('option');
+                                    opt.value = a.id;
+                                    opt.innerHTML = a.nome;
+                                    selectOrigin.appendChild(opt);
+                                }
+                                selectOrigin.disabled = false;
+                                selectDest.innerHTML = '<option selected disabled>Selecione a origem</option>';
+                                qtdField.placeholder = 'Selecione a origem';
+                            });
+                        ">
+                        </select>
+                        <span asp-validation-for="MaterialId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
                         <label asp-for="OrigemId" class="control-label">Origem</label>
                         <select asp-for="OrigemId"
                                 id="Origem-out"
                                 class="form-control squareborder"
                                 data-val-required="Este campo é obrigatório."
+                                disabled
                                 onchange="
-                                const selected=get.id('Origem-out').value;
+                                const origin=get.id('Origem-out').value;
                                 const selectDest=get.id ('Destino-out');
                                 const selectMat=get.id ('Material-out');
+                                const material = selectMat.value;
+                                const qtdField = get.id('Quantidade-out');
+
                                 selectDest.disabled=true;
                                 selectMat.disabled=true;
-                                selectDest.innerHTML='<option disabled selected>Selecione a origem</option>' ;
-                                selectMat.innerHTML='<option disabled selected>Selecione a origem</option>' ;
-                                fetch('/Almoxarifado/All')
-                                .then(res => res.json())
-                                .then(json =>
+                                selectDest.innerHTML='<option disabled selected>Selecione o destino</option>';
+
+                                Promise.all([
+                                    fetch(`/Almoxarifado/GetQuantidade/${origin}/${material}`),
+                                    fetch('/Movimentacao/PegarUnidade/' + material),
+                                    fetch('/Almoxarifado/All')
+                                ])
+                                .then(res => Promise.all(res.map(r => r.json())))
+                                .then(([qtd, un, alms]) =>
                                 {
-                                    for(alm of json)
+                                    console.log(qtd)
+                                    qtdField.setAttribute('data-val-maximum', qtd);
+                                    let label = get.id('Quantidade-out-label').innerHTML;
+                                    label = label.slice(0, 10);
+                                    get.id('Quantidade-out-label').innerHTML = label + ` (Disponível: ${qtd} ${un.abreviacao || un.nome})`;
+
+
+                                    for(a of alms)
                                     {
-                                        if (alm.id == selected)
+                                        if (a.id == origin)
                                             continue;
-                                        if (alm.ativo)
-                                        {
-                                            const opt = document.createElement('option');
-                                            opt.value = alm.id;
-                                            opt.innerText = alm.nome;
-                                            selectDest.appendChild(opt);
-                                        }
+                                        const o = document.createElement('option');
+                                        o.value = a.id;
+                                        o.innerHTML = a.nome;
+                                        selectDest.appendChild(o);
                                     }
                                     selectDest.disabled = false;
-                                });
-
-                                fetch('/Almoxarifado/GetMateriais/' + selected)
-                                .then(res => res.json())
-                                .then(json => 
-                                {
-                                    selectMat.innerHTML = '<option disabled selected>Selecione o material</option>';;
-                                    console.log (json);
-                                    for(mat of json)
-                                    {
-                                        const opt = document.createElement('option');
-                                        opt.value = mat.id;
-                                        opt.innerText = mat.showid;
-                                        opt.title = mat.descricao;
-                                        selectMat.appendChild(opt);
-                                    }
                                     selectMat.disabled = false;
-                                });">
+                                    qtdField.disabled = false;
+                                    qtdField.placeholder = '';
+                                });
+                                "
+                                >
                         </select>
                         <span asp-validation-for="OrigemId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="DestinoId" class="control-label">Destino</label>
-                        <select asp-for="DestinoId" id="Destino-out" class="form-control squareborder" data-val-required="Este campo é obrigatório.">
+                        <select asp-for="DestinoId" disabled id="Destino-out" class="form-control squareborder" data-val-required="Este campo é obrigatório.">
                         </select>
                         <span asp-validation-for="DestinoId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="MaterialId" class="control-label">Material</label>
-                        <select asp-for="MaterialId" id="Material-out" class="form-control squareborder"
-                        onchange="
-                        const origin = get.id('Origem-out').value;
-                        const material = get.id('Material-out').value;
-                        const qtdField = get.id('Quantidade-out');
-                        qtdField.disabled = true;
-                        Promise.all([
-                            fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material),
-                            fetch('/Movimentacao/PegarUnidade/' + material)
-                        ])
-                        .then(res => Promise.all([res[0].json(), res[1].json()]))
-                        .then(([json, un]) => 
-                        {
-                            for (o of json) 
-                                if (o.materialId == material) 
-                                {
-                                    qtdField.setAttribute('data-val-maximum', o.quantidade);
-                                    let label = get.id('Quantidade-out-label').innerHTML;
-                                    label = label.slice(0, 10);
-                                    get.id('Quantidade-out-label').innerHTML = label + `(Disponível: ${o.quantidade} ${un.abreviacao || un.nome})`;
-                                    break;
-                                }
-                            
-                            qtdField.disabled = false;
-                        });
-                        ">
-                        </select>
-                        <span asp-validation-for="MaterialId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label asp-for="Quantidade" id="Quantidade-out-label" class="control-label">Quantidade</label>
@@ -270,17 +271,12 @@
                                     fetch('/Almoxarifado/GetQuantidade/' + origin + '/' + material), 
                                     fetch('/Movimentacao/PegarUnidade/' + material)
                                 ]).then(res => Promise.all([res[0].json(), res[1].json()]))
-                                .then(([json, un]) =>
+                                .then(([quantidade, un]) =>
                                 {
-                                    for (o of json) 
-                                        if (o.materialId == material) 
-                                        {
-                                            qtdField.setAttribute('data-val-maximum', o.quantidade);
-                                            let label = get.id('Quantidade-diff-label').innerHTML;
-                                            label = label.slice(0, 10);
-                                            get.id('Quantidade-diff-label').innerHTML = label + `(Disponível: ${o.quantidade} ${un.abreviacao || un.nome})`;
-                                            break;
-                                        }
+                                    qtdField.setAttribute('data-val-maximum', quantidade);
+                                    let label = get.id('Quantidade-diff-label').innerHTML;
+                                    label = label.slice(0, 10);
+                                    get.id('Quantidade-diff-label').innerHTML = label + ` (Disponível: ${quantidade} ${un.abreviacao || un.nome})`;
                                     
                                     qtdField.disabled = false;
                                 });

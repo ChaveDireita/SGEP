@@ -35,7 +35,14 @@ namespace SGEP.Controllers
             
             return Json(new {size = _size, entities = result.ToList()});
         }
-        public async Task<JsonResult> All() => Json(await _context.Almoxarifado.ToListAsync());
+        public async Task<JsonResult> All(int? material) {
+            if (material == null)
+                return Json(await _context.Almoxarifado.ToListAsync());
+            else {
+                int mid = material.GetValueOrDefault();
+                return Json(_context.Almoxarifado.Where(a => a.AlmoxarifadosxMateriais.Where(am => am.MaterialId == mid).Count() > 0));
+            }
+        }
         [HttpGet("/Almoxarifado/GetMateriais/{id}")]
         public JsonResult GetMateriais(int id)
         {
@@ -46,8 +53,9 @@ namespace SGEP.Controllers
         [HttpGet("/Almoxarifado/GetQuantidade/{idAlm}/{idMat}")]
         public JsonResult GetMateriais(int idAlm, int idMat) => Json (_context.Almoxarifado.Find(idAlm)
                                                                                            .AlmoxarifadosxMateriais
-                                                                                           .Where(am => am.MaterialId == idMat && am.Quantidade > 0)
-                                                                                           .ToList());
+                                                                                           .Where(am => am.MaterialId == idMat)
+                                                                                           .First()
+                                                                                           .Quantidade);
         public JsonResult GetMaterialxAlmoxarifadoList (int id){
             List<AlmoxarifadosxMateriais> almoxmat = _context.AlmoxarifadosxMateriais
                 .Where(a => a.AlmoxarifadoId == id).ToList();
