@@ -198,7 +198,11 @@ function showAlert(msg, cls)
             </button>
         </div>
         `;
-    setTimeout(() => get.id('alert:' + id).outerHTML = '', 5000);
+    setTimeout(() => {
+        try{
+            get.id('alert:' + id).outerHTML = '';
+        } catch(e) {}
+    }, 5000);
 }
 
 const loading = {
@@ -221,4 +225,4 @@ $('.modal').on('hidden.bs.modal', () => {
     $('form').trigger('reset');
 });
 
-$('form').attr('autocomplete', 'off')
+$('form').attr('autocomplete', 'off');

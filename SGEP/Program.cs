@@ -24,7 +24,12 @@ namespace SGEP
         
         public static async Task Main (string[] args)
         {
-            var host = CreateWebHostBuilder (args).Build();//.Run();
+            var host = CreateWebHostBuilder (args)
+                    //    .UseKestrel()
+                    //    .UseContentRoot(Directory.GetCurrentDirectory())
+                    //    .UseIISIntegration()
+                    //    .UseStartup<Startup>()
+                       .Build();//.Run();
             if (args.Length > 0)
             {
                 string option = args[0];

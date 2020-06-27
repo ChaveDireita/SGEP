@@ -41,9 +41,6 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Telefone)
-            </th>
-            <th>
                 Tipo
             </th>
             <th>
@@ -70,7 +67,7 @@
 
         function list(searchParams)
         {
-            refreshTable(controller, searchParams, ['nome', 'email', 'telefone', 'role', 'ativo', 'delete-btn'], ({size, entities}) =>
+            refreshTable(controller, searchParams, ['nome', 'email', 'role', 'ativo', 'delete-btn'], ({size, entities}) =>
             {
                 pagination.size = size;
                 entities.forEach(u => {
@@ -141,14 +138,19 @@
                 {
                     var detailstable = document.getElementById('detailstable');
                     var nomes = ['Nome', 'Telefone', 'Email', 'Ativo', 'Tipo'];
-                    var content = [user.nome, user.telefone, user.email, user.ativo ? 'Ativo' : 'Inativo', user.role];
+                    var content = [user.nome, user.telefone || '--', user.email, user.ativo ? 'Ativo' : 'Inativo', user.role];
                     detailstable.innerHTML = gerardetailslist(nomes, content);
                     $('#detailsmodal').modal('toggle');
                     loading.hide();
                 });
             });
         }
-        
+
+        document.getElementById('Telefone-edit').onkeyup = document.getElementById('Telefone').onkeyup = (e) => {
+            var x = e.target.value.replace(/\D/g, '').match(/(\d{2})(\d{4,5})(\d{4})/);
+            e.target.value = '(' + x[1] + ') ' + x[2] + '-' + x[3];
+        }
+
     </script>
 
     @{await Html.RenderPartialAsync ("_ValidationScriptsPartial");}

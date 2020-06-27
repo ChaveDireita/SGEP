@@ -26,34 +26,41 @@ namespace SGEP.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
+            [Required(ErrorMessage = "Insira seu e-mail.")]
+            [EmailAddress(ErrorMessage = "Esse e-mail está inválido.")]
+            [Display(Name = "E-mail")]
             public string Email { get; set; }
 
-            [Required]
+            [Required(ErrorMessage = "Insira sua senha.")]
             [StringLength(100, ErrorMessage = "A {0} deve possuir de {2} a {1} caracteres.", MinimumLength = 6)]
             [DataType(DataType.Password)]
+            [Display(Name = "Nova senha")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Confirme a nova senha")]
             [Compare("Password", ErrorMessage = "As senhas não estão iguais.")]
             public string ConfirmPassword { get; set; }
 
             public string Code { get; set; }
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(string code = null, string email = null)
         {
             if (code == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("Um código deve ser providenciado para resetar a senha.");
+            }
+            if (email == null)
+            {
+                return BadRequest("Um endereço de e-mail deve ser providenciado para resetar a senha.");
             }
             else
             {
                 Input = new InputModel
                 {
-                    Code = code
+                    Code = code,
+                    Email = email
                 };
                 return Page();
             }

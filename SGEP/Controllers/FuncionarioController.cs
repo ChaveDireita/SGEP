@@ -102,12 +102,10 @@ namespace SGEP.Controllers
 
         [AllowAnonymous]
         [AcceptVerbs("Get", "Post")]
-        public IActionResult VerificarMatricula(string matricula, int? id, bool? ativo)
+        public IActionResult VerificarMatricula(string matricula, int? id)
         {
-            if (ativo != null && !ativo.Value)
-                return Json(true);
-            if (_context.Funcionario.Where(f =>  f.Ativo && f.Id != id && f.Matricula == matricula).Count() > 0)
-                return Json("Já existe um funcionário ativo cadastrado com essa matrícula");
+            if (_context.Funcionario.Where(f => f.Id != id && f.Matricula == matricula).Count() > 0)
+                return Json("Já existe um funcionário cadastrado com essa matrícula");
             return Json(true);
         }
     }

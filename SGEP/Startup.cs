@@ -44,8 +44,8 @@ namespace SGEP
             services.AddDbContext<ApplicationDbContext> (options =>
             {
                 options.UseLazyLoadingProxies(true);
-                //options.UseMySql (Configuration.GetConnectionString ("mysql"));
-                options.UseSqlServer (Configuration.GetConnectionString ("local"));
+                options.UseMySql (Configuration.GetConnectionString ("mysql"));
+                // options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
 
             services.AddScoped<IEmailSender, GmailEmailSender>();
@@ -79,6 +79,10 @@ namespace SGEP
                 o.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 o.LogoutPath="/Identity/Account/Logout";
             });
+
+            // services.Configure<IISOptions>(o => {
+            //    o.ForwardClientCertificate = false; 
+            // });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,17 +112,14 @@ namespace SGEP
             }
 
             app.UseHttpsRedirection ();
-            if (env.IsDevelopment())
+            app.UseStaticFiles (new StaticFileOptions
             {
-                app.UseStaticFiles (new StaticFileOptions
+                OnPrepareResponse = ctx => 
                 {
-                    OnPrepareResponse = ctx => 
-                    {
-                        ctx.Context.Response.Headers.Add("Cache-Control", "no-cache, no-storage");
-                        ctx.Context.Response.Headers.Add("Expires", "-1");
-                    }
-                });
-            }
+                    ctx.Context.Response.Headers.Add("Cache-Control", "no-cache, no-storage");
+                    ctx.Context.Response.Headers.Add("Expires", "-1");
+                }
+            });
 
             app.UseCookiePolicy ();
             app.UseAuthentication ();

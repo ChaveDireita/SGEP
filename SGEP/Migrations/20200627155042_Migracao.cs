@@ -13,7 +13,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: false),
                     Projeto = table.Column<bool>(nullable: false),
                     Ativo = table.Column<bool>(nullable: false),
@@ -71,7 +71,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: false),
                     Cargo = table.Column<string>(nullable: false),
                     Ativo = table.Column<bool>(nullable: false),
@@ -87,7 +87,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Data = table.Column<DateTime>(nullable: false),
                     MaterialId = table.Column<int>(nullable: false),
                     Quantidade = table.Column<int>(nullable: false),
@@ -106,7 +106,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     IdFuncionario = table.Column<int>(nullable: false),
                     IdProjeto = table.Column<int>(nullable: false)
                 },
@@ -120,7 +120,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: false),
                     Abreviacao = table.Column<string>(nullable: true)
                 },
@@ -153,7 +153,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: false),
                     Inicio = table.Column<DateTime>(nullable: false),
                     Fim = table.Column<DateTime>(nullable: true),
@@ -175,7 +175,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -196,7 +196,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -281,7 +281,7 @@ namespace SGEP.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Descricao = table.Column<string>(nullable: false),
                     Preco = table.Column<decimal>(nullable: false),
                     Categoria = table.Column<int>(nullable: false),
@@ -295,7 +295,7 @@ namespace SGEP.Migrations
                 {
                     table.PrimaryKey("PK_Material", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Material_AlmoxarifadosxMateriais_AlmoxarifadosxMateriaisAlmoxarifadoId_AlmoxarifadosxMateriaisMaterialId",
+                        name: "FK_Material_AlmoxarifadosxMateriais_AlmoxarifadosxMateriaisAlmo~",
                         columns: x => new { x.AlmoxarifadosxMateriaisAlmoxarifadoId, x.AlmoxarifadosxMateriaisMaterialId },
                         principalTable: "AlmoxarifadosxMateriais",
                         principalColumns: new[] { "AlmoxarifadoId", "MaterialId" },
@@ -311,8 +311,7 @@ namespace SGEP.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -338,11 +337,10 @@ namespace SGEP.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Material_AlmoxarifadosxMateriaisAlmoxarifadoId_AlmoxarifadosxMateriaisMaterialId",
+                name: "IX_Material_AlmoxarifadosxMateriaisAlmoxarifadoId_Almoxarifados~",
                 table: "Material",
                 columns: new[] { "AlmoxarifadosxMateriaisAlmoxarifadoId", "AlmoxarifadosxMateriaisMaterialId" });
 

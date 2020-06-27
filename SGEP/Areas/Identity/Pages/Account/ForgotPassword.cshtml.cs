@@ -43,15 +43,17 @@ namespace SGEP.Areas.Identity.Pages.Account
                     return RedirectToPage("./ForgotPasswordConfirmation");
                 
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var email = Input.Email;
+
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { code },
+                    values: new { code, email },
                     protocol: Request.Scheme);
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     "SGEP - Recuperação de senha",
-                    $"Por favor, altere sua senha <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicando aqui</a>.");
+                    $"<p>Prezado usuário(a),</p><p>por favor, altere sua senha <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicando aqui</a>.</p>");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
