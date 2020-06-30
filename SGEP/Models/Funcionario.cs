@@ -18,7 +18,7 @@ namespace SGEP.Models
         [Display(Name = "Matrícula")]
         [RegularExpression("[0-9]{4}", ErrorMessage = "A matrícula deve possuir 4 números")]
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
-        [Remote(action: "VerificarMatricula", controller: "Funcionario", AdditionalFields = "Id")]
+        [Remote(action: "VerificarMatricula", controller: "Funcionario", AdditionalFields = "Id,Ativo")]
         public string Matricula { get; set; }
     }
 }

@@ -42,6 +42,9 @@ namespace SGEP.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Cargo,Matricula")] Funcionario funcionario)
         {
+            if (_context.Funcionario.Where(f => f.Ativo && f.Matricula == funcionario.Matricula).Count() > 0)
+                return BadRequest("Já existe um funcionário ativo com essa matrícula.");
+
             if (ModelState.IsValid)
             {
                 _context.Add(funcionario);
@@ -102,10 +105,12 @@ namespace SGEP.Controllers
 
         [AllowAnonymous]
         [AcceptVerbs("Get", "Post")]
-        public IActionResult VerificarMatricula(string matricula, int? id)
+        public IActionResult VerificarMatricula(string matricula, int? id, bool Ativo)
         {
+            if (!Ativo)
+                return Json(true);
             if (_context.Funcionario.Where(f => f.Id != id && f.Matricula == matricula).Count() > 0)
-                return Json("Já existe um funcionário cadastrado com essa matrícula");
+                return Json("Já existe um funcionário ativo com essa matrícula");
             return Json(true);
         }
     }
