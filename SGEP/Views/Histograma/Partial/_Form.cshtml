@@ -4,16 +4,16 @@
     <i class="fas fa-clock"></i> Escolher período
 </button>
 @await Html.PartialAsync("Partial/Index/_LoadingInfo")
-<div class="modal fade" 
+<div class="modal fade cleanable" 
      id="form-modal" 
      tabindex="-1" 
      role="dialog" 
      aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content squareborder">
-      <div class="modal-header">
+      <div class="modal-header header-dark squareborder">
         <h5 class="modal-title">Escolher Período</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" style="color:white;" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -54,7 +54,7 @@
                 <span asp-validation-for="Tipo" class="text-danger"></span>
             </div>
             <div class="form-group">
-              <input type="submit" id="graph-update" class="btn btn-primary squareborder" value="Atualizar" />
+              <input type="submit" id="graph-update" class="btn btn-primary squareborder" value="Gerar" />
             </div>
         </form>
       </div>

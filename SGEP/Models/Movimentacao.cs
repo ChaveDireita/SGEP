@@ -22,5 +22,6 @@ namespace SGEP.Models
         public string Tipo { get; set; }
         [DataType(DataType.Currency)]
         public decimal Preco { get; set; }
+        // public string Almoxarife { get; set; }
     }
 }

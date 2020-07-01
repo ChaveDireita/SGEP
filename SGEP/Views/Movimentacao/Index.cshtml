@@ -231,7 +231,7 @@
                         .then(res => res.json())
                         .then(mov => {
                             var nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Preço'];
-                            var content = [mov.id, mov.data, mov.quantidade, mov.tipo, mov.preco];
+                            var content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.preco];
                             switch (mov.tipo) {
                                 //MODAL DE SAÍDA
                                 case "saída":

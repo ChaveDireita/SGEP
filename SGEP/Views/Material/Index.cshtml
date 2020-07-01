@@ -249,6 +249,7 @@
                         const editUnidade = get.id('edit-unidade');
                         editUnidade.disabled = false;
                         editUnidade.onclick = () => {
+                            console.log(u);
                             get.id('unieditnome').value = u.nome;
                             get.id('unieditabv').value = u.abreviacao;
                             get.id('unieditid').value = u.id;

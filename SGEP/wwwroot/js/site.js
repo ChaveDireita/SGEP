@@ -218,7 +218,7 @@ const loading = {
     }
 }
 
-$('.modal').on('hidden.bs.modal', () => {
+$('.modal.cleanable').on('hidden.bs.modal', () => {
     const $messages = $('.field-validation-error');
     $messages.html('');
 

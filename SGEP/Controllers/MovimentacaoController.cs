@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SGEP.Data;
 using SGEP.Models;
@@ -14,7 +15,11 @@ namespace SGEP.Controllers
     public class MovimentacaoController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public MovimentacaoController(ApplicationDbContext context) => _context = context;
+        private readonly UserManager<SGEPUser> _userManager;
+        public MovimentacaoController(ApplicationDbContext context) 
+        {
+            _context = context;
+        }
         public IActionResult Index() => View();
         public JsonResult List(DateTime? data, string origem, string destino, string material, string tipo, int? itensPorPagina, int? pagina)
         {
