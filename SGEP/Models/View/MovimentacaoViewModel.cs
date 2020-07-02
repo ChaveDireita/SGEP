@@ -19,5 +19,7 @@ namespace SGEP.Models.View
         public string Tipo { get; set; }
         [DataType(DataType.Currency)]
         public string Preco { get; set; }
+        public string Solicitante { get; set; }
+        public SGEPUser Almoxarife { get; set; }
     }
 }

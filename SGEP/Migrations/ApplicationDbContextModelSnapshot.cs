@@ -276,6 +276,8 @@ namespace SGEP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AlmoxarifeId");
+
                     b.Property<DateTime>("Data");
 
                     b.Property<int>("DestinoId");
@@ -288,9 +290,15 @@ namespace SGEP.Migrations
 
                     b.Property<int>("Quantidade");
 
+                    b.Property<int>("SolicitanteId");
+
                     b.Property<string>("Tipo");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AlmoxarifeId");
+
+                    b.HasIndex("SolicitanteId");
 
                     b.ToTable("Movimentacao");
                 });
@@ -419,6 +427,18 @@ namespace SGEP.Migrations
                     b.HasOne("SGEP.Models.AlmoxarifadosxMateriais")
                         .WithMany("Material")
                         .HasForeignKey("AlmoxarifadosxMateriaisAlmoxarifadoId", "AlmoxarifadosxMateriaisMaterialId");
+                });
+
+            modelBuilder.Entity("SGEP.Models.Movimentacao", b =>
+                {
+                    b.HasOne("SGEP.Models.SGEPUser", "Almoxarife")
+                        .WithMany()
+                        .HasForeignKey("AlmoxarifeId");
+
+                    b.HasOne("SGEP.Models.Funcionario", "Solicitante")
+                        .WithMany()
+                        .HasForeignKey("SolicitanteId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SGEP.Models.Projeto", b =>

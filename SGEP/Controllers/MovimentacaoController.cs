@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -16,9 +17,10 @@ namespace SGEP.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<SGEPUser> _userManager;
-        public MovimentacaoController(ApplicationDbContext context) 
+        public MovimentacaoController(ApplicationDbContext context, UserManager<SGEPUser> userManager) 
         {
             _context = context;
+            _userManager = userManager;
         }
         public IActionResult Index() => View();
         public JsonResult List(DateTime? data, string origem, string destino, string material, string tipo, int? itensPorPagina, int? pagina)
@@ -57,27 +59,6 @@ namespace SGEP.Controllers
                 });
             return Json(new {size = _context.Movimentacao.Count(), entities = result2});
         }
-        [Authorize(Roles = "Almoxarife")]
-        [HttpPost]
-        public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo")] Movimentacao movimentacao)
-        {
-            Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
-            if (movimentacao.Quantidade <= 0)
-                return BadRequest("Quantidade não pode ser menor que 0");
-            if (!movimentacao.Tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))
-                return BadRequest("O tipo de ser \"entrada\"");
-            if (destino == null)
-                return BadRequest("O destino não existe");
-            _context.Add(movimentacao);
-            var almoxarifadoMaterial = destino.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
-            if (almoxarifadoMaterial == null)
-                destino.AlmoxarifadosxMateriais.Add(new AlmoxarifadosxMateriais{AlmoxarifadoId = destino.Id, MaterialId = movimentacao.MaterialId, Quantidade = movimentacao.Quantidade});
-            else
-                almoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
-            _context.Update(destino);
-            await _context.SaveChangesAsync();
-            return Ok("Movimentação adicionada com sucesso.");
-        }
         public JsonResult PegarUnidade(int id) => Json(_context.Unidade
             .FirstOrDefault(u => u.Id == _context.Material.FirstOrDefault(m => m.Id == id).IdUnidade));
         public JsonResult Get(int id)
@@ -97,11 +78,36 @@ namespace SGEP.Controllers
             else movvm.Quantidade = movvm.Quantidade = mov.Quantidade + " " + un.Abreviacao;
             movvm.DestinoId = mov.DestinoId;
             movvm.Tipo = mov.Tipo;
+            movvm.Almoxarife = mov.Almoxarife;
+            movvm.Solicitante = mov.Solicitante.Nome;
             return Json(movvm);
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
-        public async Task<IActionResult> CreateSaida([Bind("Data", "MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo")] Movimentacao movimentacao)
+        public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo", "SolicitanteId")] Movimentacao movimentacao)
+        {
+            Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
+            if (movimentacao.Quantidade <= 0)
+                return BadRequest("Quantidade não pode ser menor que 0");
+            if (!movimentacao.Tipo.Equals("entrada", StringComparison.InvariantCultureIgnoreCase))
+                return BadRequest("O tipo de ser \"entrada\"");
+            if (destino == null)
+                return BadRequest("O destino não existe");
+            movimentacao.Almoxarife = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            movimentacao.Solicitante = await _context.Funcionario.FindAsync(movimentacao.SolicitanteId);
+            _context.Add(movimentacao);
+            var almoxarifadoMaterial = destino.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
+            if (almoxarifadoMaterial == null)
+                destino.AlmoxarifadosxMateriais.Add(new AlmoxarifadosxMateriais{AlmoxarifadoId = destino.Id, MaterialId = movimentacao.MaterialId, Quantidade = movimentacao.Quantidade});
+            else
+                almoxarifadoMaterial.Quantidade += movimentacao.Quantidade;
+            _context.Update(destino);
+            await _context.SaveChangesAsync();
+            return Ok("Movimentação adicionada com sucesso.");
+        }
+        [Authorize(Roles = "Almoxarife")]
+        [HttpPost]
+        public async Task<IActionResult> CreateSaida([Bind("Data", "MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo", "SolicitanteId")] Movimentacao movimentacao)
         {
             Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
             Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
@@ -113,6 +119,8 @@ namespace SGEP.Controllers
                 return BadRequest("O destino não existe");
             if (origem == null)
                 return BadRequest("A origem não existe");
+            movimentacao.Almoxarife = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            movimentacao.Solicitante = await _context.Funcionario.FindAsync(movimentacao.SolicitanteId);
             _context.Add(movimentacao);
             var destinoAlmoxarifadoMaterial = destino.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
             var origemAlmoxarifadoMaterial = origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
@@ -139,6 +147,7 @@ namespace SGEP.Controllers
                 return BadRequest("O tipo de ser \"consumo\"");
             if (origem == null)
                 return BadRequest("A origem não existe");
+            movimentacao.Almoxarife = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             _context.Add(movimentacao);
             var almoxarifadoMaterial = origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId);
             almoxarifadoMaterial.Quantidade -= movimentacao.Quantidade;

@@ -1,4 +1,5 @@
 @model SGEP.Models.Movimentacao
+@inject SGEP.Data.ApplicationDbContext context
 <!--MODAL ENTRADA-->
 <div class="modal fade cleanable" id="modal-create-in" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -48,6 +49,18 @@
                         <label id="Quantidade-in-label" class="control-label">Quantidade</label>
                         <input asp-for="Quantidade" id="Quantidade-in" class="form-control squareborder" type="number" min="0" />
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Solicitante</label>
+                        <select asp-for="SolicitanteId" id="Solicitante-in" class="form-control squareborder">
+                            @foreach (Funcionario f in context.Funcionario.Where(f => f.Ativo))
+                            {
+                                <option value="@f.Id">
+                                    @f.Nome
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="SolicitanteId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Salvar" class="btn btn-success squareborder" />
@@ -200,6 +213,18 @@
                                }
                                "/>
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Solicitante</label>
+                        <select asp-for="SolicitanteId" id="Solicitante-out" class="form-control squareborder">
+                            @foreach (Funcionario f in context.Funcionario.Where(f => f.Ativo))
+                            {
+                                <option value="@f.Id">
+                                    @f.Nome
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="SolicitanteId" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Salvar" class="btn btn-success squareborder" />
