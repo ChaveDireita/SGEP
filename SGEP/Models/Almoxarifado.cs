@@ -13,5 +13,6 @@ namespace SGEP.Models
         public bool Ativo { get; set; } = true;
         public int AlmoxarifadosxMateriaisId {get; set; }
         public virtual List<AlmoxarifadosxMateriais> AlmoxarifadosxMateriais { get; set; }
+        public int? IdProjeto { get; set; }  
     }
 }

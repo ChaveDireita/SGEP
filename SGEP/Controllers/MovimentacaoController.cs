@@ -79,7 +79,7 @@ namespace SGEP.Controllers
             movvm.DestinoId = mov.DestinoId;
             movvm.Tipo = mov.Tipo;
             movvm.Almoxarife = mov.Almoxarife;
-            movvm.Solicitante = mov.Solicitante.Nome;
+            movvm.Solicitante = mov.Solicitante != null ? mov.Solicitante.Nome : "N/A";
             return Json(movvm);
         }
         [Authorize(Roles = "Almoxarife")]

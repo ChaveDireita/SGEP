@@ -37,7 +37,7 @@ namespace SGEP.Controllers
                     movs = movs.Where(m => m.OrigemId == almoxarifado);
             }
             
-            Dictionary<string, int> data = new Dictionary<string, int> ();
+            Dictionary<string, decimal> data = new Dictionary<string, decimal> ();
             IEnumerable<MonthPeriod> months = mpFim - mpInicio;
             foreach (var month in months)
                 data[month] = movs.Where(m => month == ((MonthPeriod) m.Data))

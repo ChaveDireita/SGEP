@@ -54,7 +54,7 @@
         const checkDel = document.getElementById('checkDel');
         const controller = 'Almoxarifado';
 
-        list({});
+        list(_search());
 
         function list(searchParams)
         {
@@ -89,7 +89,7 @@
                 $('#details').on('click', () => 
                 {
                 });
-                list({})
+                list(_search())
             })
         }
         

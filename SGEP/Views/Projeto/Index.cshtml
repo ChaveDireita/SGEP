@@ -64,7 +64,7 @@
         const lista = document.getElementById('lista');
         const controller = 'Projeto';
 
-        list({});
+        list(_search());
 
         function finalize(id) {
             loading.show();
@@ -108,32 +108,32 @@
             selectRow(id, () => {
                 loading.show();
                 fetch('/' + controller + '/Get/' + id)
-                    .then(res => res.json())
-                    .then(proj => {
-                        const idField = get.id('Id-edit');
-                        const nomeField = get.id('Nome-edit');
-                        const inicioField = get.id('Inicio-edit');
-                        const fimField = get.id('Fim-edit');
-                        const almoxarifado = get.id('Almoxarifado-edit');
-                        const fimGroup = get.id('Fim-edit-group');
+                .then(res => res.json())
+                .then(proj => {
+                    const idField = get.id('Id-edit');
+                    const nomeField = get.id('Nome-edit');
+                    const inicioField = get.id('Inicio-edit');
+                    const fimField = get.id('Fim-edit');
+                    const almoxarifado = get.id('Almoxarifado-edit');
+                    const fimGroup = get.id('Fim-edit-group');
 
-                        idField.value = proj.id;
-                        nomeField.value = proj.nome;
-                        inicioField.value = proj.inicio.slice(0, 10);
-                        almoxarifado.value = proj.almoxarifadoId;
-                        if (proj.fim)
-                        {
-                            fimGroup.hidden = false;
-                            fimField.value = proj.fim.slice(0, 10);
-                            fimField.required = true;
-                        } else {
-                            fimGroup.hidden = true;
-                            fimField.value = null;
-                            fimField.required = false;
-                        }
-                        $('#modal-edit').modal('show');
-                        loading.hide();
-                    });
+                    idField.value = proj.id;
+                    nomeField.value = proj.nome;
+                    inicioField.value = proj.inicio.slice(0, 10);
+                    almoxarifado.value = proj.almoxarifadoId;
+                    if (proj.fim)
+                    {
+                        fimGroup.hidden = false;
+                        fimField.value = proj.fim.slice(0, 10);
+                        fimField.required = true;
+                    } else {
+                        fimGroup.hidden = true;
+                        fimField.value = null;
+                        fimField.required = false;
+                    }
+                    $('#modal-edit').modal('show');
+                    loading.hide();
+                });
             }, () => showdetailsmodal(id));
         }
 
@@ -143,7 +143,9 @@
             fetch('/' + controller + '/ProjetoSelecionado/?id=' + id).then((res) => res.json()).then(proj => {
                 var detailstable = document.getElementById('detailstable');
                 var nomes = ['ID', 'Nome', 'Início', 'Fim'];
-                
+                console.log(proj.fim);
+                get.id('abriralocacao').hidden = proj.fim != '--';
+
                 if (!proj.fim)
                     proj.fim = '--';
                 var content = [proj.id, proj.nome, proj.inicio, proj.fim];
@@ -172,30 +174,42 @@
         var alocadostab = document.getElementById('tabelaalocados');
         var nalocadostab = document.getElementById('tabelanaoalocados');
         function gerartabelas(id) {
-            console.log(id);
-            fetch('/' + controller + '/FuncionarioNomes').then((res) => res.json()).then(nomes => {
-                fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
-                    alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id, ['selectable']);
-                });
-                fetch('/' + controller + '/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
-                    nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id, ['selectable']);
-                });
+            const nomes = ['Matrícula', 'Nome', 'Cargo'];
+            fetch('/' + controller + '/FuncionariosAlocados/?id=' + id).then((res) => res.json()).then(func => {
+                alocadostab.innerHTML = gerarlist(nomes, func, 'desalocar', id, ['selectable', 'blockable']);
+            });
+            fetch('/' + controller + '/FuncionariosNaoAlocados/?id=' + id).then((res) => res.json()).then(func => {
+                nalocadostab.innerHTML = gerarlist(nomes, func, 'alocar', id, ['selectable', 'blockable']);
             });
         }
         function alocar(funid, projid) {
+            if ($('#aloc-' + funid).hasClass('blocked'))
+                return;
+            $('.blockable').addClass('blocked');
+            const alocLoadInfo = get.id('aloc-load-info');
+            alocLoadInfo.innerHTML = `<i class="fas fa-sync reloading" style="font-size: medium;"></i> Carregando...`;
             const data = new FormData();
             data.append('IdFuncionario', funid);
             data.append('IdProjeto', projid);
             fetch('/' + controller + '/AlocarFuncionario', { method: 'POST', body: data }).then(retorno => {
                 gerartabelas(projid);
+                atualizaralocacao(projid);
+                $('.blockable').removeClass('blocked');
+                alocLoadInfo.innerHTML = '';
             });
-            atualizaralocacao(projid);
         }
         function desalocar(funid, projid) {
+            if ($('#aloc-' + funid).hasClass('blocked'))
+                return;
+            $('.blockable').addClass('blocked');
+            const alocLoadInfo = get.id('aloc-load-info');
+            alocLoadInfo.innerHTML = `<i class="fas fa-sync reloading" style="font-size: medium;"></i> Carregando...`;
             fetch('/' + controller + '/DesalocarProjeto?idfunc=' + funid + '&idproj=' + projid, { method: 'POST' }).then(retorno => {
                 gerartabelas(projid);
+                atualizaralocacao(projid);
+                $('.blockable').removeClass('blocked');
+                alocLoadInfo.innerHTML = '';
             });
-            atualizaralocacao(projid);
         }
         function alocardismiss() {
             $('#alocacaomodal').modal('toggle');
@@ -214,9 +228,11 @@
                 lock.end = false;
                 loading.show();
                 var color = 'success';
+                const formData = new FormData(document.querySelector('#form-end'));
+                $('#modal-end').modal('hide');
                 fetch('/' + controller + '/Finalizar', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-end'))
+                    body: formData
                 })
                 .then(res => {
                     color = res.ok ? 'success' : 'danger';
@@ -224,9 +240,8 @@
                 })
                 .then(text => 
                 {
-                    $('#modal-end').modal('hide');
                     get.id ('form-end').reset();
-                    list({});
+                    list(_search());
                     showAlert(text, color);
                     loading.hide();
                     lock.end = true;

@@ -7,12 +7,13 @@
         e.preventDefault()
         if ($(this).valid() && lock.create) {
             lock.create = false;
-            console.log('a');
             loading.show();
             var color = 'success';
+            const formData = new FormData(document.querySelector('#form-create'));
+            $('#modal-create').modal('hide');
             fetch('/' + controller + '/Create', {
                 method: 'post',
-                body: new FormData(document.querySelector('#form-create'))
+                body: formData
             })
             .then(res => {
                 color = res.ok ? 'success' : 'danger';
@@ -23,9 +24,9 @@
                 $('#modal-create').modal('hide');
                 list(_search());
                 showAlert(text, color);
+                lock.create = true;
                 loading.hide();
             });
-            lock.create = true;
         }
     });
 
@@ -33,12 +34,13 @@
         e.preventDefault()
         if ($(this).valid() && lock.edit) {
             lock.edit = false;
-            console.log('s');
             loading.show();
             var color = 'success';
+            const formData = new FormData(document.querySelector('#form-edit'));
+            $('#modal-edit').modal('hide');
             fetch('/' + controller + '/Edit', {
                 method: 'post',
-                body: new FormData(document.querySelector('#form-edit'))
+                body: formData
             })
             .then(res => {
                 color = res.ok ? 'success' : 'danger';
@@ -46,12 +48,11 @@
             })
             .then(text => 
             {
-                $('#modal-edit').modal('hide');
                 list(_search());
                 showAlert(text, color);
                 lock.edit = true;
+                loading.hide();
             });
-            loading.hide();
         }
     });
 </script>

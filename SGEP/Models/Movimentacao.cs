@@ -14,7 +14,7 @@ namespace SGEP.Models
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public int MaterialId { get; set; }
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
-        public int Quantidade { get; set; }
+        public decimal Quantidade { get; set; }
         [Display(Name = "Origem")]
         public int OrigemId { get; set; }
         [Display(Name = "Destino")]
@@ -23,7 +23,7 @@ namespace SGEP.Models
         [DataType(DataType.Currency)]
         public decimal Preco { get; set; }
         public virtual SGEPUser Almoxarife { get; set; }
-        public int SolicitanteId { get; set; }
+        public int? SolicitanteId { get; set; }
         public virtual Funcionario Solicitante { get; set; }
     }
 }

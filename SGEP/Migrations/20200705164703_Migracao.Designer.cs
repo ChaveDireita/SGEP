@@ -10,7 +10,7 @@ using SGEP.Data;
 namespace SGEP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200702155546_Migracao")]
+    [Migration("20200705164703_Migracao")]
     partial class Migracao
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -197,6 +197,8 @@ namespace SGEP.Migrations
 
                     b.Property<bool>("Ativo");
 
+                    b.Property<int?>("IdProjeto");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -213,7 +215,7 @@ namespace SGEP.Migrations
 
                     b.Property<int>("MaterialId");
 
-                    b.Property<int>("Quantidade");
+                    b.Property<decimal>("Quantidade");
 
                     b.HasKey("AlmoxarifadoId", "MaterialId");
 
@@ -290,9 +292,9 @@ namespace SGEP.Migrations
 
                     b.Property<decimal>("Preco");
 
-                    b.Property<int>("Quantidade");
+                    b.Property<decimal>("Quantidade");
 
-                    b.Property<int>("SolicitanteId");
+                    b.Property<int?>("SolicitanteId");
 
                     b.Property<string>("Tipo");
 
@@ -439,8 +441,7 @@ namespace SGEP.Migrations
 
                     b.HasOne("SGEP.Models.Funcionario", "Solicitante")
                         .WithMany()
-                        .HasForeignKey("SolicitanteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SolicitanteId");
                 });
 
             modelBuilder.Entity("SGEP.Models.Projeto", b =>

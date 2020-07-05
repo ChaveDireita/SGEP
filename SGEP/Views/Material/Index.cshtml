@@ -68,15 +68,14 @@
 
 <partial name="_Unidade" />
 <partial name="_Details" />
-@* <button type="button" class="btn btn-primary squareborder" onClick="listarunidades()" id="adduni">Gerenciar Unidades</button> *@
-@section Scripts
-    {
+
+@section Scripts {
     <script>
 
         const lista = document.getElementById('lista');
         const controller = 'Material';
 
-        list({});
+        list(_search());
 
         function list(searchParams) {
             refreshTable(controller, searchParams, ['showid', 'descricao', 'precoUnidade'], ({ size, entities }) => 
@@ -90,37 +89,37 @@
                 () => {
                     loading.show();
                     fetch('/' + controller + '/Get/' + id)
-                        .then(res => res.json())
-                        .then(mat => {
-                            const idField = get.id('Id-edit');
-                            const descricaoField = get.id('Descricao-edit');
-                            const precoField = get.id('Preco-edit');
-                            const unidadeField = get.id('Unidade-edit');
-                            const categoriaField = get.id('Categoria-edit');
-                            const showidField = get.id('Showid-edit');
+                    .then(res => res.json())
+                    .then(mat => {
+                        const idField = get.id('Id-edit');
+                        const descricaoField = get.id('Descricao-edit');
+                        const precoField = get.id('Preco-edit');
+                        const unidadeField = get.id('Unidade-edit');
+                        const categoriaField = get.id('Categoria-edit');
+                        const showidField = get.id('Showid-edit');
 
-                            idField.value = mat.id;
-                            descricaoField.value = mat.descricao;
-                            precoField.value = mat.preco;
-                            unidadeField.innerHTML = '<option value="" disabled selected>Carregando dados</option>';
-                            showidField.value = mat.showid;
-                            categoriaField.value = mat.categoria;
-                            $('#modal-edit').modal('show');
-                            fetch('/' + controller + '/Unidades')
-                            .then(res => res.json())
-                            .then(unidades => {
-                                let options = '';
-                                for (const u of unidades)
-                                {
-                                    if (u.id == mat.idUnidade)
-                                        options += `<option value="${u.id}" selected>${u.nome}</option>`;
-                                    else
-                                        options += `<option value="${u.id}">${u.nome}</option>`;
-                                }
-                                unidadeField.innerHTML = options;
-                                loading.hide();
-                            });
+                        idField.value = mat.id;
+                        descricaoField.value = mat.descricao;
+                        precoField.value = mat.preco;
+                        unidadeField.innerHTML = '<option value="" disabled selected>Carregando dados</option>';
+                        showidField.value = mat.showid;
+                        categoriaField.value = mat.categoria;
+                        $('#modal-edit').modal('show');
+                        fetch('/' + controller + '/Unidades')
+                        .then(res => res.json())
+                        .then(unidades => {
+                            let options = '';
+                            for (const u of unidades)
+                            {
+                                if (u.id == mat.idUnidade)
+                                    options += `<option value="${u.id}" selected>${u.nome}</option>`;
+                                else
+                                    options += `<option value="${u.id}">${u.nome}</option>`;
+                            }
+                            unidadeField.innerHTML = options;
+                            loading.hide();
                         });
+                    });
                 },
                 () => {
                     loading.show();
@@ -148,13 +147,14 @@
             e.preventDefault()
             if ($(this).valid()) {
                 loading.show();
+                const formData = new FormData(document.querySelector('#form-create'));
+                $('#modal-create').modal('hide');
                 fetch('/' + controller + '/Create', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-create'))
+                    body: formData
                 }).then(function (response) {
-                    $('#modal-create').modal('toggle');
                     get.id('form-create').reset();
-                    list({});
+                    list(_search());
                     loading.hide();
                 });
             }
@@ -163,17 +163,18 @@
             e.preventDefault()
             if ($(this).valid()) {
                 loading.show();
+                const formData = new FormData(document.querySelector('#form-edit'));
+                $('#modal-edit').modal('hide');
                 fetch('/' + controller + '/Edit', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-edit'))
+                    body: formData
                 })
-                    .then(res => res.text())
-                    .then(_ => {
-                        $('#modal-edit').modal('hide');
-                        get.id('form-create-unidade').reset();
-                        list({});
-                        loading.hide();
-                    });
+                .then(res => res.text())
+                .then(_ => {
+                    get.id('form-create-unidade').reset();
+                    list(_search());
+                    loading.hide();
+                });
             }
         });
 
@@ -184,12 +185,13 @@
             e.preventDefault()
             if ($(this).valid()) {
                 loading.show();
+                const formData = new FormData(document.querySelector('#form-create-unidade'));
+                $('#unidademanagementmodal').modal('hide');
+                $('#unidadesmodal').modal('show');
                 fetch('/Material/AdicionarUnidade', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-create-unidade'))
+                    body: formData
                 }).then(function (response) {
-                    $('#unidademanagementmodal').modal('hide');
-                    $('#unidadesmodal').modal('show');
                     get.id('form-create-unidade').reset();
                     listarunidades();
                     loading.hide();
@@ -200,14 +202,15 @@
             e.preventDefault()
             if ($(this).valid()) {
                 loading.show();
+                const formData = new FormData(document.querySelector('#form-edit-unidade'));
+                $('#unidadeeditmodal').modal('hide');
+                $('#unidadesmodal').modal('show');
                 fetch('/Material/EditarUnidade', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-edit-unidade'))
+                    body: formData
                 })
                 .then(res => res.text())
                 .then(_ => {
-                    $('#unidadeeditmodal').modal('hide');
-                    $('#unidadesmodal').modal('show');
                     get.id('form-edit-unidade').reset();
                     listarunidades();
                     loading.hide();
@@ -279,7 +282,7 @@
             data.append('Id', id);
             fetch('/Material/EditarUnidade', { method: 'POST', body: data }).then(retorno => {
                 listarunidades();
-                list({});
+                list(_search());
             });
             $('#unidadeeditmodal').modal('toggle');
         }

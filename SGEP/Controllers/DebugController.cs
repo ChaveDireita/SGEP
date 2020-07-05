@@ -90,6 +90,9 @@ namespace SGEP.Controllers
             }
             return Json(list);
         }
+
+        public JsonResult Almoxarifados() => Json(_context.Almoxarifado);
+
         public IActionResult Page()
         {
             return View();

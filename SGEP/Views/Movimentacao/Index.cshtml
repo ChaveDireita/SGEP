@@ -22,6 +22,9 @@
                 data-target="#modal-create-in" 
                 onclick="
                 const selectDest = get.id('Destino-in');
+                const selectSolic = get.id('Solicitante-in');
+                selectSolic.innerHTML = '<option selected disabled>Selecione o destino</option>';
+                
                 selectDest.innerHTML = '<option>Carregando dados...</option>';
                 selectDest.disabled = true;
                 fetch('/Almoxarifado/All')
@@ -36,6 +39,7 @@
                             const opt = document.createElement('option');
                             opt.value = alm.id;
                             opt.innerText = alm.nome;
+                            opt.setAttribute('data-val-id-proj', alm.idProjeto)
                             selectDest.appendChild(opt);
                         }
                     }
@@ -69,6 +73,7 @@
                 const selectOrig = get.id('Origem-out');
                 const selectDest = get.id('Destino-out');
                 const selectMat = get.id('Material-out');
+                
                 selectOrig.innerHTML = '<option>Carregando dados...</option>';
                 selectOrig.disabled = true;
 
@@ -226,89 +231,89 @@
             selectRow(id, () => {
                 //Código do modal
             },
-                () => {
-                    fetch('/' + controller + '/Get/' + id)
-                    .then(res => res.json())
-                    .then(mov => {
-                        var nomes = null;
-                        var content = null;
-                        switch (mov.tipo) {
-                            //MODAL DE SAÍDA
-                            case "saída":
-                                nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Solicitante', 'Cadastrado por'];
-                                content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.solicitante.nome, mov.almoxarife.nome];
-                                var detailstable = document.getElementById('detailstablesa');
-                                detailstable.innerHTML = gerardetailslist(nomes, content);
-                                fetch('/Material/Get/' + mov.materialId)
-                                    .then(res => res.json())
-                                    .then(mat => {
-                                        var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
-                                        var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
-                                        document.getElementById('satablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
-                                    });
-                                //Projeto de destino
-                                fetch('/Projeto/ProjetoSelecionado/?id=' + mov.destinoId).then((res) => res.json()).then(proj => {
-                                    var projdetailstable = document.getElementById('detableproj');
-                                    var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
-                                    var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
-                                    projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+            () => {
+                fetch('/' + controller + '/Get/' + id)
+                .then(res => res.json())
+                .then(mov => {
+                    var nomes = null;
+                    var content = null;
+                    switch (mov.tipo) {
+                        //MODAL DE SAÍDA
+                        case "saída":
+                            nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Solicitante', 'Cadastrado por'];
+                            content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.solicitante, mov.almoxarife.nome];
+                            var detailstable = document.getElementById('detailstablesa');
+                            detailstable.innerHTML = gerardetailslist(nomes, content);
+                            fetch('/Material/Get/' + mov.materialId)
+                                .then(res => res.json())
+                                .then(mat => {
+                                    var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                                    var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                                    document.getElementById('satablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
                                 });
-                                //Projeto de origem
-                                fetch('/Projeto/ProjetoSelecionado/?id=' + mov.origemId).then((res) => res.json()).then(proj => {
-                                    var projdetailstable = document.getElementById('ortableproj');
-                                    var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
-                                    var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
-                                    projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
-                                });
-                                $('#detailsmodalsaida').modal('toggle');
-                                break;
+                            //Projeto de destino
+                            fetch('/Almoxarifado/Get/' + mov.destinoId).then((res) => res.json()).then(proj => {
+                                var projdetailstable = document.getElementById('detableproj');
+                                var projnomes = ['ID', 'Nome'];
+                                var projcontent = [proj.id, proj.nome];
+                                projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                            });
+                            //Projeto de origem
+                            fetch('/Almoxarifado/Get/' + mov.origemId).then((res) => res.json()).then(proj => {
+                                var projdetailstable = document.getElementById('ortableproj');
+                                var projnomes = ['ID', 'Nome'];
+                                var projcontent = [proj.id, proj.nome];
+                                projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                            });
+                            $('#detailsmodalsaida').modal('toggle');
+                            break;
 
-                            //MODAL DE ENTRADA
-                            case "entrada":
-                                nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Preço', 'Solicitante', 'Cadastrado por'];
-                                content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.preco, mov.solicitante, mov.almoxarife.nome];
-                                var detailstable = document.getElementById('detailstableen');
-                                detailstable.innerHTML = gerardetailslist(nomes, content);
-                                fetch('/Material/Get/' + mov.materialId)
-                                    .then(res => res.json())
-                                    .then(mat => {
-                                        var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
-                                        var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
-                                        document.getElementById('tablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
-                                    });
-                                fetch('/Projeto/ProjetoSelecionado/?id=' + mov.origemId).then((res) => res.json()).then(proj => {
-                                    var projdetailstable = document.getElementById('tableproj');
-                                    var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
-                                    var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
-                                    projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                        //MODAL DE ENTRADA
+                        case "entrada":
+                            nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Preço', 'Solicitante', 'Cadastrado por'];
+                            content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.preco, mov.solicitante, mov.almoxarife.nome];
+                            var detailstable = document.getElementById('detailstableen');
+                            detailstable.innerHTML = gerardetailslist(nomes, content);
+                            fetch('/Material/Get/' + mov.materialId)
+                                .then(res => res.json())
+                                .then(mat => {
+                                    var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                                    var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                                    document.getElementById('tablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
                                 });
-                                $('#detailsmodalentrada').modal('toggle');
-                                break;
-                            //MODAL DE CONSUMO
-                            case "consumo":
-                                nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Cadastrado por'];
-                                content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.almoxarife.nome];
-                                var detailstable = document.getElementById('detailstableco');
-                                detailstable.innerHTML = gerardetailslist(nomes, content);
-                                fetch('/Material/Get/' + mov.materialId)
-                                    .then(res => res.json())
-                                    .then(mat => {
-                                        var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
-                                        var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
-                                        document.getElementById('cotablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
-                                    });
-                                fetch('/Projeto/ProjetoSelecionado/?id=' + mov.origemId).then((res) => res.json()).then(proj => {
-                                    console.log('aaaa');
-                                    var projdetailstable = document.getElementById('cotableproj');
-                                    var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
-                                    var projcontent = [proj.id, proj.nome, proj.inicio, proj.fim];
-                                    projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                            fetch('/Almoxarifado/Get/' + mov.destinoId).then((res) => res.json()).then(proj => {
+                                var projdetailstable = document.getElementById('tableproj');
+                                var projnomes = ['ID', 'Nome'];
+                                var projcontent = [proj.id, proj.nome];
+                                projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                            });
+                            $('#detailsmodalentrada').modal('toggle');
+                            break;
+                        //MODAL DE CONSUMO
+                        case "consumo":
+                            nomes = ['ID', 'Data', 'Quantidade', 'Tipo', 'Cadastrado por'];
+                            content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.almoxarife.nome];
+                            var detailstable = document.getElementById('detailstableco');
+                            detailstable.innerHTML = gerardetailslist(nomes, content);
+                            fetch('/Material/Get/' + mov.materialId)
+                                .then(res => res.json())
+                                .then(mat => {
+                                    var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
+                                    var matcontent = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, mat.unidade];
+                                    document.getElementById('cotablemat').innerHTML = gerarlistitemunico(matnomes, matcontent);
                                 });
-                                $('#detailsmodalconsumo').modal('toggle');
-                                break;
-                        }
-                    });
+                            fetch('/Projeto/GetFromAlmoxarifado/' + mov.origemId).then((res) => res.json()).then(proj => {
+                                console.log('aaaa');
+                                var projdetailstable = document.getElementById('cotableproj');
+                                var projnomes = ['ID', 'Nome', 'Início', 'Fim'];
+                                var projcontent = [proj.id, proj.nome, new Date(proj.inicio).toLocaleString().slice(0, 10), proj.fim ? new Date(proj.fim).toLocaleString().slice(0, 10) : '--'];
+                                projdetailstable.innerHTML = gerarlistitemunico(projnomes, projcontent);
+                            });
+                            $('#detailsmodalconsumo').modal('toggle');
+                            break;
+                    }
                 });
+            });
         }
 
         $('#modal-create-out').on('hidden.bs.modal', () => {
@@ -335,9 +340,11 @@
             if ($(this).valid() && lock.in) {
                 lock.in = false;
                 var color = 'success';
+                const formData = new FormData(document.querySelector('#form-create-in'));
+                $('#modal-create-in').modal('hide');
                 fetch('/' + controller + '/CreateEntrada', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-create-in'))
+                    body: formData
                 })
                 .then(res => {
                     color = res.ok ? 'success' : 'danger';
@@ -345,9 +352,8 @@
                 })
                 .then(text => 
                 {
-                    $('#modal-create-in').modal('hide');
                     get.id ('form-create-in').reset();
-                    list({});
+                    list(_search());
                     showAlert(text, color);
                     lock.in = true;
                 });
@@ -358,9 +364,11 @@
             if ($(this).valid() && lock.out) {
                 lock.out = false;
                 var color = 'success';
+                const formData = new FormData(document.querySelector('#form-create-out'));
+                $('#modal-create-out').modal('hide');
                 fetch('/' + controller + '/CreateSaida', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-create-out'))
+                    body: formData
                 })
                 .then(res => {
                     color = res.ok ? 'success' : 'danger';
@@ -368,9 +376,8 @@
                 })
                 .then(text => 
                 {
-                    $('#modal-create-out').modal('hide');
                     get.id ('form-create-out').reset();
-                    list({});
+                    list(_search());
                     showAlert(text, color);
                     lock.out = true;
                 });
@@ -381,9 +388,11 @@
             if ($(this).valid() && lock.diff) {
                 lock.diff = false;
                 var color = 'success';
+                const formData = new FormData(document.querySelector('#form-create-diff'));
+                $('#modal-create-diff').modal('hide');
                 fetch('/' + controller + '/CreateConsumo', {
                     method: 'post',
-                    body: new FormData(document.querySelector('#form-create-diff'))
+                    body: formData
                 })
                 .then(res => {
                     color = res.ok ? 'success' : 'danger';
@@ -391,9 +400,8 @@
                 })
                 .then(text => 
                 {
-                    $('#modal-create-diff').modal('hide');
                     get.id ('form-create-diff').reset();
-                    list({});
+                    list(_search());
                     showAlert(text, color);
                     lock.diff = true;
                 });

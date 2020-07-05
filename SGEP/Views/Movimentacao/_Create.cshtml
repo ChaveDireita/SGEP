@@ -21,7 +21,32 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="DestinoId" class="control-label">Destino</label>
-                        <select asp-for="DestinoId" id="Destino-in" class="form-control squareborder" data-val-required="Este campo é obrigatório.">
+                        <select asp-for="DestinoId" 
+                                id="Destino-in" 
+                                class="form-control squareborder" 
+                                data-val-required="Este campo é obrigatório."
+                                onchange="
+                                const selectSolic = get.id('Solicitante-in');
+                                const selectDest = get.id('Destino-in');
+                                
+                                selectSolic.innerHTML = '<option selected disabled>Carregando dados...</option>';
+                                const destino = selectDest.value;
+
+                                fetch('/Projeto/FuncionariosAlocados/' + destino)
+                                .then(res => res.json())
+                                .then(funcs => {
+                                    let innerHtml = `<option selected disabled value=''>Selecione o solicitante</option>` + 
+                                                    `<option value=''>N/A</option>`;
+                                    if (funcs)
+                                    {
+                                        for(const f of funcs)
+                                        {
+                                            innerHtml += `<option value=${f.id} title=${f.matricula}>${f.nome}</option>`;
+                                        }
+                                    }
+                                    selectSolic.innerHTML = innerHtml;
+                                });
+                                ">
                         </select>
                         <span asp-validation-for="DestinoId" class="text-danger"></span>
                     </div>
@@ -47,18 +72,20 @@
                     </div>
                     <div class="form-group">
                         <label id="Quantidade-in-label" class="control-label">Quantidade</label>
-                        <input asp-for="Quantidade" id="Quantidade-in" class="form-control squareborder" type="number" min="0" />
+                        <input asp-for="Quantidade" 
+                               id="Quantidade-in" 
+                               class="form-control squareborder" 
+                               type="number" 
+                               min="0" 
+                               step="any" 
+                               data-val-regex-pattern="-?[0-9]+([.][0-9])?"
+                               data-val-regex="Insira um número válido"
+                               />
                         <span asp-validation-for="Quantidade" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <label class="control-label">Solicitante</label>
                         <select asp-for="SolicitanteId" id="Solicitante-in" class="form-control squareborder">
-                            @foreach (Funcionario f in context.Funcionario.Where(f => f.Ativo))
-                            {
-                                <option value="@f.Id">
-                                    @f.Nome
-                                </option>
-                            }
                         </select>
                         <span asp-validation-for="SolicitanteId" class="text-danger"></span>
                     </div>
@@ -175,7 +202,33 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="DestinoId" class="control-label">Destino</label>
-                        <select asp-for="DestinoId" disabled id="Destino-out" class="form-control squareborder" data-val-required="Este campo é obrigatório.">
+                        <select asp-for="DestinoId" 
+                                disabled 
+                                id="Destino-out" 
+                                class="form-control squareborder" 
+                                data-val-required="Este campo é obrigatório."
+                                onchange="
+                                const selectSolic = get.id('Solicitante-out');
+                                const selectDest = get.id('Destino-out');
+                                
+                                selectSolic.innerHTML = '<option selected disabled>Carregando dados...</option>';
+                                const destino = selectDest.value;
+
+                                fetch('/Projeto/FuncionariosAlocados/' + destino)
+                                .then(res => res.json())
+                                .then(funcs => {
+                                    let innerHtml = `<option selected disabled value=''>Selecione o solicitante</option>` + 
+                                                    `<option value=''>N/A</option>`;
+                                    if (funcs)
+                                    {
+                                        for(const f of funcs)
+                                        {
+                                            innerHtml += `<option value=${f.id} title=${f.matricula}>${f.nome}</option>`;
+                                        }
+                                    }
+                                    selectSolic.innerHTML = innerHtml;
+                                });
+                                ">
                         </select>
                         <span asp-validation-for="DestinoId" class="text-danger"></span>
                     </div>
@@ -186,7 +239,7 @@
                                placeholder="Selecione o material" 
                                class="form-control squareborder" 
                                type="number" 
-                               data-val-regex-pattern="-?[0-9]+"
+                               data-val-regex-pattern="-?[0-9]+([.][0-9])?"
                                data-val-regex="Insira um número válido"
                                onchange="
                                const field = get.id('Quantidade-out');
@@ -217,12 +270,6 @@
                     <div class="form-group">
                         <label class="control-label">Solicitante</label>
                         <select asp-for="SolicitanteId" id="Solicitante-out" class="form-control squareborder">
-                            @foreach (Funcionario f in context.Funcionario.Where(f => f.Ativo))
-                            {
-                                <option value="@f.Id">
-                                    @f.Nome
-                                </option>
-                            }
                         </select>
                         <span asp-validation-for="SolicitanteId" class="text-danger"></span>
                     </div>
@@ -316,6 +363,9 @@
                                class="form-control squareborder" 
                                type="number" 
                                min="0"
+                               step="any"
+                               data-val-regex-pattern="-?[0-9]+([.][0-9])?"
+                               data-val-regex="Insira um número válido"
                                onchange="
                                const field = get.id('Quantidade-diff');
                                const max = field.getAttribute('data-val-maximum');

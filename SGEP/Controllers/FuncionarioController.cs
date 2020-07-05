@@ -19,7 +19,7 @@ namespace SGEP.Controllers
 
         [HttpGet("/Funcionario/Get/{id}")]
         public async Task<JsonResult> Get (int id) => Json(await _context.Funcionario.FindAsync(id));
-
+        public JsonResult All() => Json(_context.Funcionario);
         public JsonResult List(string matricula, string nome, string cargo, string ativo, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Funcionario> result = _context.Funcionario;

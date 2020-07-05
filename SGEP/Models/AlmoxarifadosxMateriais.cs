@@ -7,6 +7,6 @@ namespace SGEP.Models
         public int AlmoxarifadoId { get; set; }
         public int MaterialId { get; set; }
         public virtual List<Material> Material { get; set; }
-        public int Quantidade { get; set; }
+        public decimal Quantidade { get; set; }
     }
 }

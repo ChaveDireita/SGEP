@@ -17,7 +17,8 @@ namespace SGEP.Migrations
                     Nome = table.Column<string>(nullable: false),
                     Projeto = table.Column<bool>(nullable: false),
                     Ativo = table.Column<bool>(nullable: false),
-                    AlmoxarifadosxMateriaisId = table.Column<int>(nullable: false)
+                    AlmoxarifadosxMateriaisId = table.Column<int>(nullable: false),
+                    IdProjeto = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -116,7 +117,7 @@ namespace SGEP.Migrations
                 {
                     AlmoxarifadoId = table.Column<int>(nullable: false),
                     MaterialId = table.Column<int>(nullable: false),
-                    Quantidade = table.Column<int>(nullable: false)
+                    Quantidade = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -265,13 +266,13 @@ namespace SGEP.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Data = table.Column<DateTime>(nullable: false),
                     MaterialId = table.Column<int>(nullable: false),
-                    Quantidade = table.Column<int>(nullable: false),
+                    Quantidade = table.Column<decimal>(nullable: false),
                     OrigemId = table.Column<int>(nullable: false),
                     DestinoId = table.Column<int>(nullable: false),
                     Tipo = table.Column<string>(nullable: true),
                     Preco = table.Column<decimal>(nullable: false),
                     AlmoxarifeId = table.Column<string>(nullable: true),
-                    SolicitanteId = table.Column<int>(nullable: false)
+                    SolicitanteId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -287,7 +288,7 @@ namespace SGEP.Migrations
                         column: x => x.SolicitanteId,
                         principalTable: "Funcionario",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

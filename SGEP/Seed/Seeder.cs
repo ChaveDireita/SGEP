@@ -37,7 +37,6 @@ namespace SGEP
                 {
                     Nome = userJson["nome"].Value<string>(),
                     Email = userJson["email"].Value<string>(),
-                    PhoneNumber = userJson["telefone"].Value<string>(),
                     Ativo = true,
                 };
                 user.UserName = user.Email;

@@ -143,7 +143,7 @@ function gerarlist(nomes, lista,acao,relevanteid,rowClasses) {
     for (n of nomes) html += '<th style:"position:sticky; top:0">' + n + '</th>';
     html += '</thead> <tbody>';
     for (item of lista) {
-        if (!(acao === undefined || relevanteid === undefined)) html += '<tr class="' + classes + '" onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
+        if (!(acao === undefined || relevanteid === undefined)) html += '<tr class="' + classes + '" id="aloc-' + item.id + '" + onclick="' + acao + '(' + item.id + ',' + relevanteid + ')">';
         else html += '<tr class="' + classes + '">';
         for (variavel in item) {
             if (verificarsemacentoecaixa(nomes, variavel)) {
@@ -202,7 +202,7 @@ function showAlert(msg, cls)
         try{
             get.id('alert:' + id).outerHTML = '';
         } catch(e) {}
-    }, 5000);
+    }, 10000);
 }
 
 const loading = {

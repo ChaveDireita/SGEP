@@ -2,13 +2,11 @@
     {
         "nome":"Gerente",
         "email":"gerente@exemplo.com",
-        "telefone":"12345678",
         "tipo":"Gerente"
     },
     {
         "nome":"Almoxarife",
         "email":"almoxarife@exemplo.com",
-        "telefone":"12345678",
         "tipo":"Almoxarife"
     }
 ]

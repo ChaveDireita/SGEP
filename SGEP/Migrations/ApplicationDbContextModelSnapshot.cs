@@ -195,6 +195,8 @@ namespace SGEP.Migrations
 
                     b.Property<bool>("Ativo");
 
+                    b.Property<int?>("IdProjeto");
+
                     b.Property<string>("Nome")
                         .IsRequired();
 
@@ -211,7 +213,7 @@ namespace SGEP.Migrations
 
                     b.Property<int>("MaterialId");
 
-                    b.Property<int>("Quantidade");
+                    b.Property<decimal>("Quantidade");
 
                     b.HasKey("AlmoxarifadoId", "MaterialId");
 
@@ -288,9 +290,9 @@ namespace SGEP.Migrations
 
                     b.Property<decimal>("Preco");
 
-                    b.Property<int>("Quantidade");
+                    b.Property<decimal>("Quantidade");
 
-                    b.Property<int>("SolicitanteId");
+                    b.Property<int?>("SolicitanteId");
 
                     b.Property<string>("Tipo");
 
@@ -437,8 +439,7 @@ namespace SGEP.Migrations
 
                     b.HasOne("SGEP.Models.Funcionario", "Solicitante")
                         .WithMany()
-                        .HasForeignKey("SolicitanteId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SolicitanteId");
                 });
 
             modelBuilder.Entity("SGEP.Models.Projeto", b =>

@@ -42,6 +42,13 @@ namespace SGEP.Controllers
                                                                 p.Nome})});
         }
         public async Task<JsonResult> Get (int id) => Json(await _context.Projeto.FindAsync(id));
+        public async Task<JsonResult> GetFromAlmoxarifado(int id)
+        {
+            Almoxarifado almoxarifado = await _context.Almoxarifado.FindAsync(id);
+            Projeto projeto = await _context.Projeto.FindAsync(almoxarifado.IdProjeto);
+            return Json(projeto);
+        }
+
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
@@ -55,6 +62,9 @@ namespace SGEP.Controllers
                 };
                 projeto.Almoxarifado = a;
                 _context.Add(projeto);
+                await _context.SaveChangesAsync();
+                a.IdProjeto = projeto.Id;
+                _context.Update(a);
                 await _context.SaveChangesAsync();
                 return Ok("Projeto adicionado com sucesso.");
             }
@@ -161,7 +171,7 @@ namespace SGEP.Controllers
 
             p.Fim = end;
             p.Almoxarifado.Ativo = false;
-
+            _context.RemoveRange(_context.ProjetosxFuncionarios.Where(pf => pf.IdProjeto == p.Id));
             _context.Update(p);
             await _context.SaveChangesAsync();
 
