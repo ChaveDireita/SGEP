@@ -14,11 +14,11 @@
                 <form asp-action="_Create" asp-controller="Create" id="form-create-in">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" value="entrada" asp-for="Tipo" />
-                    <div class="form-group">
+                    @* <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-in" class="form-control squareborder" />
                         <span asp-validation-for="Data" class="text-danger"></span>
-                    </div>
+                    </div> *@
                     <div class="form-group">
                         <label asp-for="DestinoId" class="control-label">Destino</label>
                         <select asp-for="DestinoId" 
@@ -32,7 +32,7 @@
                                 selectSolic.innerHTML = '<option selected disabled>Carregando dados...</option>';
                                 const destino = selectDest.value;
 
-                                fetch('/Projeto/FuncionariosAlocados/' + destino)
+                                fetch('/Projeto/FuncionariosAlocadosAlmoxarifado/' + destino)
                                 .then(res => res.json())
                                 .then(funcs => {
                                     let innerHtml = `<option selected disabled value=''>Selecione o solicitante</option>` + 
@@ -111,11 +111,11 @@
                 <form asp-action="_Create" asp-controller="Create" id="form-create-out">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" value="saída" asp-for="Tipo" />
-                    <div class="form-group">
+                    @* <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-out" class="form-control squareborder" />
                         <span asp-validation-for="Data" class="text-danger"></span>
-                    </div>
+                    </div> *@
                     <div class="form-group">
                         <label asp-for="MaterialId" class="control-label">Material</label>
                         <select asp-for="MaterialId" id="Material-out" class="form-control squareborder"
@@ -214,7 +214,7 @@
                                 selectSolic.innerHTML = '<option selected disabled>Carregando dados...</option>';
                                 const destino = selectDest.value;
 
-                                fetch('/Projeto/FuncionariosAlocados/' + destino)
+                                fetch('/Projeto/FuncionariosAlocadosAlmoxarifado/' + destino)
                                 .then(res => res.json())
                                 .then(funcs => {
                                     let innerHtml = `<option selected disabled value=''>Selecione o solicitante</option>` + 
@@ -295,11 +295,11 @@
                 <form asp-action="_Create" asp-controller="Create" id="form-create-diff">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" value="consumo" asp-for="Tipo" />
-                    <div class="form-group">
+                    @* <div class="form-group">
                         <label asp-for="Data" class="control-label"></label>
                         <input asp-for="Data" id="Data-diff" class="form-control squareborder" />
                         <span asp-validation-for="Data" class="text-danger"></span>
-                    </div>
+                    </div> *@
                     <div class="form-group">
                         <label asp-for="OrigemId" class="control-label">Origem</label>
                         <select asp-for="OrigemId"

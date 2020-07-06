@@ -84,8 +84,9 @@ namespace SGEP.Controllers
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
-        public async Task<IActionResult> CreateEntrada([Bind("Data", "MaterialId", "Quantidade", "DestinoId", "Tipo", "SolicitanteId")] Movimentacao movimentacao)
+        public async Task<IActionResult> CreateEntrada([Bind("MaterialId", "Quantidade", "DestinoId", "Tipo", "SolicitanteId")] Movimentacao movimentacao)
         {
+            movimentacao.Data = DateTime.Now;
             Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
             if (movimentacao.Quantidade <= 0)
                 return BadRequest("Quantidade não pode ser menor que 0");
@@ -107,8 +108,9 @@ namespace SGEP.Controllers
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
-        public async Task<IActionResult> CreateSaida([Bind("Data", "MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo", "SolicitanteId")] Movimentacao movimentacao)
+        public async Task<IActionResult> CreateSaida([Bind("MaterialId", "Quantidade", "OrigemId","DestinoId", "Tipo", "SolicitanteId")] Movimentacao movimentacao)
         {
+            movimentacao.Data = DateTime.Now;
             Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
             Almoxarifado destino = await _context.Almoxarifado.FindAsync(movimentacao.DestinoId);
             if (movimentacao.Quantidade <= 0)
@@ -138,8 +140,9 @@ namespace SGEP.Controllers
         }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
-        public async Task<IActionResult> CreateConsumo([Bind("Data", "MaterialId", "Quantidade", "OrigemId", "Tipo")] Movimentacao movimentacao)
+        public async Task<IActionResult> CreateConsumo([Bind("MaterialId", "Quantidade", "OrigemId", "Tipo")] Movimentacao movimentacao)
         {
+            movimentacao.Data = DateTime.Now;
             Almoxarifado origem = await _context.Almoxarifado.FindAsync(movimentacao.OrigemId);
             if (movimentacao.Quantidade <= 0 || movimentacao.Quantidade > origem.AlmoxarifadosxMateriais.Find(am => am.MaterialId == movimentacao.MaterialId).Quantidade)
                 return BadRequest("Quantidade não pode ser menor que 0");

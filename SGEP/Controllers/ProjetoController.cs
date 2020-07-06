@@ -42,13 +42,22 @@ namespace SGEP.Controllers
                                                                 p.Nome})});
         }
         public async Task<JsonResult> Get (int id) => Json(await _context.Projeto.FindAsync(id));
-        public async Task<JsonResult> GetFromAlmoxarifado(int id)
+        public async Task<JsonResult> GetFromAlmoxarifado(int? id)
         {
             Almoxarifado almoxarifado = await _context.Almoxarifado.FindAsync(id);
             Projeto projeto = await _context.Projeto.FindAsync(almoxarifado.IdProjeto);
             return Json(projeto);
         }
-
+        public async Task<JsonResult> FuncionariosAlocadosAlmoxarifado(int? id)
+        {
+            Almoxarifado almoxarifado = await _context.Almoxarifado.FindAsync(id);
+            Projeto projeto = await _context.Projeto.FindAsync(almoxarifado.IdProjeto);
+            List<int> funcalocados;
+            funcalocados = _context.ProjetosxFuncionarios.Where(p => projeto != null && p.IdProjeto == projeto.Id)
+                                                         .Select(f => f.IdFuncionario)
+                                                         .ToList();
+            return Json(_context.Funcionario.Where(f => funcalocados.Contains(f.Id)).ToList());
+        }
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Create([Bind("Id,Nome,Inicio,Fim")] Projeto projeto)
