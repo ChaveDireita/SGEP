@@ -71,12 +71,12 @@ namespace SGEP.Migrations
                 name: "Funcionario",
                 columns: table => new
                 {
+                    Matricula = table.Column<string>(nullable: false),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(nullable: false),
                     Cargo = table.Column<string>(nullable: false),
-                    Ativo = table.Column<bool>(nullable: false),
-                    Matricula = table.Column<string>(nullable: false)
+                    Ativo = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {

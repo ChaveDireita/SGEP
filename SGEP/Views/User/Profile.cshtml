@@ -20,7 +20,13 @@
         </tr>
         <tr>
             <td class="table-dark alert-link" style="width:250px">Telefone</td>
-            <td>@Model.PhoneNumber</td>
+            @if(string.IsNullOrWhiteSpace(Model.PhoneNumber))
+            {
+                <td>--</td>
+            }else
+            {
+                <td>@Model.PhoneNumber</td>
+            }
         </tr>
     </table>
     <br/>
