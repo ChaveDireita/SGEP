@@ -11,10 +11,11 @@ namespace SGEP.Models
         public int Id { get; set; }
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public string Nome { get; set; }
-        [Display(Name = "Início")]
+        [Display(Name = "Data de Início")]
         [DataType(DataType.Date)]
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
         public DateTime Inicio { get; set; }
+        [Display(Name = "Data de Término")]
         [DataType(DataType.Date)]
         [Remote(action: "ValidateDate", controller: "Projeto", AdditionalFields = "Inicio")]
         public DateTime? Fim { get; set; }
