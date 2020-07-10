@@ -16,6 +16,8 @@
 
 </head>
 <body>
+    @* @if (!signInManager.IsSignedIn(User))
+    { *@
     <header class="position-sticky">
         <nav class="navbar navbar-expand-lg">
             <div class="container justify-content-center" style="max-width: 100%;">
@@ -25,9 +27,7 @@
                     </button>
                     <a href="#" class="nav-a navbar-brand"><h1 style="color:white; padding-left:20px">SGEP</h1></a>
                 </div>
-                @if (signInManager.IsSignedIn(User))
-                {
-                    <div class="collapse navbar-collapse">
+                    @* <div class="collapse navbar-collapse">
                         <ul class="navbar-nav mr-auto mt-1 mt-lg-0">
                             <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
                             <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
@@ -40,13 +40,51 @@
                                 <li><a asp-area="" asp-controller="User" asp-action="Index"  class="nav-li-a">Usuários</a></li>
                             }
                         </ul>
-                        <partial name="_LoginPartial" />
-                    </div>
-                }
+                    </div> *@
+                        @* <partial name="_LoginPartial" /> *@
             </div>
         </nav>
     </header>
-
+    @* } *@
+    @if(signInManager.IsSignedIn(User))
+    {
+        <div class="sidebar" onmouseover="$('.showonhover').css('font-size', '100%')" onmouseout="$('.showonhover').css('font-size', '0')">
+            <a draggable="false" asp-area="" asp-controller="Funcionario" asp-action="Index" class="button">
+                <i class="fas fa-hard-hat"></i> <span class="showonhover" style="font-size: 0px;">Funcionários</span>
+            </a>
+            <a draggable="false" asp-area="" asp-controller="Projeto" asp-action="Index" class="button">
+                <i class="fas fa-project-diagram"></i> <span class="showonhover" style="font-size: 0px;">Projetos</span>
+            </a>
+            <a draggable="false" asp-area="" asp-controller="Material" asp-action="Index" class="button"> 
+                <i class="fas fa-boxes"></i> <span class="showonhover" style="font-size: 0px;">Materiais</span>
+            </a>
+            <a draggable="false" asp-area="" asp-controller="Almoxarifado" asp-action="Index" class="button">
+                <i class="fas fa-warehouse"></i> <span class="showonhover" style="font-size: 0px;">Estoques</span>
+            </a>
+            <a draggable="false" asp-area="" asp-controller="Movimentacao" asp-action="Index" class="button">
+                <i class="fas fa-exchange-alt"></i> <span class="showonhover" style="font-size: 0px;">Movimentações</span>
+            </a>
+            <a draggable="false" asp-area="" asp-controller="Histograma" asp-action="Index" class="button">
+                <i class="fas fa-chart-bar"></i> <span class="showonhover" style="font-size: 0px;">Histograma</span>
+            </a>
+            @if(User.IsInRole("Gerente"))
+            {
+                <a draggable="false" asp-area="" asp-controller="User" asp-action="Index"  class="button">
+                    <i class="fas fa-users"></i> <span class="showonhover" style="font-size: 0px;">Usuários</span>
+                </a>
+            }
+            <a draggable="false" asp-controller="User" asp-action="Profile" class="button">
+                <i class="far fa-id-card"></i> <span class="showonhover" style="font-size: 0px;">Minha Conta</span>
+            </a>
+            <a href="#" class="button" draggable="false" onclick="$('#form-logout').submit()">
+                <i class="fas fa-arrow-left"></i> <span class="showonhover" style="font-size: 0px;">Sair</span>
+            </a>
+            <form id="form-logout" asp-area="Identity" hidden asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+                <button type="submit" class="btn btn-link " style="font-size: 22px"></button>
+            </form>
+        </div>
+        
+    }
     <div class="container body-content">
         @RenderBody()
         <hr />
