@@ -190,7 +190,7 @@
                 .then((json) => {
                     var theadr = document.getElementById('theadr');
                     theadr.innerHTML = '';
-                    theadr.innerHTML = '<th>ID</th> <th>Nome</th> <th>Início</th> <th>Fim</th>';
+                    theadr.innerHTML = '<th>ID</th> <th>Nome</th> <th>Início</th>';
                     var tbody = document.getElementById('projlista');
                     tbody.innerHTML = '';
                     for (const p of json) {
@@ -202,10 +202,7 @@
                             p.nome +
                             '</td>' +
                             '<td>' +
-                            p.inicio +
-                            '</td>' +
-                            '<td>' +
-                            p.fim +
+                            new Date(p.inicio).toLocaleString().slice(0, 10) +
                             '</td>' +
                             '</tr>';
                     }

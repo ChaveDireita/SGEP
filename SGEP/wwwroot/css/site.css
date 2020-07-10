@@ -252,8 +252,8 @@ th, td {
 
 .sidebar .button
 {
-  padding-left: 32px;
-  padding-right: 32px;
+  padding-left: 16px;
+  padding-right: 16px;
   padding-top: 16px;
   padding-bottom: 16px;
   text-decoration: unset;
@@ -268,11 +268,26 @@ th, td {
 
 .sidebar .button:hover
 {
-  padding: 32px;
+  padding-top: 32px;
+  padding-bottom: 32px;
   text-decoration: unset;
   color: rgb(240, 238, 238);
   display: block;
   background-color: var(--sgep-primary-highlight);
+}
+
+.sidebar .sideinfo
+{
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 16px;
+  padding-bottom: 37px;
+  text-decoration: unset;
+  font-size: 20px;
+  /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+  color: rgb(240, 238, 238);
+  display: block;
+  background-color: var(--sgep-primary-color);
 }
 
 

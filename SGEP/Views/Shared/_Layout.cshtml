@@ -48,7 +48,20 @@
     @* } *@
     @if(signInManager.IsSignedIn(User))
     {
-        <div class="sidebar" onmouseover="$('.showonhover').css('font-size', '100%')" onmouseout="$('.showonhover').css('font-size', '0')">
+        <div class="sidebar" 
+             onmouseover="
+             $('.showonhover').css('font-size', '100%')
+             $('#menu-identifier').css('opacity', '0.0')
+             " 
+             onmouseout="
+             $('.showonhover').css('font-size', '0')
+             $('#menu-identifier').css('opacity', '1.0')
+             ">
+            <span id="menu-identifier" 
+               class="sideinfo" 
+               style="transition: opacity 0.5s cubic-bezier(0.075, 0.82, 0.165, 1)">
+                <i class="fas fa-bars"></i>
+            </span>
             <a draggable="false" asp-area="" asp-controller="Funcionario" asp-action="Index" class="button">
                 <i class="fas fa-hard-hat"></i> <span class="showonhover" style="font-size: 0px;">Funcionários</span>
             </a>
