@@ -73,6 +73,7 @@ namespace SGEP.Controllers
             matmodel.Categoria = m.Categoria;
             matmodel.Preco = m.Preco;
             matmodel.Descricao = m.Descricao;
+            matmodel.IdUnidade = m.IdUnidade;
             return matmodel;
         }
         [HttpPost]
@@ -104,7 +105,9 @@ namespace SGEP.Controllers
         public async Task<JsonResult> All () => Json(await _context.Material.ToListAsync());
 
         [HttpGet("/Material/Get/{id}")]
-        public async Task<JsonResult> Get (int id) => Json(GetViewModelMat(await _context.Material.FindAsync(id)));
+        public async Task<JsonResult> Get (int id) => Json(await _context.Material.FindAsync(id));
+        [HttpGet("/Material/GetForShow/{id}")]
+        public async Task<JsonResult> GetForShow (int id) => Json(GetViewModelMat(await _context.Material.FindAsync(id)));
 
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]

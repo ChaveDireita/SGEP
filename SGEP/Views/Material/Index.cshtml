@@ -124,18 +124,19 @@
                 () => {
                     loading.show();
                     var nomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
-                    fetch('/' + controller + '/Get/' + id)
+                    fetch('/' + controller + '/GetForShow/' + id)
+                    .then(res => res.json())
+                    .then(mat => {
+                        fetch('/' + controller + '/UnidadePorIdJSON/' + mat.idUnidade)
                         .then(res => res.json())
-                        .then(mat => {
-                            fetch('/' + controller + '/UnidadePorIdJSON/' + mat.idUnidade)
-                                .then(res => res.json())
-                                .then(unidade => {
-                                    var content = [mat.showid, mat.descricao, mat.categoria, mat.precounidade, unidade.nome];
-                                    document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
-                                    $('#detailsmodal').modal('toggle');
-                                    loading.hide();
-                                });
+                        .then(unidade => {
+                            console.log(unidade)
+                            var content = [mat.showid, mat.descricao, mat.categoria, mat.precoUnidade, unidade.nome];
+                            document.getElementById('detailstable').innerHTML = gerardetailslist(nomes, content);
+                            $('#detailsmodal').modal('toggle');
+                            loading.hide();
                         });
+                    });
                 });
         }
     </script>

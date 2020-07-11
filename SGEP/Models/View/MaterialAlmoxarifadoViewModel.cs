@@ -16,5 +16,6 @@ namespace SGEP.Models.View
         public  decimal Preco { get; set; }
         public string PrecoUnidade { get; set; }
         public int AlmoxarifadoId { get; set; }
+        public int IdUnidade { get; set; }
     }
 }
