@@ -134,7 +134,9 @@
                     $('#modal-edit').modal('show');
                     loading.hide();
                 });
-            }, () => showdetailsmodal(id));
+            }, () => {
+                showdetailsmodal(id)
+            });
         }
 
         function showdetailsmodal(id) {
@@ -150,6 +152,7 @@
                     proj.fim = '--';
                 var content = [proj.id, proj.nome, proj.inicio, proj.fim];
                 detailstable.innerHTML = gerardetailslist(nomes, content);
+                $('#detailsmodal').modal('toggle');
                 loading.hide();
             });
             const abrirAlocacaoBtn = document.getElementById('abriralocacao');
@@ -159,7 +162,6 @@
                     $('#alocacaomodal').modal('toggle');
                     $('#detailsmodal').modal('toggle');
                 }
-            $('#detailsmodal').modal('toggle');
         }
 
         function atualizaralocacao(id) {
