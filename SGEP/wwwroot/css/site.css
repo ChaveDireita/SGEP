@@ -305,15 +305,3 @@ th, td {
 {
     transition: font-size 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-
-
-
-
-
-
-.btn-sgep-outline-primary
-{
-    color: var(--sgep-primary-color);
-    background-color: transparent;
-    border-color: var(--sgep-primary-color);
-}

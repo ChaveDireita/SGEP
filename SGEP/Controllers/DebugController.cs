@@ -14,6 +14,9 @@ using Newtonsoft.Json.Linq;
 
 namespace SGEP.Controllers
 {
+    ///<summary>
+    ///Este controller possuem métodos de debug e deve permanecer comentado em ambiente produção.
+    ///</summary>
     public class DebugController : Controller
     {
         // private readonly ApplicationDbContext _context;

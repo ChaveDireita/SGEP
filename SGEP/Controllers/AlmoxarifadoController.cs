@@ -17,6 +17,12 @@ namespace SGEP.Controllers
         private readonly ApplicationDbContext _context;
         public AlmoxarifadoController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
+        ///<summary>
+        ///Retorna a lista filtrada de almoxarifados.
+        ///É usado para a exibição dos itens da tabela na página Estoques.
+        ///</summary>
+        ///<param name="itensPorPagina">Define a quantidade de itens que serão exibidos na tabela. Também define a quantidade de páginas que existem calculando: quantidadeDeAlmoxarifados/itensPorPagina</param>
+        ///<param name="pagina">Define a seção da lista que será exibida. A saber, são exibidos os itens entre pagina*itensPorPagina até (pagina + 1)*itensPorPagina</param>
         public async Task<JsonResult> List(string id, string nome, string projeto, string material, int? itensPorPagina, int? pagina)
         {
             IEnumerable<Almoxarifado> result = await _context.Almoxarifado.ToListAsync();
@@ -35,6 +41,11 @@ namespace SGEP.Controllers
             
             return Json(new {size = _size, entities = result.ToList()});
         }
+        ///<summary>
+        ///Retorna todos os almoxarifados ou os almoxarifados que possuem um determinado material.
+        ///É usado no cadastro de movimentações.
+        ///</summary>
+        ///<param name="material">Caso seja provido, o método retornará apenas os almoxarifados com este material.</param>
         public async Task<JsonResult> All(int? material) {
             if (material == null)
                 return Json(await _context.Almoxarifado.ToListAsync());
@@ -43,19 +54,32 @@ namespace SGEP.Controllers
                 return Json(_context.Almoxarifado.Where(a => a.AlmoxarifadosxMateriais.Where(am => am.MaterialId == mid).Count() > 0));
             }
         }
+        ///<summary>
+        ///Retorna os materiais contidos no almoxarifado identificado por "id".
+        ///</summary>
+        ///<param name="id">Id do almoxarifado.</param>
         [HttpGet("/Almoxarifado/GetMateriais/{id}")]
         public JsonResult GetMateriais(int id)
         {
             var materiais = _context.Almoxarifado.Find(id).AlmoxarifadosxMateriais.Where(am => am.Quantidade > 0).ToList().ConvertAll(am => _context.Material.Find(am.MaterialId));
             var json = Json(materiais);
             return json;
-        } 
+        }
+        ///<summary>
+        ///Retorna a quantidade do material identificado por "idMat" no almoxarifado identificado por "idAlm".
+        ///</summary>
+        ///<param name="idAlm">Id do almoxarifado</param>
+	    ///<param name="idMat">Id do material</param>
         [HttpGet("/Almoxarifado/GetQuantidade/{idAlm}/{idMat}")]
-        public JsonResult GetMateriais(int idAlm, int idMat) => Json (_context.Almoxarifado.Find(idAlm)
+        public JsonResult GetMateriais(int? idAlm, int? idMat) => Json (_context.Almoxarifado.Find(idAlm)
                                                                                            .AlmoxarifadosxMateriais
                                                                                            .Where(am => am.MaterialId == idMat)
                                                                                            .First()
                                                                                            .Quantidade);
+	    ///<summary>
+	    ///Retorna a lista de AlmoxarifadosxMateriais para o almoxarifado identificado por "id".
+	    ///<summary>
+	    ///<param name="id">Id do almoxarifado</param>
         public JsonResult GetMaterialxAlmoxarifadoList (int id){
             List<AlmoxarifadosxMateriais> almoxmat = _context.AlmoxarifadosxMateriais
                 .Where(a => a.AlmoxarifadoId == id).ToList();
@@ -80,7 +104,7 @@ namespace SGEP.Controllers
                 matvm.AlmoxarifadoId = id;
                 matvm.Preco = materiais[i].Preco * almoxmat[i].Quantidade;
                 if (un.Abreviacao == null) matvm.PrecoUnidade = "R$" + matvm.Preco + " /" + un.Nome;
-                else matvm.PrecoUnidade = "R$" + matvm.Preco + " /" + un.Abreviacao;
+                else matvm.PrecoUnidade = "R$" + matvm.Preco;
                 matvms.Add(matvm);
             }
             return Json(matvms);
@@ -130,6 +154,11 @@ namespace SGEP.Controllers
             }
             return BadRequest("Ocorreu um erro ao salvar as alterações.");
         }
+	    ///<summary>
+	    ///Ativa e desativa o almoxarifado identificado por "id".
+	    ///Caso esteja ativado, ele será desativado e vice-versa.
+	    ///</summary>
+	    ///<param name="id">Id do almoxarifado</param>
         [Authorize(Roles = "Almoxarife")]
         [HttpPost]
         public async Task<IActionResult> Toggle(int id)
