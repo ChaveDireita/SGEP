@@ -48,7 +48,7 @@ namespace SGEP
                 options.UseSqlServer (Configuration.GetConnectionString ("local"));
             });
 
-            services.AddScoped<IEmailSender, GmailEmailSender>();
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddIdentity<SGEPUser, IdentityRole> (o => 
             {
@@ -79,7 +79,11 @@ namespace SGEP
                 o.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 o.LogoutPath="/Identity/Account/Logout";
             });
-
+            string email = Configuration["EmailService:email"];
+            string pass = Configuration["EmailService:password"];
+            string smtpAddr = Configuration["EmailService:smtp-address"];
+            int smtpPort = int.Parse(Configuration["EmailService:smtp-port"]);
+            EmailSender.Configuration = new EmailServiceConfiguration { Email = email, Password = pass, SmtpAddress = smtpAddr, SmtpPort = smtpPort};
             // services.Configure<IISOptions>(o => {
             //    o.ForwardClientCertificate = false; 
             // });
