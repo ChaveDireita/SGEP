@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace SGEP.Models.View
 {
+    ///<summary>
+    ///É usado para exibir os dados dos materiais pertencentes a um almoxarifado em Views/Almoxarifado/_Details.cshtml
+    ///</summary>
     public class MaterialAlmoxarifadoViewModel
     {
         public int Id { get; set; }

@@ -4,6 +4,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa os funcionários dos projetos.
+    ///</summary>
     public class Funcionario
     {
         private const string nomeRegex = "[A-zàãáâèéêìíîòõóôùúûÁÀÃÂÈÉÊÌÍÎÓÒÕÔÙÚÛ][A-z àãáâèéêìíîòõóôùúûÁÀÃÂÈÉÊÌÍÎÓÒÕÔÙÚÛ]+";

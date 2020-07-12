@@ -4,6 +4,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa os almoxarifados e estoques dos projetos.
+    ///</summary>
     public class Almoxarifado
     {
         public int Id { get; set; }

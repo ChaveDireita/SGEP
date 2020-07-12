@@ -5,6 +5,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///É usado para validar os dados inseridos no formulário em Views/Histograma/Partial/_Form.cshtml
+    ///</summary>
     public class HistogramaViewModel
     {
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]

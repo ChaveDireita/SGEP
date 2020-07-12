@@ -71,7 +71,7 @@ namespace SGEP
                                                      .Build ()));
             }).SetCompatibilityVersion (CompatibilityVersion.Version_2_1);
             
-            services.AddScoped<RolesSeeder>();
+            services.AddScoped<Seeder>();
 
             services.ConfigureApplicationCookie(o => 
             {
@@ -90,7 +90,7 @@ namespace SGEP
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure (IApplicationBuilder app, IHostingEnvironment env, RolesSeeder seeder)
+        public void Configure (IApplicationBuilder app, IHostingEnvironment env, Seeder seeder)
         {
             CultureInfo culturaPT_BR = new CultureInfo("pt-BR");
             culturaPT_BR.NumberFormat.NumberDecimalSeparator = ".";

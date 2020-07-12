@@ -7,6 +7,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa as unidades de medida dos materiais.
+    ///</summary>
     public class Unidade
     {
         public int Id { get; set; }

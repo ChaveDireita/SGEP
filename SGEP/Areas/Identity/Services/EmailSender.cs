@@ -5,11 +5,18 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SGEP.Areas.Identity.Services
 {
+    ///<summary>
+    ///Serviço para enviar e-mails.
+    ///</summary>
     public class EmailSender : IEmailSender
     {
-        const string EMAIL = "sgep.noreply@gmail.com", PASSWORD = "ggdTWADsma8E1Ud";
         public static EmailServiceConfiguration Configuration { get; set; }
-
+        ///<summary>
+        ///Envia um e-mail para "email" com o assunto "subject" e conteúdo "htmlMessage".
+        ///<param name="email">E-mail do destinatário</param>
+        ///<param name="subject">Assunto do e-mail</param>
+        ///<param name="htmlMessage">Conteúdo em html do e-mail</param>
+        ///</summary>
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
             SmtpClient smtp = new SmtpClient(Configuration.SmtpAddress, Configuration.SmtpPort);
@@ -27,7 +34,10 @@ namespace SGEP.Areas.Identity.Services
             await smtp.SendMailAsync(message);
         }
     }
-
+    ///<summary>
+    ///Representa os segredos relacionados ao serviço de e-mail encontrados no arquivo appsettings.json.
+    ///Possui apenas uma instância estática em EmailSender. 
+    ///</summary>
     public class EmailServiceConfiguration
     {
         public string Email { get; set; }

@@ -3,11 +3,16 @@ using System.Collections.Generic;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa um mês em um ano. É usado para facilitar os cálculos em HistogramaController::GraphData
+    ///</summary>
     public struct MonthPeriod
     {
         public int Year { get; private set; }
         public int Month { get; private set; }
-
+        ///<summary>
+        ///Retorna um MonthPeriod com "months" meses a mais que o MonthPeriod "m".
+        ///</summary>
         public static MonthPeriod operator +(MonthPeriod m, int months)
         {
             m.Year = (m.Year*12 + m.Month + months)/12;
@@ -16,7 +21,9 @@ namespace SGEP.Models
         }
 
         public static MonthPeriod operator ++(MonthPeriod m) => m + 1;
-
+        ///<summary>
+        ///Retorna uma coleção de MonthPeriods situados entre m2 e m1 com a taxa de amostragem de um mês.
+        ///</summary>
         public static List<MonthPeriod> operator -(MonthPeriod m1, MonthPeriod m2)
         {
             List<MonthPeriod> months = new List<MonthPeriod>();

@@ -4,6 +4,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa todos os tipos de movimentações. Algumas propriedades podem ser nulos dependendo do tipo.
+    ///</summary>
     public class Movimentacao
     {
         public int Id { get; set; }

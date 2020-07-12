@@ -6,6 +6,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa os projetos.
+    ///</summary>
     public class Projeto
     {
         public int Id { get; set; }

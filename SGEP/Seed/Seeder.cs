@@ -9,18 +9,23 @@ using SGEP.Models;
 
 namespace SGEP
 {
-    public class RolesSeeder
+    ///<summary>
+    ///Popula o banco de dados.
+    ///</summary>
+    public class Seeder
     {
         private readonly UserManager<SGEPUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly string _contentRootDirectory;
-        public RolesSeeder(UserManager<SGEPUser> userManager, RoleManager<IdentityRole> roleManager, IHostingEnvironment env)
+        public Seeder(UserManager<SGEPUser> userManager, RoleManager<IdentityRole> roleManager, IHostingEnvironment env)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _contentRootDirectory = env.ContentRootPath;
         }
-
+        ///<summary>
+        ///Popula o banco com os "Roles" e com os usuários descritos em Seed/users.json.
+        ///</summary>
         public async Task Seed()
         {
             if (!(await _roleManager.RoleExistsAsync("Almoxarixe")))

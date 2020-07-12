@@ -4,6 +4,9 @@ using SGEP.Models.Constants;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///Representa os tipos de materiais.
+    ///</summary>
     public class Material
     {
         [Display(Name ="ID")]

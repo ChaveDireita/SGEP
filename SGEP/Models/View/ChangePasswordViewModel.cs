@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SGEP.Models
 {
+    ///<summary>
+    ///É usado para validar os dados inseridos no formulário em Views/User/_ChangePassword.cshtml
+    ///</summary>
     public class ChangePasswordViewModel
     {
         public string Id { get; set; }

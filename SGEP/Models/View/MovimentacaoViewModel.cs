@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SGEP.Models.View
 {
+    ///<summary>
+    ///É usado para exibir os dados das Movimentações.
+    ///</summary>
     public class MovimentacaoViewModel
     {
         public int Id { get; set; }
