@@ -140,10 +140,15 @@ namespace SGEP.Controllers
         }
         public string ConvertId(int id, int categoria)
         {
+            int preZeros = 3 - ("" + categoria).Length;
+            string cat = "";
+            for (int i = 0; i < preZeros; i++) cat += "0";;
+
             int qtdzero = 7 - id.ToString().Length;
             string zeros = "";
             for (int i = 0; i < qtdzero; i++) zeros += "0";
-            string showid = categoria + "." + zeros + id;
+            
+            string showid = cat + "." + zeros + id;
             return showid;
         }
 
