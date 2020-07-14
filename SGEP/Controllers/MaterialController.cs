@@ -18,7 +18,12 @@ namespace SGEP.Controllers
         public MaterialController(ApplicationDbContext context) => _context = context;
 
         public IActionResult Index() => View();
-
+        ///<summary>
+        ///Retorna a lista filtrada de funcionários.
+        ///É usado para a exibição dos itens da tabela na página Funcionários.
+        ///</summary>
+        ///<param name="itensPorPagina">Define a quantidade de itens que serão exibidos na tabela. Também define a quantidade de páginas que existem calculando: quantidadeDeAlmoxarifados/itensPorPagina</param>
+        ///<param name="pagina">Define a seção da lista que será exibida. A saber, são exibidos os itens entre pagina*itensPorPagina até (pagina + 1)*itensPorPagina</param>
         public async Task<JsonResult> List(string codigo, string descricao, string preco, string unidade, int? itensPorPagina, int? pagina)
         {
             IEnumerable<MaterialAlmoxarifadoViewModel> result = ConverterListaParaShow(await _context.Material.ToListAsync());
@@ -33,14 +38,22 @@ namespace SGEP.Controllers
             
             return Json(new {size = _size, entities = result});
         }
+        ///<summary>
+        ///Retorna a unidado do material identificado por "id".
+        ///</summary>
         public JsonResult GetUn(int id)
         {
             Material mat = _context.Material.FirstOrDefault(m => m.Id == id);
             return Json(_context.Unidade
             .FirstOrDefault(u => u.Id == mat.IdUnidade));
         }
+        ///<summary>
+        ///Retorna todas as unidades.
+        ///</summary>
         public JsonResult Unidades () => Json(_context.Unidade.ToList());
-
+        ///<summary>
+        ///Retorna a unidado identificada por "id".
+        ///</summary>
         public JsonResult UnidadePorIdJSON(int id) => Json(_context.Unidade.FirstOrDefault(u => u.Id == id));
         public IEnumerable<MaterialAlmoxarifadoViewModel> ConverterListaParaShow(IEnumerable<Material> mats)
         {

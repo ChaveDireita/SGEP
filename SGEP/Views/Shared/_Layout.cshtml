@@ -16,8 +16,6 @@
 
 </head>
 <body>
-    @* @if (!signInManager.IsSignedIn(User))
-    { *@
     <header class="position-sticky">
         <nav class="navbar navbar-expand-lg">
             <div class="container justify-content-center" style="max-width: 100%;">
@@ -27,25 +25,9 @@
                     </button>
                     <a href="#" class="nav-a navbar-brand"><h1 style="color:white; padding-left:20px">SGEP</h1></a>
                 </div>
-                    @* <div class="collapse navbar-collapse">
-                        <ul class="navbar-nav mr-auto mt-1 mt-lg-0">
-                            <li><a asp-area="" asp-controller="Funcionario" asp-action="Index"  class="nav-li-a">Funcionários</a></li>
-                            <li><a asp-area="" asp-controller="Projeto" asp-action="Index"  class="nav-li-a">Projetos</a></li>
-                            <li><a asp-area="" asp-controller="Material" asp-action="Index"  class="nav-li-a">Materiais</a></li>
-                            <li><a asp-area="" asp-controller="Almoxarifado" asp-action="Index"  class="nav-li-a">Estoque</a></li>
-                            <li><a asp-area="" asp-controller="Movimentacao" asp-action="Index"  class="nav-li-a">Movimentações</a></li>
-                            <li><a asp-area="" asp-controller="Histograma" asp-action="Index"  class="nav-li-a">Histograma</a></li>
-                            @if(User.IsInRole("Gerente"))
-                            {
-                                <li><a asp-area="" asp-controller="User" asp-action="Index"  class="nav-li-a">Usuários</a></li>
-                            }
-                        </ul>
-                    </div> *@
-                        @* <partial name="_LoginPartial" /> *@
             </div>
         </nav>
     </header>
-    @* } *@
     @if(signInManager.IsSignedIn(User))
     {
         <div class="sidebar" 
@@ -100,10 +82,10 @@
     }
     <div class="container body-content">
         @RenderBody()
-        <hr />
+        @* <hr />
         <footer>
             <p>&copy; 2020 - SGEP - SENAI CIMATEC Park</p>
-        </footer>
+        </footer> *@
     </div>
 
     <script src="~/js/jquery-3.5.1.min.js"></script>

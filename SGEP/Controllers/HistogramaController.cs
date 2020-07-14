@@ -16,6 +16,9 @@ namespace SGEP.Controllers
         private readonly ApplicationDbContext _context;
         public HistogramaController(ApplicationDbContext context) => _context = context;
         public IActionResult Index() => View();
+        ///<summary>
+        ///Retorna os dados das movimentações para serem exibidos no histograma em Views/Histograma/Index.cshtml
+        ///</summary>
         public JsonResult GraphData(string inicio, string fim, string tipo, int? material, int? almoxarifado)
         {
             if (inicio == null || fim == null || material == null || tipo == null || almoxarifado == null)
@@ -68,6 +71,10 @@ namespace SGEP.Controllers
 
             return Json(new { data, materialShowId, tipo, almoxarifado = almoxarifadoNome, title });
         }
+        ///<summary>
+        ///Verifica se os meses inicial e final são válidos no formulário Views/Histograma/Partial/_Form.cshtml
+        ///É usado para validação remota.
+        ///</summary>
         [AllowAnonymous]
         [AcceptVerbs("Get", "Post")]
         public IActionResult ValidateDate(DateTime? inicio, DateTime? fim)

@@ -9,7 +9,7 @@ namespace SGEP.Models
     ///</summary>
     public class Funcionario
     {
-        private const string nomeRegex = "[A-zàãáâèéêìíîòõóôùúûÁÀÃÂÈÉÊÌÍÎÓÒÕÔÙÚÛ][A-z àãáâèéêìíîòõóôùúûÁÀÃÂÈÉÊÌÍÎÓÒÕÔÙÚÛ]+";
+        private const string nomeRegex = "[A-zàãáâèéêìíîòõóôùúûÁÀÃÂÈÉÊÌÍÎÓÒÕÔÙÚÛç][A-z àãáâèéêìíîòõóôùúûÁÀÃÂÈÉÊÌÍÎÓÒÕÔÙÚÛç]+";
         [Display(Name = "Matrícula")]
         [RegularExpression("[0-9]{4}", ErrorMessage = "A matrícula deve possuir 4 números")]
         [Required(ErrorMessage = CommonMessages.REQUIRED_FIELD)]
