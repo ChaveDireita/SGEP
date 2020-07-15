@@ -142,7 +142,8 @@ namespace SGEP.Controllers
         {
             int preZeros = 3 - ("" + categoria).Length;
             string cat = "";
-            for (int i = 0; i < preZeros; i++) cat += "0";;
+            for (int i = 0; i < preZeros; i++) cat += "0";
+            cat += categoria;
 
             int qtdzero = 7 - id.ToString().Length;
             string zeros = "";
