@@ -26,14 +26,14 @@ namespace SGEP
         {
             var host = CreateWebHostBuilder (args)
                     //    .UseKestrel()
-                    //    .UseContentRoot(Directory.GetCurrentDirectory())
+                       .UseContentRoot(Directory.GetCurrentDirectory())
                     //    .UseIISIntegration()
                     //    .UseStartup<Startup>()
                        .Build();//.Run();
             if (args.Length > 0)
             {
                 string option = args[0];
-                if (option == "--add-user" || option == "-AU")
+                if (option == "add-user")
                 {
                     using(var scope = host.Services.CreateScope())
                         await CreateUser(scope.ServiceProvider.GetRequiredService<UserManager<SGEPUser>>(), 
@@ -56,9 +56,9 @@ namespace SGEP
 
         private static void Help()
         {
-            Console.WriteLine("Uso: SGEP [--add-user | --help]\n");
+            Console.WriteLine("Uso: SGEP [add-user | --help]\n");
             Console.WriteLine("Argumentos:");
-            Console.WriteLine("     --add-user adiciona um novo usuário");
+            Console.WriteLine("     add-user adiciona um novo usuário");
             Console.WriteLine("     --help     exibe o uso e a lista de argumentos");
         }
 

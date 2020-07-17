@@ -244,7 +244,7 @@
                             content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.solicitante, mov.almoxarife.nome];
                             var detailstable = document.getElementById('detailstablesa');
                             detailstable.innerHTML = gerardetailslist(nomes, content);
-                            fetch('/Material/Get/' + mov.materialId)
+                            fetch('/Material/GetForShow/' + mov.materialId)
                                 .then(res => res.json())
                                 .then(mat => {
                                     var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
@@ -274,7 +274,7 @@
                             content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.preco, mov.solicitante, mov.almoxarife.nome];
                             var detailstable = document.getElementById('detailstableen');
                             detailstable.innerHTML = gerardetailslist(nomes, content);
-                            fetch('/Material/Get/' + mov.materialId)
+                            fetch('/Material/GetForShow/' + mov.materialId)
                                 .then(res => res.json())
                                 .then(mat => {
                                     var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];
@@ -295,7 +295,7 @@
                             content = [mov.id, new Date(mov.data).toLocaleString().slice(0, 10), mov.quantidade, mov.tipo, mov.almoxarife.nome];
                             var detailstable = document.getElementById('detailstableco');
                             detailstable.innerHTML = gerardetailslist(nomes, content);
-                            fetch('/Material/Get/' + mov.materialId)
+                            fetch('/Material/GetForShow/' + mov.materialId)
                                 .then(res => res.json())
                                 .then(mat => {
                                     var matnomes = ['ID', 'Descrição', 'Categoria', 'Preço/Unidade', 'Unidade'];

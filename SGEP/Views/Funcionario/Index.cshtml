@@ -175,8 +175,8 @@
                 .then(func => 
                 {
                     var detailstable = document.getElementById('detailstable');
-                    var nomes = ['ID', 'Nome', 'Cargo'];
-                    var content = [func.id, func.nome, func.cargo];
+                    var nomes = ['Matrícula', 'Nome', 'Cargo'];
+                    var content = [func.matricula, func.nome, func.cargo];
                     detailstable.innerHTML = gerardetailslist(nomes, content);
                     gerarlista(id);
                     $('#detailsmodal').modal('toggle');
