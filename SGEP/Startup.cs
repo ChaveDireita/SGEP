@@ -44,8 +44,10 @@ namespace SGEP
             services.AddDbContext<ApplicationDbContext> (options =>
             {
                 options.UseLazyLoadingProxies(true);
-                options.UseMySql (Configuration.GetConnectionString ("mysql"));
-                // options.UseSqlServer (Configuration.GetConnectionString ("local"));
+                if (DatabaseConfig.UseLocal)
+                    options.UseSqlServer (Configuration.GetConnectionString ("local"));
+                else
+                    options.UseMySql (Configuration.GetConnectionString ("mysql"));
             });
 
             services.AddScoped<IEmailSender, EmailSender>();

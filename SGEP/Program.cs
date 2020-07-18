@@ -26,7 +26,7 @@ namespace SGEP
         {
             var host = CreateWebHostBuilder (args)
                     //    .UseKestrel()
-                       .UseContentRoot(Directory.GetCurrentDirectory())
+                    //    .UseContentRoot(Directory.GetCurrentDirectory())
                     //    .UseIISIntegration()
                     //    .UseStartup<Startup>()
                        .Build();//.Run();
@@ -38,6 +38,11 @@ namespace SGEP
                     using(var scope = host.Services.CreateScope())
                         await CreateUser(scope.ServiceProvider.GetRequiredService<UserManager<SGEPUser>>(), 
                                          scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>());
+                }
+                else if (option == "--use-local-db")
+                {
+                    DatabaseConfig.UseLocal = true;
+                    host.Run();
                 }
                 else if(option == "--help" || option == "-h")
                 {
