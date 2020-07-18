@@ -1,5 +1,5 @@
 echo off
 cls
 cd SGEP
-..\dotnet-windows-noadmin\dotnet.exe run -- --use-local-db
+..\dotnet-windows-noadmin\dotnet.exe run
 pause
